@@ -1,0 +1,14 @@
+{
+  "name": "smartscaile",
+  "description": "Plugins published by smartscaile.",
+  "owner": {
+    "name": "smartscaile."
+  },
+  "plugins": [
+    {
+      "name": "brand-runtime",
+      "source": "./plugins/brand-runtime",
+      "description": "Apply private, project-scoped Brand Packs with one verified workflow in Codex and Claude Code."
+    }
+  ]
+}

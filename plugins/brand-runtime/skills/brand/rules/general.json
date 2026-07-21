@@ -1,0 +1,92 @@
+{
+  "version": "1.4.0",
+  "updated": "2026-07-20",
+  "description": "Regras universais de consumo e aplicação de Brand Packs.",
+  "rules": [
+    {
+      "id": "validate-before-use",
+      "severity": "critical",
+      "rule": "Validar o Brand Pack resolvido antes de produzir ou revisar. Interromper se arquivos, slug, versão ou hashes divergirem."
+    },
+    {
+      "id": "project-brand-root",
+      "severity": "high",
+      "rule": "Resolver Brand Packs somente em brand/{slug}, na raiz do projeto. Não armazenar nem procurar Brand Packs em .ai, .codex, .claude ou outro diretório de runtime."
+    },
+    {
+      "id": "explicit-brand-resolution",
+      "severity": "high",
+      "rule": "Em >>brand {slug}, usar o primeiro token como slug. Sem slug, autodetectar somente quando existir exatamente um diretório em brand/."
+    },
+    {
+      "id": "json-source-of-truth",
+      "severity": "critical",
+      "rule": "Tratar brand.source.json, tokens.json e build-manifest.json como fonte técnica; usar o HTML apenas como referência visual."
+    },
+    {
+      "id": "universal-core",
+      "severity": "high",
+      "rule": "A skill permanece universal. Nenhum nome, token, asset, copy ou regra específica de cliente pode ser inserido no core."
+    },
+    {
+      "id": "generated-read-only",
+      "severity": "critical",
+      "rule": "Não editar tokens.json, brand-guidelines.md, design-system.html ou build-manifest.json; esses artefatos são gerados e somente leitura."
+    },
+    {
+      "id": "declared-assets-only",
+      "severity": "critical",
+      "rule": "Por padrão, usar somente tokens e assets declarados, preservar proporção e tema e não inventar valores, variantes ou estados. Extensões locais de iconografia seguem exclusivamente a regra icon-extension-guardrail."
+    },
+    {
+      "id": "declared-iconography-first",
+      "severity": "high",
+      "rule": "Antes de compor cards, blocos de definição, capacidades, estados ou notas editoriais, inventariar a iconografia declarada e mapear cada asset a uma função semântica real. Preferir um ícone oficial compatível a traços líderes, iniciais ou marcadores puramente decorativos."
+    },
+    {
+      "id": "icon-extension-guardrail",
+      "severity": "critical",
+      "rule": "Criar ícone local somente com autorização explícita do usuário e quando o pack declarar construção suficiente da família, como viewBox, stroke, fill, escala ou container. Manter a extensão fora do Brand Pack, documentar que não é asset canônico e reportar conflito quando a construção não puder ser preservada."
+    },
+    {
+      "id": "semantic-tokens-first",
+      "severity": "high",
+      "rule": "Em interfaces, preferir papéis semânticos do tema a valores primitivos e não inventar estados, cores ou famílias ausentes."
+    },
+    {
+      "id": "surface-rules-required",
+      "severity": "high",
+      "rule": "Carregar as regras da surface solicitada antes de implementar site, produto, apresentação ou documento."
+    },
+    {
+      "id": "runtime-neutral",
+      "severity": "high",
+      "rule": "A skill canônica pode ser distribuída por adapters de runtime, mas o Brand Pack permanece em brand/{slug}. AGENTS.md, CLAUDE.md e plugins são apenas entry points e não recebem cópias editáveis do pack."
+    },
+    {
+      "id": "editorial-content-fidelity",
+      "severity": "critical",
+      "rule": "Em documentos e apresentações, preservar integralmente o conteúdo e sua ordem global. A paginação da fonte não é vinculante salvo pedido explícito do usuário."
+    },
+    {
+      "id": "editorial-composition-freedom",
+      "severity": "high",
+      "rule": "Não impor catálogo fechado de templates, grid único ou anatomia idêntica a todas as páginas. Usar os tokens da brand e compor cada bloco conforme sua função editorial."
+    },
+    {
+      "id": "editorial-emphasis-semantic",
+      "severity": "high",
+      "rule": "Cards, divisores e callouts devem codificar agrupamento, comparação, status ou ênfase reais. Não usar como default a combinação de superfície arredondada com barra lateral colorida; para labels semânticos, testar primeiro ícone mais título, tipografia editorial ou tratamento de dados."
+    },
+    {
+      "id": "editorial-document-shell",
+      "severity": "critical",
+      "rule": "Em documentos HTML, decidir explicitamente entre fluxo contínuo e page canvas paginado conforme leitura e exportação. Quando paginado, derivar largura e altura do formato de destino ou proporção da fonte, compartilhar a geometria entre a folha de tela e @page, limitar sombra, gap e workspace ao modo screen e usar layout mobile fluido sem sombra salvo pedido explícito por preview fixo."
+    },
+    {
+      "id": "editorial-visual-qa",
+      "severity": "critical",
+      "rule": "Antes de entregar documento ou apresentação, renderizar os formatos relevantes e revisar overflow, distância entre elementos relacionados, hierarquia, títulos órfãos, blocos cortados e equilíbrio da paginação."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "version": "1.2.0",
+  "updated": "2026-07-20",
+  "purpose": "Orientar documentos e apresentações branded com liberdade de composição e qualidade consistente.",
+  "appliesTo": [
+    "document",
+    "presentation"
+  ],
+  "principles": [
+    "A brand define identidade e guardrails; o conteúdo define a composição.",
+    "Iconografia declarada é parte do sistema de conteúdo, não decoração opcional.",
+    "Layouts são receitas opcionais, não um catálogo fechado.",
+    "O page canvas é um modo de leitura e exportação opcional, não a anatomia obrigatória de todo documento.",
+    "Preservar conteúdo e ordem global não significa reproduzir a paginação da fonte.",
+    "Validação estrutural não substitui revisão visual."
+  ],
+  "hardRules": [
+    "Usar tokens, tipografia e assets declarados pelo Brand Pack.",
+    "Inventariar e reutilizar a iconografia oficial antes de criar marcadores ou ícones locais.",
+    "Preservar o conteúdo completo e sua ordem, salvo edição explicitamente solicitada.",
+    "Quando houver page canvas, manter a geometria da folha de tela e do formato de impressão coerentes.",
+    "Manter contraste, legibilidade, hierarquia semântica e ausência de overflow.",
+    "Renderizar e revisar os formatos relevantes antes da entrega."
+  ],
+  "compositionGuidelines": [
+    "Escolher grid, densidade e agrupamento conforme a função editorial de cada bloco.",
+    "Manter ícones e outros marcadores visuais próximos do título ou conteúdo que identificam; evitar ícones órfãos em colunas largas.",
+    "Em blocos de definição, capacidade ou status, testar ícone mais label antes de recorrer a um traço líder genérico.",
+    "Usar espaço em branco para criar ritmo, sem produzir áreas mortas ou relações visuais excessivamente distantes.",
+    "Limitar cards, divisores e callouts ao que melhora agrupamento, comparação ou ênfase funcional; não usar card arredondado com barra lateral colorida como tratamento automático de destaque.",
+    "Controlar a medida do texto para leitura confortável e ajustar a escala ao volume real de conteúdo.",
+    "Permitir variação entre páginas mantendo constantes reconhecíveis como tipografia, margens, header e paginação quando aplicáveis."
+  ],
+  "iconographyGuidelines": [
+    "Ler o inventário iconography do contexto e produzir um mapa conteúdo → função → asset oficial antes de desenhar componentes.",
+    "Usar ícones somente quando esclarecem ação, capacidade, status, categoria ou relação; não inserir como filler.",
+    "Não reutilizar o mesmo ícone para conceitos sem relação apenas para preencher o layout.",
+    "Quando o usuário autorizar uma extensão e não existir asset compatível, reproduzir a geometria declarada da família e manter o novo arquivo apenas na entrega.",
+    "Quando um destaque não tiver função iconográfica clara, preferir tipografia, espaço, dados ou uma nota editorial plana a inventar um símbolo."
+  ],
+  "documentShellGuidelines": [
+    "Escolher conscientemente entre fluxo contínuo e page canvas paginado conforme o destino: leitura web longa favorece fluxo; preview físico, handout ou exportação de página fixa podem favorecer canvas.",
+    "Derivar a largura, a altura e a proporção da página do formato solicitado, como A4, Letter ou dimensões da fonte; não aplicar um tamanho fixo universal.",
+    "Centralizar as folhas em um workspace neutro no desktop e definir largura e altura em variáveis compartilhadas com a regra @page para evitar divergência entre tela e PDF.",
+    "Tratar padding externo, intervalo entre folhas e sombra como chrome exclusivo de screen; remover esses efeitos e qualquer fundo de workspace na impressão.",
+    "No mobile, usar folha com largura fluida, altura natural e sem sombra, salvo quando o usuário pedir explicitamente uma simulação de página fixa.",
+    "Manter margens, header, footer, metadata e numeração estáveis quando funcionarem como page furniture, sem impedir variações editoriais no corpo.",
+    "Aplicar quebras explícitas apenas entre unidades semânticas, usar box sizing previsível e conferir se o número e a geometria das páginas exportadas correspondem ao plano."
+  ],
+  "paginationGuidelines": [
+    "Manter título e primeiro bloco de conteúdo juntos.",
+    "Evitar iniciar uma página com continuação ambígua ou encerrar uma página apenas com um heading.",
+    "Evitar quebrar listas curtas, comparações, callouts e componentes pequenos no meio.",
+    "Usar widows e orphans adequados e redistribuir conteúdo quando uma quebra prejudicar a leitura.",
+    "Tratar a página original como referência de conteúdo, não como contrato de destino, salvo pedido explícito."
+  ],
+  "workflow": [
+    "Extrair e verificar o conteúdo.",
+    "Criar uma estrutura semântica de headings, parágrafos, listas, comparações e destaques.",
+    "Escolher fluxo contínuo ou page canvas e, quando paginado, registrar a geometria derivada do formato final.",
+    "Inventariar a iconografia declarada e mapear os assets às funções semânticas do conteúdo.",
+    "Compor livremente usando os tokens e assets da brand.",
+    "Paginar por unidades de significado.",
+    "Renderizar desktop, mobile e formato de exportação aplicável.",
+    "Refinar distância, densidade, hierarquia e quebras até a leitura ficar fluida."
+  ],
+  "visualReview": [
+    "Elementos relacionados parecem próximos e alinhados?",
+    "Existe espaço excessivo ou conteúdo espremido?",
+    "Algum título ficou órfão ou separado de sua explicação?",
+    "Algum componente foi cortado ou perdeu contexto entre páginas?",
+    "A hierarquia continua clara sem depender apenas de cor?",
+    "Algum traço, card ou callout genérico poderia ser substituído por iconografia oficial ou por um tratamento editorial mais direto?",
+    "Cada ícone comunica um conceito identificável e pertence à família visual declarada?",
+    "Quando existe page canvas, tela e impressão usam a mesma proporção e o chrome de preview desaparece no PDF?",
+    "No mobile, o documento mantém leitura fluida sem uma folha reduzida ou sombra artificial, salvo preview fixo solicitado?",
+    "O documento parece parte da brand sem repetir mecanicamente a mesma página?"
+  ]
+}

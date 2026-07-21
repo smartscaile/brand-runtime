@@ -1,0 +1,94 @@
+{
+  "command": "apply",
+  "description": "Validar e aplicar uma Brand Pack a uma surface sem inventar identidade nem engessar a composição.",
+  "version": "1.4.0",
+  "execution": "sequential",
+  "pre_conditions": [
+    {
+      "id": "pc1",
+      "check": "rules/general.json lido",
+      "blocker": true
+    },
+    {
+      "id": "pc2",
+      "check": "Brand slug explícito ou resolvido por autodetecção inequívoca",
+      "blocker": true
+    },
+    {
+      "id": "pc3",
+      "check": "Surface definida",
+      "blocker": true
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "name": "Resolver pack",
+      "type": "execute",
+      "description": "Executar status para localizar a brand e os arquivos declarados."
+    },
+    {
+      "step": 2,
+      "name": "Validar integridade",
+      "type": "verify",
+      "description": "Executar validate e bloquear em qualquer divergência."
+    },
+    {
+      "step": 3,
+      "name": "Carregar fontes",
+      "type": "execute",
+      "description": "Ler source, tokens, guidelines e manifest na ordem obrigatória."
+    },
+    {
+      "step": 4,
+      "name": "Resolver surface",
+      "type": "execute",
+      "description": "Executar context para a surface pedida e mapear assets, iconografia, tipografia, cores, layout e voice aplicáveis."
+    },
+    {
+      "step": 5,
+      "name": "Estruturar conteúdo",
+      "type": "execute",
+      "description": "Para documento ou apresentação, preservar conteúdo e ordem global, agrupar por significado e mapear ações, capacidades, estados e notas a ícones oficiais quando houver correspondência semântica. Em documento HTML, escolher fluxo contínuo ou page canvas e derivar a geometria do formato final quando paginado."
+    },
+    {
+      "step": 6,
+      "name": "Implementar",
+      "type": "execute",
+      "description": "Criar a entrega com valores declarados pelo pack, reutilizar iconografia oficial antes de marcadores decorativos e escolher cards, divisores e callouts somente quando tiverem função editorial clara. Em page canvas, compartilhar a geometria entre folha e @page e manter workspace, gaps e sombras apenas em screen."
+    },
+    {
+      "step": 7,
+      "name": "Validar entrega",
+      "type": "verify",
+      "description": "Reexecutar validate, checagens do projeto e revisão visual nos breakpoints e formatos de exportação relevantes, incluindo ícones, extensões autorizadas, tratamentos de ênfase e, quando aplicável, paridade geométrica desktop/mobile/print do page canvas."
+    }
+  ],
+  "post_conditions": [
+    {
+      "id": "post1",
+      "check": "Pack continua íntegro",
+      "blocker": true
+    },
+    {
+      "id": "post2",
+      "check": "Entrega respeita tokens, assets e regras da surface",
+      "blocker": true
+    },
+    {
+      "id": "post3",
+      "check": "Surfaces editoriais não contêm títulos órfãos, cortes, overflow, paginação semanticamente ruim ou callouts decorativos sem função",
+      "blocker": true
+    },
+    {
+      "id": "post4",
+      "check": "Iconografia oficial foi inventariada e qualquer extensão local autorizada permanece fora do Brand Pack",
+      "blocker": true
+    },
+    {
+      "id": "post5",
+      "check": "Documento HTML paginado deriva seu canvas do formato final, remove chrome de preview no print e permanece legível no mobile",
+      "blocker": true
+    }
+  ]
+}

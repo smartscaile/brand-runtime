@@ -1,0 +1,17 @@
+{
+  "description": "Activate Brand Runtime when a prompt invokes >>brand.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/brand-command-hook.mjs\"",
+            "timeout": 10,
+            "statusMessage": "Loading Brand Runtime"
+          }
+        ]
+      }
+    ]
+  }
+}

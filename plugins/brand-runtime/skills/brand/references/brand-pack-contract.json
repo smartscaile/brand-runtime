@@ -1,0 +1,34 @@
+{
+  "version": "1.1.0",
+  "updated": "2026-07-18",
+  "root": "brand/{slug}",
+  "required": [
+    "brand.source.json",
+    "tokens.json",
+    "brand-guidelines.md",
+    "build-manifest.json"
+  ],
+  "optional": [
+    "design-system.html",
+    "assets/",
+    "references/"
+  ],
+  "ownership": {
+    "editable": [],
+    "generated_read_only": [
+      "brand.source.json",
+      "tokens.json",
+      "brand-guidelines.md",
+      "design-system.html",
+      "build-manifest.json",
+      "assets/**"
+    ]
+  },
+  "invariants": [
+    "slug e brandVersion coincidem entre source, tokens e manifest",
+    "sourceHash coincide entre tokens e manifest",
+    "todo artifact e asset declarado possui SHA-256 válido",
+    "o pack não vive dentro de diretórios específicos de runtime",
+    "nenhum dado específico de brand vive na skill universal"
+  ]
+}

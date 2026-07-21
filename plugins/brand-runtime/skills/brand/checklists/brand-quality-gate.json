@@ -1,0 +1,115 @@
+{
+  "id": "brand-quality-gate",
+  "version": "1.4.0",
+  "updated": "2026-07-20",
+  "purpose": "Gate de integridade e fidelidade para entregas que consomem Brand Packs.",
+  "mode": "blocking",
+  "checks": [
+    {
+      "id": "pack-valid",
+      "check": "status e validate finalizaram sem erros",
+      "type": "blocking"
+    },
+    {
+      "id": "source-loaded",
+      "check": "source, tokens, guidelines e manifest foram lidos",
+      "type": "blocking"
+    },
+    {
+      "id": "surface-loaded",
+      "check": "regras da surface foram carregadas",
+      "type": "blocking"
+    },
+    {
+      "id": "declared-assets",
+      "check": "somente assets declarados foram usados, exceto extensões locais de iconografia autorizadas e conformes ao guardrail",
+      "type": "blocking"
+    },
+    {
+      "id": "iconography-inventory",
+      "check": "quando o pack declara iconografia e a surface contém ações, capacidades, estados ou blocos editoriais, o inventário foi lido e os assets oficiais foram mapeados antes de criar marcadores",
+      "type": "blocking"
+    },
+    {
+      "id": "icon-extensions",
+      "check": "qualquer ícone não canônico teve autorização explícita, segue a construção declarada da família, vive somente na entrega e não altera o Brand Pack",
+      "type": "blocking"
+    },
+    {
+      "id": "semantic-tokens",
+      "check": "papéis semânticos foram preferidos e nenhum token foi inventado",
+      "type": "blocking"
+    },
+    {
+      "id": "voice",
+      "check": "copy respeita tom, anchor words, forbidden words e regras",
+      "type": "blocking"
+    },
+    {
+      "id": "project-validation",
+      "check": "checks técnicos e revisão da surface foram executados",
+      "type": "blocking"
+    },
+    {
+      "id": "editorial-guidelines",
+      "check": "para documento ou apresentação, as guidelines editoriais foram carregadas",
+      "type": "blocking",
+      "appliesTo": [
+        "document",
+        "presentation"
+      ]
+    },
+    {
+      "id": "editorial-content",
+      "check": "conteúdo completo e ordem global foram preservados, salvo alteração editorial solicitada",
+      "type": "blocking",
+      "appliesTo": [
+        "document",
+        "presentation"
+      ]
+    },
+    {
+      "id": "editorial-render",
+      "check": "render desktop/mobile e exportação aplicável foram inspecionados sem overflow ou cortes",
+      "type": "blocking",
+      "appliesTo": [
+        "document",
+        "presentation"
+      ]
+    },
+    {
+      "id": "editorial-pagination",
+      "check": "títulos, introduções, listas e componentes permanecem agrupados de forma legível entre páginas",
+      "type": "blocking",
+      "appliesTo": [
+        "document",
+        "presentation"
+      ]
+    },
+    {
+      "id": "editorial-emphasis",
+      "check": "cards, divisores e callouts têm função semântica e nenhum destaque usa por default superfície arredondada com barra lateral colorida",
+      "type": "blocking",
+      "appliesTo": [
+        "document",
+        "presentation"
+      ]
+    },
+    {
+      "id": "editorial-document-mode",
+      "check": "para documento HTML, fluxo contínuo ou page canvas foi escolhido intencionalmente conforme leitura e exportação",
+      "type": "blocking",
+      "appliesTo": [
+        "document"
+      ]
+    },
+    {
+      "id": "editorial-page-canvas",
+      "check": "quando o documento HTML é paginado, a geometria deriva do formato final, tela e @page permanecem alinhados, chrome de preview não chega ao print e mobile é fluido salvo pedido contrário",
+      "type": "blocking",
+      "appliesTo": [
+        "document"
+      ]
+    }
+  ]
+}

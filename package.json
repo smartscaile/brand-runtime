@@ -1,0 +1,13 @@
+{
+  "name": "@smartscaile/brand-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/validate-repository.mjs && node --test tests/brand-command-hook.test.mjs",
+    "skill:check": "node scripts/sync-brand-skill.mjs --check",
+    "skill:sync": "node scripts/sync-brand-skill.mjs --write",
+    "test": "node --test tests/brand-command-hook.test.mjs",
+    "validate": "node scripts/validate-repository.mjs"
+  }
+}

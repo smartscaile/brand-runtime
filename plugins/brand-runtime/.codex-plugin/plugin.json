@@ -1,0 +1,32 @@
+{
+  "name": "brand-runtime",
+  "version": "0.1.0",
+  "description": "Apply private, project-scoped Brand Packs with one verified workflow in Codex and Claude Code.",
+  "author": {
+    "name": "smartscaile.",
+    "url": "https://brand.smartscaile.com.br"
+  },
+  "homepage": "https://github.com/smartscaile/brand-runtime",
+  "repository": "https://github.com/smartscaile/brand-runtime",
+  "keywords": [
+    "brand",
+    "design-system",
+    "brand-pack"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Brand Runtime",
+    "shortDescription": "Apply verified Brand Packs in Codex.",
+    "longDescription": "Brand Runtime loads, validates, and applies private Brand Packs installed in the current project before branded work is created or reviewed.",
+    "developerName": "smartscaile.",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      ">>brand checkgrow create a branded document.",
+      "Validate the installed Brand Pack before editing this page."
+    ]
+  }
+}

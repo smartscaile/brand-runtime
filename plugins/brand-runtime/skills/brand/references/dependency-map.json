@@ -1,0 +1,53 @@
+{
+  "version": "1.4.0",
+  "updated": "2026-07-20",
+  "description": "Mapa de dependências da skill universal Brand.",
+  "internals": [
+    {
+      "file": "SKILL.md",
+      "defines": "entrypoint e sequência obrigatória"
+    },
+    {
+      "file": "skill.json",
+      "defines": "manifesto e comandos"
+    },
+    {
+      "file": "rules/general.json",
+      "defines": "regras canônicas de consumo"
+    },
+    {
+      "file": "references/brand-pack-contract.json",
+      "defines": "estrutura, ownership e invariantes do pack"
+    },
+    {
+      "file": "references/editorial-surface-guidelines.json",
+      "defines": "heurísticas flexíveis de UI, iconografia semântica, page canvas opcional, paginação e QA para documentos e apresentações"
+    },
+    {
+      "file": "scripts/brand.ts",
+      "defines": "CLI determinística de status, validação e contexto com inventário de iconografia"
+    },
+    {
+      "file": "tasks/brand-apply.json",
+      "defines": "workflow sequencial de aplicação"
+    },
+    {
+      "file": "checklists/brand-quality-gate.json",
+      "defines": "gate bloqueante de entrega"
+    },
+    {
+      "file": "adapters/openai.yaml",
+      "defines": "adapter de interface para empacotamento OpenAI"
+    }
+  ],
+  "externals": [
+    {
+      "file": "brand",
+      "references": "diretório de Brand Packs instalados por slug na raiz do projeto"
+    },
+    {
+      "file": ".ai/scripts/hooks/skill-activation-dispatcher.ts",
+      "references": "dispatcher universal de >>brand"
+    }
+  ]
+}
