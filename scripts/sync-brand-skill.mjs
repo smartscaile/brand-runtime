@@ -5,7 +5,14 @@ import { fileURLToPath } from "node:url";
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const sourceRoot = resolve(process.env.BRAND_SKILL_SOURCE || resolve(repositoryRoot, "../../../.ai/skills/brand"));
 const targetRoot = resolve(repositoryRoot, "plugins/brand-runtime/skills/brand");
-const included = ["SKILL.md", "checklists", "references", "rules", "scripts", "tasks"];
+const pluginRoot = resolve(repositoryRoot, "plugins/brand-runtime");
+const included = ["SKILL.md", "adapters", "assets", "checklists", "references", "rules", "scripts", "tasks"];
+const skillMappings = [{ source: "adapters/openai.yaml", target: "agents/openai.yaml" }];
+const pluginAssetMappings = [
+  { source: "assets/icon.png", target: "assets/icon.png" },
+  { source: "assets/logo.png", target: "assets/logo.png" },
+  { source: "assets/logo-dark.png", target: "assets/logo-dark.png" },
+];
 const mode = process.argv.includes("--check") ? "check" : process.argv.includes("--write") ? "write" : "";
 
 if (!mode) throw new Error("Use --write to synchronize or --check to verify the publishable skill.");
@@ -24,10 +31,11 @@ async function expectedFiles() {
   const files = [];
   for (const path of included) {
     const source = resolve(sourceRoot, path);
-    if (path.endsWith(".md")) files.push(path);
-    else files.push(...(await listFiles(source)).map((file) => `${path}/${file}`));
+    if (path.endsWith(".md")) files.push({ source: path, target: path });
+    else files.push(...(await listFiles(source)).map((file) => ({ source: `${path}/${file}`, target: `${path}/${file}` })));
   }
-  return files.sort();
+  files.push(...skillMappings);
+  return files.sort((left, right) => left.target.localeCompare(right.target));
 }
 
 async function sameFile(left, right) {
@@ -44,13 +52,24 @@ async function main() {
   const mismatches = [];
 
   for (const file of expected) {
-    const source = resolve(sourceRoot, file);
-    const target = resolve(targetRoot, file);
+    const source = resolve(sourceRoot, file.source);
+    const target = resolve(targetRoot, file.target);
     if (mode === "write") {
       await mkdir(dirname(target), { recursive: true });
       await copyFile(source, target);
     } else if (!(await sameFile(source, target))) {
-      mismatches.push(file);
+      mismatches.push(file.target);
+    }
+  }
+
+  for (const file of pluginAssetMappings) {
+    const source = resolve(sourceRoot, file.source);
+    const target = resolve(pluginRoot, file.target);
+    if (mode === "write") {
+      await mkdir(dirname(target), { recursive: true });
+      await copyFile(source, target);
+    } else if (!(await sameFile(source, target))) {
+      mismatches.push(file.target);
     }
   }
 
@@ -61,7 +80,8 @@ async function main() {
     } catch {
       // Missing target files are reported below.
     }
-    for (const extra of actual.filter((file) => !expected.includes(file))) mismatches.push(`${extra} (unexpected)`);
+    const expectedTargets = new Set(expected.map((file) => file.target));
+    for (const extra of actual.filter((file) => !expectedTargets.has(file))) mismatches.push(`${extra} (unexpected)`);
     if (mismatches.length > 0) {
       throw new Error(`Publishable skill differs from the canonical Brand skill:\n- ${mismatches.join("\n- ")}`);
     }

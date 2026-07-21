@@ -1,7 +1,7 @@
 {
   "name": "brand-runtime",
   "displayName": "Brand Runtime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Apply private, project-scoped Brand Packs with one verified workflow in Codex and Claude Code.",
   "author": {
     "name": "smartscaile.",

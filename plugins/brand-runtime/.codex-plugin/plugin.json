@@ -1,6 +1,6 @@
 {
   "name": "brand-runtime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Apply private, project-scoped Brand Packs with one verified workflow in Codex and Claude Code.",
   "author": {
     "name": "smartscaile.",
@@ -27,6 +27,10 @@
     "defaultPrompt": [
       ">>brand checkgrow create a branded document.",
       "Validate the installed Brand Pack before editing this page."
-    ]
+    ],
+    "brandColor": "#183B35",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "logoDark": "./assets/logo-dark.png"
   }
 }

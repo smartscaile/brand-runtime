@@ -1,6 +1,6 @@
 {
-  "version": "1.4.0",
-  "updated": "2026-07-20",
+  "version": "1.4.2",
+  "updated": "2026-07-21",
   "description": "Mapa de dependências da skill universal Brand.",
   "internals": [
     {
@@ -37,7 +37,11 @@
     },
     {
       "file": "adapters/openai.yaml",
-      "defines": "adapter de interface para empacotamento OpenAI"
+      "defines": "metadados de interface, invocação e assets exportados como agents/openai.yaml no empacotamento OpenAI"
+    },
+    {
+      "file": "assets/",
+      "defines": "identidade visual portátil da skill e do plugin Brand Runtime"
     }
   ],
   "externals": [

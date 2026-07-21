@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">Brand Runtime</title>
+  <desc id="description">A portable brand pack nested inside a runtime frame, optimized for dark interfaces.</desc>
+  <rect x="72" y="72" width="368" height="368" rx="92" fill="#B9FBEA"/>
+  <rect x="139" y="139" width="234" height="234" rx="67" fill="none" stroke="#183B35" stroke-width="28"/>
+  <rect x="190" y="190" width="132" height="132" rx="34" fill="#FFFDF7"/>
+  <rect x="223" y="223" width="23" height="66" rx="8" fill="#183B35"/>
+  <rect x="266" y="223" width="23" height="66" rx="8" fill="#183B35"/>
+  <rect x="319" y="319" width="74" height="74" rx="21" fill="#A99BFF"/>
+</svg>
