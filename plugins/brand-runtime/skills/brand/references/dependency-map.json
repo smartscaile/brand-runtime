@@ -1,5 +1,5 @@
 {
-  "version": "1.4.2",
+  "version": "1.4.3",
   "updated": "2026-07-21",
   "description": "Mapa de dependências da skill universal Brand.",
   "internals": [
@@ -41,7 +41,7 @@
     },
     {
       "file": "assets/",
-      "defines": "identidade visual portátil da skill e do plugin Brand Runtime"
+      "defines": "logo oficial da smartscaile aplicado à skill e ao plugin Brand Runtime"
     }
   ],
   "externals": [
