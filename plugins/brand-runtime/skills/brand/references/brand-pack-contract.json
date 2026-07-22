@@ -1,7 +1,13 @@
 {
-  "version": "1.1.0",
-  "updated": "2026-07-18",
-  "root": "brand/{slug}",
+  "version": "2.1.0",
+  "updated": "2026-07-22",
+  "container": {
+    "requiredName": "brand",
+    "shape": "brand/{slug}",
+    "supportsMultiplePacks": true,
+    "discovery": "Direct lowercase kebab-case child directories containing brand.source.json"
+  },
+  "root": "<brand-folder>/{slug}",
   "required": [
     "brand.source.json",
     "tokens.json",
@@ -9,26 +15,35 @@
     "build-manifest.json"
   ],
   "optional": [
+    "brand.rules.json",
     "design-system.html",
     "assets/",
-    "references/"
+    "references/",
+    "references/feedback/"
   ],
   "ownership": {
-    "editable": [],
-    "generated_read_only": [
+    "client_editable": [
+      "brand.rules.json",
+      "references/feedback/**"
+    ],
+    "pack_managed_read_only": [
       "brand.source.json",
       "tokens.json",
       "brand-guidelines.md",
       "design-system.html",
       "build-manifest.json",
-      "assets/**"
+      "assets/**",
+      "references/** except references/feedback/**"
     ]
   },
   "invariants": [
-    "slug e brandVersion coincidem entre source, tokens e manifest",
-    "sourceHash coincide entre tokens e manifest",
-    "todo artifact e asset declarado possui SHA-256 válido",
-    "o pack não vive dentro de diretórios específicos de runtime",
-    "nenhum dado específico de brand vive na skill universal"
+    "slug and brandVersion match across source, tokens, and manifest",
+    "sourceHash matches between tokens and manifest",
+    "every pack-managed artifact and asset declares a valid SHA-256 hash",
+    "the Brand Pack never lives inside a runtime-specific directory",
+    "the saved configuration points to the containing folder named brand, never to one slug directory",
+    "adding a valid sibling pack does not require a configuration change",
+    "the universal plugin never stores client-specific identity or learned rules",
+    "client-owned rules use their own schema and revision and are not added to the immutable build manifest"
   ]
 }

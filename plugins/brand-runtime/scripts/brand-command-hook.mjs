@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveBrandRoot } from "./brand-root-config.mjs";
 
 function readInput() {
   try {
@@ -21,74 +22,107 @@ function isDirectory(path) {
   }
 }
 
-function findProjectRoot(start) {
-  let current = resolve(start);
-  while (true) {
-    if (isDirectory(resolve(current, "brand"))) return current;
-    const parent = dirname(current);
-    if (parent === current) return resolve(start);
-    current = parent;
-  }
-}
-
-function installedBrands(projectRoot) {
-  const root = resolve(projectRoot, "brand");
-  if (!isDirectory(root)) return [];
-  return readdirSync(root, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() || entry.isSymbolicLink() && isDirectory(resolve(root, entry.name)))
-    .map((entry) => entry.name)
-    .filter((name) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name))
-    .sort();
-}
-
 function requestedSlug(prompt) {
   const match = prompt.match(/(?:^|\s)>>brand(?:\s+([a-z0-9]+(?:-[a-z0-9]+)*))?(?=\s|$)/iu);
   return match?.[1]?.toLowerCase() || "";
 }
 
-function packLabel(brandRoot) {
-  const packFile = resolve(brandRoot, "pack.json");
-  if (!existsSync(packFile)) return "version not declared";
-  try {
-    const pack = JSON.parse(readFileSync(packFile, "utf8"));
-    return `brand v${pack.brandVersion || "unknown"}, pack v${pack.packVersion || "unknown"}`;
-  } catch {
-    return "invalid pack.json";
+function pluginVersion(pluginRoot) {
+  for (const relativePath of [".codex-plugin/plugin.json", ".claude-plugin/plugin.json"]) {
+    const manifestFile = resolve(pluginRoot, relativePath);
+    if (!existsSync(manifestFile)) continue;
+    try {
+      const manifest = JSON.parse(readFileSync(manifestFile, "utf8"));
+      if (typeof manifest.version === "string" && manifest.version) return manifest.version;
+    } catch {
+      // Try the next runtime manifest.
+    }
   }
+  return "unknown";
 }
 
-function activationContext({ projectRoot, pluginRoot, slug, available }) {
-  const skillRoot = resolve(pluginRoot, "skills", "brand");
-  const requested = slug || "<not resolved>";
-  const selectedRoot = slug ? resolve(projectRoot, "brand", slug) : "";
-  const availableLine = available.length > 0 ? available.join(", ") : "none";
+function packLabel(brandRoot) {
+  const sourceFile = resolve(brandRoot, "brand.source.json");
+  const rulesFile = resolve(brandRoot, "brand.rules.json");
+  let brandVersion = "unknown";
+  let rulesRevision = 0;
 
-  if (!slug || !isDirectory(selectedRoot)) {
+  try {
+    if (existsSync(sourceFile)) {
+      const source = JSON.parse(readFileSync(sourceFile, "utf8"));
+      brandVersion = source.brandVersion || "unknown";
+    }
+    if (existsSync(rulesFile)) {
+      const rules = JSON.parse(readFileSync(rulesFile, "utf8"));
+      rulesRevision = Number.isInteger(rules.revision) ? rules.revision : "invalid";
+    }
+  } catch {
+    return "invalid Brand Pack metadata";
+  }
+
+  return `Brand Pack v${brandVersion}; client rules r${rulesRevision}`;
+}
+
+function activationContext({ cwd, pluginRoot, runtimeVersion, requested, brandResolution }) {
+  const skillRoot = resolve(pluginRoot, "skills", "brand");
+  const cli = resolve(skillRoot, "scripts", "brand.ts");
+  const available = brandResolution.brands || [];
+  const availableLine = available.length > 0 ? available.join(", ") : "none";
+  const configuredPath = brandResolution.brandRoot || brandResolution.configuredBrandRoot || "not configured";
+
+  if (!brandResolution.ok) {
     return [
       "BRAND RUNTIME ACTIVE (>>brand detected)",
+      `Brand Runtime: v${runtimeVersion}`,
       "",
-      `The requested Brand Pack could not be resolved. Requested: ${requested}. Installed: ${availableLine}.`,
-      "Do not create or review branded output until a valid project-scoped Brand Pack is installed or selected.",
-      "Ask the user to install the Brand Pack downloaded from the Brand Portal, or to invoke >>brand <installed-slug>.",
+      "BRAND FOLDER CONFIGURATION REQUIRED",
+      `${brandResolution.reason} Current path: ${configuredPath}.`,
+      "Ask the user for the absolute path to the downloaded folder named brand.",
+      "The selected folder must directly contain one or more Brand Pack folders, for example brand/example-brand/brand.source.json.",
+      "Do not ask the user to copy the Brand Pack into the current project.",
+      "After the user replies, configure and validate it with:",
+      `node --experimental-strip-types "${cli}" config set --brand-root "<absolute-path-to-brand-folder>"`,
+      "Stop branded work until configuration reports status ready.",
       "",
       `Universal skill: ${skillRoot}/SKILL.md`,
-      `Project root: ${projectRoot}`,
+      `Config file: ${brandResolution.configFile || "runtime default"}`,
+      `Working directory: ${cwd}`,
     ].join("\n");
   }
 
-  const brandRoot = resolve(projectRoot, "brand", slug);
-  const cli = resolve(skillRoot, "scripts", "brand.ts");
+  const slug = requested || (available.length === 1 ? available[0] : "");
+  const selectedRoot = slug ? resolve(brandResolution.brandRoot, slug) : "";
+  if (!slug || !isDirectory(selectedRoot)) {
+    return [
+      "BRAND RUNTIME ACTIVE (>>brand detected)",
+      `Brand Runtime: v${runtimeVersion}`,
+      "",
+      `The requested Brand Pack could not be resolved. Requested: ${requested || "not selected"}. Installed: ${availableLine}.`,
+      "The configured brand folder supports multiple Brand Packs, but exactly one slug must be selected for each task.",
+      "Ask the user to invoke >>brand <installed-slug> or select one of the installed slugs before branded work.",
+      "If the intended slug is not installed, ask the user to obtain its Brand Pack from Brand Portal/Vox and add it as a sibling inside the configured brand folder. Never synthesize a pack.",
+      "",
+      `Universal skill: ${skillRoot}/SKILL.md`,
+      `Brand folder: ${brandResolution.brandRoot}`,
+      `Brand folder source: ${brandResolution.source}`,
+    ].join("\n");
+  }
+
+  const brandRoot = selectedRoot;
   return [
     "BRAND RUNTIME ACTIVE (>>brand detected)",
+    `Brand Runtime: v${runtimeVersion}`,
     "",
-    `Use the project-scoped Brand Pack at ${brandRoot} (${packLabel(brandRoot)}).`,
+    `Use the Brand Pack at ${brandRoot} (${packLabel(brandRoot)}).`,
+    `Configured brand folder: ${brandResolution.brandRoot} (${brandResolution.source}).`,
+    `Installed Brand Packs: ${availableLine}.`,
     "Read and follow these files completely before creating or reviewing branded output:",
     `1. ${skillRoot}/SKILL.md`,
     `2. ${skillRoot}/rules/general.json`,
     "",
-    "Run these checks from the project root before operating:",
-    `node --experimental-strip-types \"${cli}\" status --brand ${slug} --project-root \"${projectRoot}\"`,
-    `node --experimental-strip-types \"${cli}\" validate --brand ${slug} --project-root \"${projectRoot}\"`,
+    "Run these checks before operating:",
+    `node --experimental-strip-types "${cli}" status --brand ${slug} --brand-root "${brandResolution.brandRoot}"`,
+    `node --experimental-strip-types "${cli}" validate --brand ${slug} --brand-root "${brandResolution.brandRoot}"`,
     "Stop if validation fails. The Brand Pack is the source of truth; do not copy brand-specific rules into the plugin.",
   ].join("\n");
 }
@@ -101,16 +135,20 @@ function main() {
   const cwd = typeof input.cwd === "string" && input.cwd
     ? input.cwd
     : process.env.CLAUDE_PROJECT_DIR || process.env.CODEX_PROJECT_DIR || process.cwd();
-  const projectRoot = findProjectRoot(cwd);
-  const available = installedBrands(projectRoot);
   const requested = requestedSlug(prompt);
-  const slug = requested || (available.length === 1 ? available[0] : "");
+  const brandResolution = resolveBrandRoot({ cwd });
   const pluginRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
   process.stdout.write(`${JSON.stringify({
     hookSpecificOutput: {
       hookEventName: "UserPromptSubmit",
-      additionalContext: activationContext({ projectRoot, pluginRoot, slug, available }),
+      additionalContext: activationContext({
+        cwd,
+        pluginRoot,
+        runtimeVersion: pluginVersion(pluginRoot),
+        requested,
+        brandResolution,
+      }),
     },
   })}\n`);
 }

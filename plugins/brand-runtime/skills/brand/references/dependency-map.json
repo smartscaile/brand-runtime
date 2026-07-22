@@ -1,57 +1,73 @@
 {
-  "version": "1.4.3",
-  "updated": "2026-07-21",
-  "description": "Mapa de dependências da skill universal Brand.",
+  "version": "2.1.0",
+  "updated": "2026-07-22",
+  "description": "Dependency map for the universal Brand skill distributed by Brand Runtime.",
   "internals": [
     {
       "file": "SKILL.md",
-      "defines": "entrypoint e sequência obrigatória"
-    },
-    {
-      "file": "skill.json",
-      "defines": "manifesto e comandos"
+      "defines": "entry point, required sequence, and learning boundary"
     },
     {
       "file": "rules/general.json",
-      "defines": "regras canônicas de consumo"
+      "defines": "canonical rules for Brand Pack consumption and explicit client learning"
     },
     {
       "file": "references/brand-pack-contract.json",
-      "defines": "estrutura, ownership e invariantes do pack"
+      "defines": "Brand Pack structure, ownership, and invariants"
+    },
+    {
+      "file": "references/brand-root-config.json",
+      "defines": "client brand folder configuration, resolution precedence, dynamic discovery, and onboarding"
+    },
+    {
+      "file": "references/client-rules-contract.json",
+      "defines": "client-owned rule schema, lifecycle, and version separation"
     },
     {
       "file": "references/editorial-surface-guidelines.json",
-      "defines": "heurísticas flexíveis de UI, iconografia semântica, page canvas opcional, paginação e QA para documentos e apresentações"
+      "defines": "flexible composition, semantic iconography, optional page canvas, pagination, and visual QA for documents and presentations"
     },
     {
       "file": "scripts/brand.ts",
-      "defines": "CLI determinística de status, validação e contexto com inventário de iconografia"
+      "defines": "deterministic configuration, status, validation, context, and learning CLI"
+    },
+    {
+      "file": "../../scripts/brand-root-config.mjs",
+      "defines": "shared persistent configuration and brand folder resolver used by the hook and CLI"
     },
     {
       "file": "tasks/brand-apply.json",
-      "defines": "workflow sequencial de aplicação"
+      "defines": "sequential application workflow"
+    },
+    {
+      "file": "tasks/brand-learn.json",
+      "defines": "explicit feedback-to-rule workflow"
     },
     {
       "file": "checklists/brand-quality-gate.json",
-      "defines": "gate bloqueante de entrega"
+      "defines": "blocking delivery and persistence checks"
     },
     {
       "file": "adapters/openai.yaml",
-      "defines": "metadados de interface, invocação e assets exportados como agents/openai.yaml no empacotamento OpenAI"
+      "defines": "OpenAI skill interface metadata and exported assets"
     },
     {
       "file": "assets/",
-      "defines": "logo oficial da smartscaile aplicado à skill e ao plugin Brand Runtime"
+      "defines": "smartscaile visual assets used by the skill interface"
     }
   ],
   "externals": [
     {
-      "file": "brand",
-      "references": "diretório de Brand Packs instalados por slug na raiz do projeto"
+      "file": "<configured-brand-folder>/{slug}",
+      "references": "client-owned Brand Pack and incremental rule layer"
     },
     {
-      "file": ".ai/scripts/hooks/skill-activation-dispatcher.ts",
-      "references": "dispatcher universal de >>brand"
+      "file": "user configuration directory/brand-runtime/config.json",
+      "references": "absolute path to the folder named brand; contains no client identity or slug inventory"
+    },
+    {
+      "file": ".codex-plugin/plugin.json or .claude-plugin/plugin.json",
+      "references": "installed Brand Runtime version"
     }
   ]
 }

@@ -1,0 +1,60 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-07-22",
+  "purpose": "Resolve one stable client-owned folder named brand while allowing any number of sibling Brand Packs.",
+  "folderContract": {
+    "configuredPath": "Absolute path to the folder named brand",
+    "example": "/absolute/client-library/brand",
+    "packExample": "/absolute/client-library/brand/example-brand/brand.source.json",
+    "directChildren": "Lowercase kebab-case Brand Pack slugs",
+    "minimumValidPackMarker": "brand.source.json",
+    "multiplePacksAllowed": true,
+    "dynamicDiscovery": true
+  },
+  "configuration": {
+    "schemaVersion": "1.0.0",
+    "document": {
+      "schemaVersion": "1.0.0",
+      "brandRoot": "Absolute path to the folder named brand",
+      "updatedAt": "ISO-8601 timestamp"
+    },
+    "defaultLocation": {
+      "macOSAndLinux": "$XDG_CONFIG_HOME/brand-runtime/config.json or ~/.config/brand-runtime/config.json",
+      "windows": "%APPDATA%/brand-runtime/config.json"
+    },
+    "configFileOverride": "BRAND_RUNTIME_CONFIG",
+    "brandRootOverride": "BRAND_RUNTIME_BRAND_ROOT",
+    "forbiddenStorage": [
+      "plugin source",
+      "plugin cache",
+      ".ai",
+      ".codex",
+      ".claude"
+    ],
+    "storesSlugInventory": false
+  },
+  "resolutionPrecedence": [
+    "explicit --brand-root",
+    "explicit --project-root/brand",
+    "BRAND_RUNTIME_BRAND_ROOT",
+    "nearest project-local brand folder",
+    "saved user configuration"
+  ],
+  "states": {
+    "ready": "The folder exists and contains at least one discovered Brand Pack.",
+    "unconfigured": "No saved configuration exists.",
+    "stale": "The configured path no longer exists.",
+    "empty": "The folder exists but contains no valid Brand Pack child.",
+    "invalid": "The path is relative, is not a directory, or the config document is invalid."
+  },
+  "onboarding": [
+    "On the first Brand invocation, use an existing project-local brand folder when available; otherwise inspect the saved user configuration.",
+    "When configuration is missing, stale, empty, or invalid, ask for the absolute path to the downloaded folder named brand.",
+    "Persist it with config set --brand-root and validate that the resulting state is ready.",
+    "Never ask the user to copy each Brand Pack into every project.",
+    "Never synthesize a missing slug; ask the user to obtain its Brand Pack from the authorized Brand Portal/Vox workflow.",
+    "When multiple packs are discovered, require one explicit slug for the current task.",
+    "When another sibling pack is added later, discover it automatically without rewriting configuration."
+  ],
+  "writeBoundary": "The learn command may update brand.rules.json inside the selected pack. Request narrowly scoped write access to the configured brand folder when the runtime sandbox requires it; never create a hidden editable copy."
+}

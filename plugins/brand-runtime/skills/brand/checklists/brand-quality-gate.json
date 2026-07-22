@@ -1,58 +1,68 @@
 {
   "id": "brand-quality-gate",
-  "version": "1.4.0",
-  "updated": "2026-07-20",
-  "purpose": "Gate de integridade e fidelidade para entregas que consomem Brand Packs.",
+  "version": "2.1.0",
+  "updated": "2026-07-22",
+  "purpose": "Blocking integrity and fidelity gate for deliverables that consume Brand Packs and client-owned rules.",
   "mode": "blocking",
   "checks": [
     {
+      "id": "brand-folder-ready",
+      "check": "the resolved folder named brand exists, contains at least one valid pack, and the intended slug is selected unambiguously",
+      "type": "blocking"
+    },
+    {
       "id": "pack-valid",
-      "check": "status e validate finalizaram sem erros",
+      "check": "status and validate completed without errors",
       "type": "blocking"
     },
     {
       "id": "source-loaded",
-      "check": "source, tokens, guidelines e manifest foram lidos",
+      "check": "source, tokens, guidelines, manifest, and optional client rules were read",
       "type": "blocking"
     },
     {
       "id": "surface-loaded",
-      "check": "regras da surface foram carregadas",
+      "check": "pack surface rules and applicable active client rules were loaded through context",
       "type": "blocking"
     },
     {
       "id": "declared-assets",
-      "check": "somente assets declarados foram usados, exceto extensões locais de iconografia autorizadas e conformes ao guardrail",
+      "check": "only declared assets were used, except authorized output-local icon extensions that satisfy the guardrail",
       "type": "blocking"
     },
     {
       "id": "iconography-inventory",
-      "check": "quando o pack declara iconografia e a surface contém ações, capacidades, estados ou blocos editoriais, o inventário foi lido e os assets oficiais foram mapeados antes de criar marcadores",
+      "check": "when the pack declares iconography and the surface contains actions, capabilities, states, or editorial blocks, the inventory was read and official assets were mapped before creating markers",
       "type": "blocking"
     },
     {
       "id": "icon-extensions",
-      "check": "qualquer ícone não canônico teve autorização explícita, segue a construção declarada da família, vive somente na entrega e não altera o Brand Pack",
+      "check": "every non-canonical icon had explicit authorization, follows the declared family construction, lives only in the output, and does not alter the Brand Pack",
       "type": "blocking"
     },
     {
       "id": "semantic-tokens",
-      "check": "papéis semânticos foram preferidos e nenhum token foi inventado",
+      "check": "semantic roles were preferred and no token was invented",
       "type": "blocking"
     },
     {
       "id": "voice",
-      "check": "copy respeita tom, anchor words, forbidden words e regras",
+      "check": "copy follows tone, anchor words, forbidden words, pack rules, and applicable client rules",
+      "type": "blocking"
+    },
+    {
+      "id": "client-learning-boundary",
+      "check": "deliverable-only feedback was not persisted and every lasting rule was written only to brand.rules.json through learn",
       "type": "blocking"
     },
     {
       "id": "project-validation",
-      "check": "checks técnicos e revisão da surface foram executados",
+      "check": "technical project checks and surface review were completed",
       "type": "blocking"
     },
     {
       "id": "editorial-guidelines",
-      "check": "para documento ou apresentação, as guidelines editoriais foram carregadas",
+      "check": "editorial guidelines were loaded for a document or presentation",
       "type": "blocking",
       "appliesTo": [
         "document",
@@ -61,7 +71,7 @@
     },
     {
       "id": "editorial-content",
-      "check": "conteúdo completo e ordem global foram preservados, salvo alteração editorial solicitada",
+      "check": "complete content and global order were preserved unless the user requested an editorial change",
       "type": "blocking",
       "appliesTo": [
         "document",
@@ -70,7 +80,7 @@
     },
     {
       "id": "editorial-render",
-      "check": "render desktop/mobile e exportação aplicável foram inspecionados sem overflow ou cortes",
+      "check": "desktop, mobile, and applicable export renders were inspected without overflow or clipping",
       "type": "blocking",
       "appliesTo": [
         "document",
@@ -79,7 +89,7 @@
     },
     {
       "id": "editorial-pagination",
-      "check": "títulos, introduções, listas e componentes permanecem agrupados de forma legível entre páginas",
+      "check": "headings, introductions, lists, and components remain legibly grouped across pages",
       "type": "blocking",
       "appliesTo": [
         "document",
@@ -88,7 +98,7 @@
     },
     {
       "id": "editorial-emphasis",
-      "check": "cards, divisores e callouts têm função semântica e nenhum destaque usa por default superfície arredondada com barra lateral colorida",
+      "check": "cards, dividers, and callouts have a semantic function, and no emphasis defaults to a rounded surface with a colored left rule",
       "type": "blocking",
       "appliesTo": [
         "document",
@@ -97,7 +107,7 @@
     },
     {
       "id": "editorial-document-mode",
-      "check": "para documento HTML, fluxo contínuo ou page canvas foi escolhido intencionalmente conforme leitura e exportação",
+      "check": "continuous flow or page canvas was chosen intentionally for an HTML document based on reading and export needs",
       "type": "blocking",
       "appliesTo": [
         "document"
@@ -105,7 +115,7 @@
     },
     {
       "id": "editorial-page-canvas",
-      "check": "quando o documento HTML é paginado, a geometria deriva do formato final, tela e @page permanecem alinhados, chrome de preview não chega ao print e mobile é fluido salvo pedido contrário",
+      "check": "when HTML is paginated, geometry derives from the final format, screen and @page stay aligned, preview chrome does not reach print, and mobile remains fluid unless requested otherwise",
       "type": "blocking",
       "appliesTo": [
         "document"

@@ -1,0 +1,72 @@
+{
+  "version": "1.1.0",
+  "updated": "2026-07-22",
+  "file": "<brand-folder>/{slug}/brand.rules.json",
+  "purpose": "Persist explicit, accepted client feedback as a client-owned incremental layer without changing the universal plugin or immutable Brand Pack artifacts.",
+  "ownership": {
+    "owner": "client Brand Pack library",
+    "writer": "Brand Runtime learn command",
+    "consumer": "Brand Runtime context command",
+    "forbidden_locations": [
+      "plugin source",
+      "plugin cache",
+      ".ai",
+      ".codex",
+      ".claude"
+    ]
+  },
+  "document": {
+    "schemaVersion": "1.0.0",
+    "slug": "Brand Pack slug",
+    "revision": "Positive integer incremented only for a material change",
+    "updatedAt": "ISO-8601 timestamp",
+    "rules": "Array of client rules sorted by id"
+  },
+  "rule": {
+    "required": {
+      "id": "Stable lowercase dot- or kebab-delimited semantic id",
+      "status": [
+        "active",
+        "deprecated"
+      ],
+      "severity": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "surfaces": [
+        "all",
+        "site",
+        "product",
+        "presentation",
+        "document"
+      ],
+      "instruction": "Concise normalized rule in English",
+      "feedback": "Short English summary of the accepted user feedback",
+      "createdAt": "ISO-8601 timestamp",
+      "updatedAt": "ISO-8601 timestamp"
+    },
+    "optional": {
+      "rationale": "Why the rule exists",
+      "evidence": "Existing relative paths under references/feedback/",
+      "supersedes": "Existing rule ids replaced by this rule"
+    }
+  },
+  "write_policy": [
+    "Do not learn from every correction automatically.",
+    "Persist only when the user explicitly requests a lasting brand preference or confirms one after clarification.",
+    "Keep deliverable-only changes outside brand.rules.json.",
+    "Use the learn command instead of editing brand.rules.json manually.",
+    "Update an existing semantic id instead of adding a duplicate.",
+    "Deprecate obsolete rules instead of deleting history.",
+    "Store evidence locally and never require a plugin release for client learning.",
+    "Preserve brand.rules.json and references/feedback/ when upgrading or reinstalling the immutable Brand Pack.",
+    "Keep client rules untouched when the Brand Runtime plugin is upgraded or reinstalled."
+  ],
+  "versioning": {
+    "runtimeVersion": "Version of the installed universal engine; read from the plugin manifest",
+    "brandVersion": "Version of the immutable downloaded Brand Pack",
+    "rulesRevision": "Independent revision of the client-owned incremental rules"
+  }
+}

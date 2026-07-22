@@ -1,79 +1,81 @@
 {
-  "version": "1.2.0",
-  "updated": "2026-07-20",
-  "purpose": "Orientar documentos e apresentações branded com liberdade de composição e qualidade consistente.",
+  "version": "2.0.0",
+  "updated": "2026-07-22",
+  "purpose": "Guide branded documents and presentations with compositional freedom and consistent quality.",
   "appliesTo": [
     "document",
     "presentation"
   ],
   "principles": [
-    "A brand define identidade e guardrails; o conteúdo define a composição.",
-    "Iconografia declarada é parte do sistema de conteúdo, não decoração opcional.",
-    "Layouts são receitas opcionais, não um catálogo fechado.",
-    "O page canvas é um modo de leitura e exportação opcional, não a anatomia obrigatória de todo documento.",
-    "Preservar conteúdo e ordem global não significa reproduzir a paginação da fonte.",
-    "Validação estrutural não substitui revisão visual."
+    "The brand defines identity and guardrails; the content defines composition.",
+    "Declared iconography is part of the content system, not optional decoration.",
+    "Layouts are optional recipes, not a closed catalog.",
+    "Page canvas is an optional reading and export mode, not mandatory document anatomy.",
+    "Preserving content and global order does not mean reproducing source pagination.",
+    "Structural validation does not replace visual review."
   ],
   "hardRules": [
-    "Usar tokens, tipografia e assets declarados pelo Brand Pack.",
-    "Inventariar e reutilizar a iconografia oficial antes de criar marcadores ou ícones locais.",
-    "Preservar o conteúdo completo e sua ordem, salvo edição explicitamente solicitada.",
-    "Quando houver page canvas, manter a geometria da folha de tela e do formato de impressão coerentes.",
-    "Manter contraste, legibilidade, hierarquia semântica e ausência de overflow.",
-    "Renderizar e revisar os formatos relevantes antes da entrega."
+    "Use tokens, typography, and assets declared by the Brand Pack.",
+    "Apply all active client rules returned for the target surface.",
+    "Inventory and reuse official iconography before creating markers or local icons.",
+    "Preserve complete content and its order unless editing is explicitly requested.",
+    "When using page canvas, keep screen-sheet and print geometry consistent.",
+    "Maintain contrast, legibility, semantic hierarchy, and absence of overflow.",
+    "Render and review relevant formats before delivery."
   ],
   "compositionGuidelines": [
-    "Escolher grid, densidade e agrupamento conforme a função editorial de cada bloco.",
-    "Manter ícones e outros marcadores visuais próximos do título ou conteúdo que identificam; evitar ícones órfãos em colunas largas.",
-    "Em blocos de definição, capacidade ou status, testar ícone mais label antes de recorrer a um traço líder genérico.",
-    "Usar espaço em branco para criar ritmo, sem produzir áreas mortas ou relações visuais excessivamente distantes.",
-    "Limitar cards, divisores e callouts ao que melhora agrupamento, comparação ou ênfase funcional; não usar card arredondado com barra lateral colorida como tratamento automático de destaque.",
-    "Controlar a medida do texto para leitura confortável e ajustar a escala ao volume real de conteúdo.",
-    "Permitir variação entre páginas mantendo constantes reconhecíveis como tipografia, margens, header e paginação quando aplicáveis."
+    "Choose grid, density, and grouping according to each block's editorial function.",
+    "Keep icons and visual markers close to the title or content they identify; avoid orphaned icons in wide columns.",
+    "For definition, capability, or status blocks, test icon plus label before using a generic leader rule.",
+    "Use whitespace to create rhythm without producing dead zones or excessive distance between related elements.",
+    "Limit cards, dividers, and callouts to treatments that improve grouping, comparison, or functional emphasis; never make a rounded card with a colored left rule the automatic highlight treatment.",
+    "Control text measure for comfortable reading and adapt scale to the actual content volume.",
+    "Allow page-level variation while preserving recognizable constants such as typography, margins, header, and pagination when applicable."
   ],
   "iconographyGuidelines": [
-    "Ler o inventário iconography do contexto e produzir um mapa conteúdo → função → asset oficial antes de desenhar componentes.",
-    "Usar ícones somente quando esclarecem ação, capacidade, status, categoria ou relação; não inserir como filler.",
-    "Não reutilizar o mesmo ícone para conceitos sem relação apenas para preencher o layout.",
-    "Quando o usuário autorizar uma extensão e não existir asset compatível, reproduzir a geometria declarada da família e manter o novo arquivo apenas na entrega.",
-    "Quando um destaque não tiver função iconográfica clara, preferir tipografia, espaço, dados ou uma nota editorial plana a inventar um símbolo."
+    "Read the context iconography inventory and produce a content-to-function-to-official-asset map before designing components.",
+    "Use icons only when they clarify an action, capability, status, category, or relationship; never add them as filler.",
+    "Do not reuse one icon for unrelated concepts merely to fill the layout.",
+    "When the user authorizes an extension and no compatible asset exists, reproduce the declared family geometry and keep the new file only in the output.",
+    "When emphasis has no clear iconographic function, prefer typography, spacing, data, or a plain editorial note over an invented symbol."
   ],
   "documentShellGuidelines": [
-    "Escolher conscientemente entre fluxo contínuo e page canvas paginado conforme o destino: leitura web longa favorece fluxo; preview físico, handout ou exportação de página fixa podem favorecer canvas.",
-    "Derivar a largura, a altura e a proporção da página do formato solicitado, como A4, Letter ou dimensões da fonte; não aplicar um tamanho fixo universal.",
-    "Centralizar as folhas em um workspace neutro no desktop e definir largura e altura em variáveis compartilhadas com a regra @page para evitar divergência entre tela e PDF.",
-    "Tratar padding externo, intervalo entre folhas e sombra como chrome exclusivo de screen; remover esses efeitos e qualquer fundo de workspace na impressão.",
-    "No mobile, usar folha com largura fluida, altura natural e sem sombra, salvo quando o usuário pedir explicitamente uma simulação de página fixa.",
-    "Manter margens, header, footer, metadata e numeração estáveis quando funcionarem como page furniture, sem impedir variações editoriais no corpo.",
-    "Aplicar quebras explícitas apenas entre unidades semânticas, usar box sizing previsível e conferir se o número e a geometria das páginas exportadas correspondem ao plano."
+    "Choose consciously between continuous flow and a paginated page canvas: long-form web reading favors flow, while physical preview, handouts, or fixed-page export may favor canvas.",
+    "Derive page width, height, and ratio from the requested format, such as A4, Letter, or source dimensions; never apply one universal fixed size.",
+    "Center sheets in a neutral desktop workspace and define width and height through variables shared with @page to prevent screen and PDF divergence.",
+    "Treat external padding, gaps between sheets, and shadows as screen-only chrome; remove them and the workspace background in print.",
+    "On mobile, use fluid width, natural height, and no shadow unless the user explicitly requests a fixed-page simulation.",
+    "Keep margins, header, footer, metadata, and numbering stable when they serve as page furniture without preventing editorial variation in the body.",
+    "Place explicit breaks only between semantic units, use predictable box sizing, and verify that exported page count and geometry match the plan."
   ],
   "paginationGuidelines": [
-    "Manter título e primeiro bloco de conteúdo juntos.",
-    "Evitar iniciar uma página com continuação ambígua ou encerrar uma página apenas com um heading.",
-    "Evitar quebrar listas curtas, comparações, callouts e componentes pequenos no meio.",
-    "Usar widows e orphans adequados e redistribuir conteúdo quando uma quebra prejudicar a leitura.",
-    "Tratar a página original como referência de conteúdo, não como contrato de destino, salvo pedido explícito."
+    "Keep a heading with its first content block.",
+    "Avoid starting a page with an ambiguous continuation or ending one with only a heading.",
+    "Avoid splitting short lists, comparisons, callouts, and small components.",
+    "Use suitable widow and orphan controls and redistribute content when a break harms reading.",
+    "Treat the original page as a content reference, not a destination contract, unless explicitly requested."
   ],
   "workflow": [
-    "Extrair e verificar o conteúdo.",
-    "Criar uma estrutura semântica de headings, parágrafos, listas, comparações e destaques.",
-    "Escolher fluxo contínuo ou page canvas e, quando paginado, registrar a geometria derivada do formato final.",
-    "Inventariar a iconografia declarada e mapear os assets às funções semânticas do conteúdo.",
-    "Compor livremente usando os tokens e assets da brand.",
-    "Paginar por unidades de significado.",
-    "Renderizar desktop, mobile e formato de exportação aplicável.",
-    "Refinar distância, densidade, hierarquia e quebras até a leitura ficar fluida."
+    "Extract and verify content.",
+    "Create a semantic structure of headings, paragraphs, lists, comparisons, and emphasis.",
+    "Load applicable active client rules.",
+    "Choose continuous flow or page canvas and record geometry derived from the final format when paginated.",
+    "Inventory declared iconography and map assets to semantic content functions.",
+    "Compose freely with brand tokens and assets.",
+    "Paginate by units of meaning.",
+    "Render desktop, mobile, and the applicable export format.",
+    "Refine distance, density, hierarchy, and breaks until reading is fluid."
   ],
   "visualReview": [
-    "Elementos relacionados parecem próximos e alinhados?",
-    "Existe espaço excessivo ou conteúdo espremido?",
-    "Algum título ficou órfão ou separado de sua explicação?",
-    "Algum componente foi cortado ou perdeu contexto entre páginas?",
-    "A hierarquia continua clara sem depender apenas de cor?",
-    "Algum traço, card ou callout genérico poderia ser substituído por iconografia oficial ou por um tratamento editorial mais direto?",
-    "Cada ícone comunica um conceito identificável e pertence à família visual declarada?",
-    "Quando existe page canvas, tela e impressão usam a mesma proporção e o chrome de preview desaparece no PDF?",
-    "No mobile, o documento mantém leitura fluida sem uma folha reduzida ou sombra artificial, salvo preview fixo solicitado?",
-    "O documento parece parte da brand sem repetir mecanicamente a mesma página?"
+    "Do related elements appear close and aligned?",
+    "Is there excessive space or compressed content?",
+    "Is any heading orphaned or separated from its explanation?",
+    "Was any component clipped or stripped of context across pages?",
+    "Does hierarchy remain clear without depending only on color?",
+    "Could a generic rule, card, or callout be replaced by official iconography or a more direct editorial treatment?",
+    "Does each icon communicate an identifiable concept and belong to the declared visual family?",
+    "When page canvas exists, do screen and print use the same ratio, and does preview chrome disappear in PDF?",
+    "On mobile, does the document remain fluid without a reduced artificial sheet or shadow unless a fixed preview was requested?",
+    "Does the document feel like the brand without mechanically repeating one page pattern?"
   ]
 }

@@ -15,6 +15,11 @@ const codexMarketplace = await readJson(".agents/plugins/marketplace.json");
 const claudeMarketplace = await readJson(".claude-plugin/marketplace.json");
 const codexPlugin = await readJson("plugins/brand-runtime/.codex-plugin/plugin.json");
 const claudePlugin = await readJson("plugins/brand-runtime/.claude-plugin/plugin.json");
+const packageManifest = await readJson("package.json");
+
+function baseVersion(version) {
+  return typeof version === "string" ? version.split("+")[0] : version;
+}
 
 expect(codexMarketplace.name === "smartscaile", "Codex marketplace publisher must be smartscaile.");
 expect(claudeMarketplace.name === "smartscaile", "Claude marketplace publisher must be smartscaile.");
@@ -28,12 +33,18 @@ expect(codexPlugin.interface?.displayName === "Brand Runtime", "Codex display na
 expect(claudePlugin.displayName === "Brand Runtime", "Claude display name must be Brand Runtime.");
 expect(codexPlugin.author?.name === "smartscaile.", "Codex author must be smartscaile.");
 expect(claudePlugin.author?.name === "smartscaile.", "Claude author must be smartscaile.");
+expect(baseVersion(codexPlugin.version) === packageManifest.version, "Codex plugin base version must match package.json.");
+expect(baseVersion(claudePlugin.version) === packageManifest.version, "Claude plugin base version must match package.json.");
 
 for (const path of [
   "plugins/brand-runtime/hooks/hooks.json",
   "plugins/brand-runtime/scripts/brand-command-hook.mjs",
+  "plugins/brand-runtime/scripts/brand-root-config.mjs",
   "plugins/brand-runtime/skills/brand/SKILL.md",
+  "plugins/brand-runtime/skills/brand/references/brand-root-config.json",
+  "plugins/brand-runtime/skills/brand/references/client-rules-contract.json",
   "plugins/brand-runtime/skills/brand/scripts/brand.ts",
+  "plugins/brand-runtime/skills/brand/tasks/brand-learn.json",
 ]) {
   await access(resolve(root, path));
 }

@@ -1,92 +1,127 @@
 {
-  "version": "1.4.0",
-  "updated": "2026-07-20",
-  "description": "Regras universais de consumo e aplicação de Brand Packs.",
+  "version": "2.1.0",
+  "updated": "2026-07-22",
+  "description": "Universal rules for consuming, applying, and incrementally extending Brand Packs from a client-owned brand folder.",
   "rules": [
     {
       "id": "validate-before-use",
       "severity": "critical",
-      "rule": "Validar o Brand Pack resolvido antes de produzir ou revisar. Interromper se arquivos, slug, versão ou hashes divergirem."
+      "rule": "Validate the resolved Brand Pack before creating or reviewing output. Stop when files, slugs, versions, schemas, or hashes diverge."
     },
     {
-      "id": "project-brand-root",
+      "id": "client-brand-root",
       "severity": "high",
-      "rule": "Resolver Brand Packs somente em brand/{slug}, na raiz do projeto. Não armazenar nem procurar Brand Packs em .ai, .codex, .claude ou outro diretório de runtime."
+      "rule": "Resolve Brand Packs as direct slug-named children of one folder named brand. The folder may be a saved user library or a project-local override, but it must never live inside .ai, .codex, .claude, the plugin source, or the plugin cache."
+    },
+    {
+      "id": "brand-root-onboarding",
+      "severity": "critical",
+      "rule": "When no usable brand folder is resolved or the saved absolute path is stale, ask the user for the absolute path to the downloaded folder named brand, persist it through config set, and stop branded work until the folder reports ready. Never require a copy inside the current project."
+    },
+    {
+      "id": "dynamic-multi-brand-discovery",
+      "severity": "high",
+      "rule": "Discover valid Brand Pack siblings dynamically on every command. Persist only the brand folder path, never a slug list, so newly added packs require no configuration update."
+    },
+    {
+      "id": "authorized-pack-provisioning",
+      "severity": "critical",
+      "rule": "Never scaffold, clone, rename, or synthesize a missing Brand Pack. New packs must be produced by the authorized Brand Portal/Vox workflow and added as direct siblings inside the configured brand folder."
     },
     {
       "id": "explicit-brand-resolution",
       "severity": "high",
-      "rule": "Em >>brand {slug}, usar o primeiro token como slug. Sem slug, autodetectar somente quando existir exatamente um diretório em brand/."
+      "rule": "For >>brand {slug}, use the first token as the slug. Without a slug, auto-detect only when the resolved brand folder contains exactly one valid Brand Pack; otherwise list installed slugs and require a selection."
     },
     {
       "id": "json-source-of-truth",
       "severity": "critical",
-      "rule": "Tratar brand.source.json, tokens.json e build-manifest.json como fonte técnica; usar o HTML apenas como referência visual."
+      "rule": "Treat brand.source.json, tokens.json, build-manifest.json, and the optional client-owned brand.rules.json as technical sources. Use HTML only as a visual reference."
     },
     {
       "id": "universal-core",
-      "severity": "high",
-      "rule": "A skill permanece universal. Nenhum nome, token, asset, copy ou regra específica de cliente pode ser inserido no core."
+      "severity": "critical",
+      "rule": "Keep the plugin universal. Never add a client name, token, asset, copy, feedback, or client-specific rule to the plugin source or cache."
     },
     {
       "id": "generated-read-only",
       "severity": "critical",
-      "rule": "Não editar tokens.json, brand-guidelines.md, design-system.html ou build-manifest.json; esses artefatos são gerados e somente leitura."
+      "rule": "Never edit brand.source.json, tokens.json, brand-guidelines.md, design-system.html, build-manifest.json, or pack-managed assets and references. They are immutable downloaded artifacts."
+    },
+    {
+      "id": "client-rules-local",
+      "severity": "critical",
+      "rule": "Persist accepted client feedback only in <brand-folder>/{slug}/brand.rules.json through the learn command. Keep its revision independent from the immutable Brand Pack version."
+    },
+    {
+      "id": "explicit-learning-only",
+      "severity": "critical",
+      "rule": "Do not turn every correction into a lasting rule. Write only when the user explicitly requests a permanent brand preference or confirms permanence after clarification."
+    },
+    {
+      "id": "client-rules-before-output",
+      "severity": "critical",
+      "rule": "Load all active client rules applicable to the requested surface before creating or reviewing output. Re-run context immediately after a rule is learned or changed."
+    },
+    {
+      "id": "client-rules-survive-upgrades",
+      "severity": "critical",
+      "rule": "Preserve brand.rules.json and references/feedback/ when the immutable Brand Pack is upgraded or reinstalled. Plugin upgrades must never mutate either client-owned path."
     },
     {
       "id": "declared-assets-only",
       "severity": "critical",
-      "rule": "Por padrão, usar somente tokens e assets declarados, preservar proporção e tema e não inventar valores, variantes ou estados. Extensões locais de iconografia seguem exclusivamente a regra icon-extension-guardrail."
+      "rule": "By default, use only declared tokens and assets, preserve their proportions and themes, and do not invent values, variants, or states. Local icon extensions follow only icon-extension-guardrail."
     },
     {
       "id": "declared-iconography-first",
       "severity": "high",
-      "rule": "Antes de compor cards, blocos de definição, capacidades, estados ou notas editoriais, inventariar a iconografia declarada e mapear cada asset a uma função semântica real. Preferir um ícone oficial compatível a traços líderes, iniciais ou marcadores puramente decorativos."
+      "rule": "Before composing cards, definition blocks, capabilities, states, or editorial notes, inventory declared iconography and map each asset to a real semantic function. Prefer a compatible official icon over leader lines, initials, or decorative markers."
     },
     {
       "id": "icon-extension-guardrail",
       "severity": "critical",
-      "rule": "Criar ícone local somente com autorização explícita do usuário e quando o pack declarar construção suficiente da família, como viewBox, stroke, fill, escala ou container. Manter a extensão fora do Brand Pack, documentar que não é asset canônico e reportar conflito quando a construção não puder ser preservada."
+      "rule": "Create an output-local icon only with explicit user authorization and when the pack declares enough family construction guidance, such as viewBox, stroke, fill, scale, or container. Keep the extension outside the Brand Pack, identify it as non-canonical, and report a conflict when the family cannot be preserved."
     },
     {
       "id": "semantic-tokens-first",
       "severity": "high",
-      "rule": "Em interfaces, preferir papéis semânticos do tema a valores primitivos e não inventar estados, cores ou famílias ausentes."
+      "rule": "For interfaces, prefer semantic theme roles over primitive values and never invent missing states, colors, or families."
     },
     {
       "id": "surface-rules-required",
       "severity": "high",
-      "rule": "Carregar as regras da surface solicitada antes de implementar site, produto, apresentação ou documento."
+      "rule": "Load the requested surface rules before implementing a site, product interface, presentation, or document."
     },
     {
       "id": "runtime-neutral",
       "severity": "high",
-      "rule": "A skill canônica pode ser distribuída por adapters de runtime, mas o Brand Pack permanece em brand/{slug}. AGENTS.md, CLAUDE.md e plugins são apenas entry points e não recebem cópias editáveis do pack."
+      "rule": "The skill may be distributed through runtime adapters, but Brand Packs remain in the resolved client-owned brand folder. Runtime entry points and plugin caches never receive editable copies of a pack."
     },
     {
       "id": "editorial-content-fidelity",
       "severity": "critical",
-      "rule": "Em documentos e apresentações, preservar integralmente o conteúdo e sua ordem global. A paginação da fonte não é vinculante salvo pedido explícito do usuário."
+      "rule": "For documents and presentations, preserve the complete content and global order. Source pagination is not binding unless the user explicitly requests it."
     },
     {
       "id": "editorial-composition-freedom",
       "severity": "high",
-      "rule": "Não impor catálogo fechado de templates, grid único ou anatomia idêntica a todas as páginas. Usar os tokens da brand e compor cada bloco conforme sua função editorial."
+      "rule": "Do not impose a closed template catalog, one universal grid, or identical page anatomy. Use brand tokens and compose each block according to its editorial function."
     },
     {
       "id": "editorial-emphasis-semantic",
       "severity": "high",
-      "rule": "Cards, divisores e callouts devem codificar agrupamento, comparação, status ou ênfase reais. Não usar como default a combinação de superfície arredondada com barra lateral colorida; para labels semânticos, testar primeiro ícone mais título, tipografia editorial ou tratamento de dados."
+      "rule": "Cards, dividers, and callouts must encode real grouping, comparison, status, or emphasis. Do not default to a rounded surface with a colored left rule; test an icon plus title, editorial typography, data treatment, or a plain note first."
     },
     {
       "id": "editorial-document-shell",
       "severity": "critical",
-      "rule": "Em documentos HTML, decidir explicitamente entre fluxo contínuo e page canvas paginado conforme leitura e exportação. Quando paginado, derivar largura e altura do formato de destino ou proporção da fonte, compartilhar a geometria entre a folha de tela e @page, limitar sombra, gap e workspace ao modo screen e usar layout mobile fluido sem sombra salvo pedido explícito por preview fixo."
+      "rule": "For HTML documents, choose continuous flow or a paginated page canvas according to reading and export needs. When paginated, derive width and height from the target format or source ratio, share geometry between the screen sheet and @page, keep shadows, gaps, and workspace screen-only, and use a fluid shadowless mobile layout unless a fixed preview is explicitly requested."
     },
     {
       "id": "editorial-visual-qa",
       "severity": "critical",
-      "rule": "Antes de entregar documento ou apresentação, renderizar os formatos relevantes e revisar overflow, distância entre elementos relacionados, hierarquia, títulos órfãos, blocos cortados e equilíbrio da paginação."
+      "rule": "Before delivering a document or presentation, render relevant formats and review overflow, proximity of related elements, hierarchy, orphaned headings, clipped blocks, and pagination balance."
     }
   ]
 }
