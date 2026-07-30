@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.3.0",
   "updated": "2026-07-30",
   "description": "Universal rules for consuming, applying, and incrementally extending Brand Packs from a client-owned brand folder.",
   "rules": [
@@ -67,6 +67,21 @@
       "id": "client-rules-survive-upgrades",
       "severity": "critical",
       "rule": "Preserve brand.rules.json and references/feedback/ when the immutable Brand Pack is upgraded or reinstalled. Plugin upgrades must never mutate either client-owned path."
+    },
+    {
+      "id": "runtime-pack-update-boundary",
+      "severity": "critical",
+      "rule": "Treat Brand Runtime updates and Brand Pack updates as different operations. A request to update Brand Runtime must never replace, merge, regenerate, or edit a Brand Pack, its saved folder path, brand.rules.json, or references/feedback/."
+    },
+    {
+      "id": "runtime-native-update",
+      "severity": "critical",
+      "rule": "When the user asks the agent to update Brand Runtime, detect the active host from the session context, run that host's native marketplace refresh and plugin update commands, and verify the installed version. Show commands without executing only when the user requested instructions."
+    },
+    {
+      "id": "runtime-update-reload-boundary",
+      "severity": "critical",
+      "rule": "After updating Brand Runtime, state that the running session still uses its previously loaded plugin until Claude Code runs /reload-plugins or the user starts a new session. Never claim the update is active in the current session before that boundary."
     },
     {
       "id": "declared-assets-only",

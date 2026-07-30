@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-07-30",
+  "purpose": "Update the installed Brand Runtime through the active host without changing Brand Packs or client-owned state.",
+  "intentRules": [
+    "Treat Brand Runtime and Brand Pack as separate versioned products.",
+    "Use this workflow when the user asks to update, upgrade, refresh, or install the latest Brand Runtime.",
+    "Determine the active host from the session context. Do not select a host merely because its executable exists.",
+    "A Brand Runtime update bypasses the normal Brand Pack application sequence; a supplied slug is context only and is not modified."
+  ],
+  "runtimes": {
+    "claude": {
+      "agentCommands": [
+        "claude plugin marketplace update smartscaile",
+        "claude plugin update brand-runtime@smartscaile",
+        "claude plugin list --json"
+      ],
+      "userPrompt": ">>brand <installed-slug> update Brand Runtime",
+      "reload": [
+        "Run /reload-plugins in the active Claude Code session.",
+        "Alternatively, start a new Claude Code session."
+      ]
+    },
+    "codex": {
+      "agentCommands": [
+        "codex plugin marketplace upgrade smartscaile",
+        "codex plugin add brand-runtime@smartscaile",
+        "codex plugin list"
+      ],
+      "userPrompt": ">>brand <installed-slug> update Brand Runtime",
+      "reload": [
+        "Start a new Codex thread so the updated skill is loaded."
+      ]
+    }
+  },
+  "workflow": [
+    "Confirm that the request targets Brand Runtime, not a Brand Pack.",
+    "Resolve the active host from the current session.",
+    "If the user asked the agent to perform the update, run the host's agentCommands in order with the normal approval required for network and plugin installation changes.",
+    "If the user asked only for instructions, present the commands without executing them.",
+    "Read the verification command output and report the installed Brand Runtime version.",
+    "State the host-specific reload boundary and do not continue branded work under the assumption that the running session already loaded the new plugin."
+  ],
+  "guardrails": [
+    "Never add the marketplace again during an update when it is already configured.",
+    "Never edit a runtime plugin cache manually.",
+    "Never modify, replace, merge, regenerate, or delete Brand Packs during a Brand Runtime update.",
+    "Never modify the saved brand folder path, brand.rules.json, or references/feedback/ during a Brand Runtime update.",
+    "Never claim the running session loaded the new version before its reload boundary."
+  ]
+}

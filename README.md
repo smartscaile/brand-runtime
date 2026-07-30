@@ -49,6 +49,25 @@ codex plugin add brand-runtime@smartscaile
 
 Plugin updates replace the cached universal runtime. They do not modify client-owned `brand.rules.json`, `references/feedback/`, or the saved brand folder path.
 
+## Update in Claude Code
+
+From an active Claude Code session, ask Brand Runtime to update itself:
+
+```text
+>>brand <installed-slug> update Brand Runtime
+```
+
+Brand Runtime refreshes the `smartscaile` marketplace, updates the installed plugin, verifies the version, and asks you to run `/reload-plugins`.
+
+Alternatively, run the native commands in a terminal:
+
+```bash
+claude plugin marketplace update smartscaile
+claude plugin update brand-runtime@smartscaile
+```
+
+Then run `/reload-plugins` in the active Claude Code session or start a new session. Updating Brand Runtime never modifies Brand Packs, the saved brand folder path, or client-owned rules.
+
 ## Client-equivalent test
 
 Test in a consumer workspace without a repo-local or user-authored fallback copy of the Brand skill. After installing or reinstalling the plugin, start a new session and invoke:

@@ -20,6 +20,8 @@ const brandRules = await readJson("plugins/brand-runtime/skills/brand/rules/gene
 const editorialGuidelines = await readJson("plugins/brand-runtime/skills/brand/references/editorial-surface-guidelines.json");
 const brandQualityGate = await readJson("plugins/brand-runtime/skills/brand/checklists/brand-quality-gate.json");
 const brandApplyTask = await readJson("plugins/brand-runtime/skills/brand/tasks/brand-apply.json");
+const runtimeUpdate = await readJson("plugins/brand-runtime/skills/brand/references/runtime-update.json");
+const runtimeUpdateTask = await readJson("plugins/brand-runtime/skills/brand/tasks/brand-update-runtime.json");
 
 function baseVersion(version) {
   return typeof version === "string" ? version.split("+")[0] : version;
@@ -44,6 +46,9 @@ for (const id of [
   "declared-spacing-system",
   "content-safe-containers",
   "rendered-inset-qa",
+  "runtime-pack-update-boundary",
+  "runtime-native-update",
+  "runtime-update-reload-boundary",
 ]) {
   expect(brandRules.rules?.some((rule) => rule.id === id && rule.severity === "critical"), `Brand rules must include critical ${id}.`);
 }
@@ -67,6 +72,31 @@ expect(
   "Brand apply task must block delivery when text containment or mapped spacing fails.",
 );
 
+expect(
+  runtimeUpdate.runtimes?.claude?.agentCommands?.join("\n")
+    === [
+      "claude plugin marketplace update smartscaile",
+      "claude plugin update brand-runtime@smartscaile",
+      "claude plugin list --json",
+    ].join("\n"),
+  "Runtime update contract must define the canonical Claude Code update sequence.",
+);
+
+expect(
+  runtimeUpdate.runtimes?.codex?.agentCommands?.join("\n")
+    === [
+      "codex plugin marketplace upgrade smartscaile",
+      "codex plugin add brand-runtime@smartscaile",
+      "codex plugin list",
+    ].join("\n"),
+  "Runtime update contract must define the canonical Codex update sequence.",
+);
+
+expect(
+  runtimeUpdateTask.post_conditions?.some((condition) => condition.id === "post3" && condition.blocker === true),
+  "Runtime update task must block completion until the reload boundary is handed off.",
+);
+
 for (const path of [
   "plugins/brand-runtime/hooks/hooks.json",
   "plugins/brand-runtime/scripts/brand-command-hook.mjs",
@@ -74,8 +104,10 @@ for (const path of [
   "plugins/brand-runtime/skills/brand/SKILL.md",
   "plugins/brand-runtime/skills/brand/references/brand-root-config.json",
   "plugins/brand-runtime/skills/brand/references/client-rules-contract.json",
+  "plugins/brand-runtime/skills/brand/references/runtime-update.json",
   "plugins/brand-runtime/skills/brand/scripts/brand.ts",
   "plugins/brand-runtime/skills/brand/tasks/brand-learn.json",
+  "plugins/brand-runtime/skills/brand/tasks/brand-update-runtime.json",
 ]) {
   await access(resolve(root, path));
 }

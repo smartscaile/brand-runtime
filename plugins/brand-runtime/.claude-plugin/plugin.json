@@ -1,8 +1,8 @@
 {
   "name": "brand-runtime",
   "displayName": "Brand Runtime",
-  "version": "0.2.2",
-  "description": "Apply private Brand Packs from one client-owned library and evolve explicit client rules with one verified workflow in Codex and Claude Code.",
+  "version": "0.2.3",
+  "description": "Apply private Brand Packs, update Brand Runtime, and evolve explicit client rules with one verified workflow in Codex and Claude Code.",
   "author": {
     "name": "smartscaile.",
     "url": "https://brand.smartscaile.com.br"
