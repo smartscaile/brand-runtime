@@ -1,7 +1,7 @@
 {
   "id": "brand-quality-gate",
-  "version": "2.1.0",
-  "updated": "2026-07-22",
+  "version": "2.2.0",
+  "updated": "2026-07-30",
   "purpose": "Blocking integrity and fidelity gate for deliverables that consume Brand Packs and client-owned rules.",
   "mode": "blocking",
   "checks": [
@@ -46,6 +46,21 @@
       "type": "blocking"
     },
     {
+      "id": "layout-spacing-map",
+      "check": "page or canvas margins, section gaps, component insets, and internal stack gaps were mapped to declared layout.spacing tokens and reused consistently",
+      "type": "blocking"
+    },
+    {
+      "id": "layout-content-containment",
+      "check": "text-bearing containers size from content by default; every required fixed constraint was rendered after fonts loaded and contains the complete authored content without clipping, masking, hidden overflow, or unintended line clamping",
+      "type": "blocking"
+    },
+    {
+      "id": "layout-rendered-insets",
+      "check": "at every required breakpoint and export size, text and child bounds plus scroll dimensions stay inside their container and wrapping preserves the mapped bottom and trailing-edge inset",
+      "type": "blocking"
+    },
+    {
       "id": "voice",
       "check": "copy follows tone, anchor words, forbidden words, pack rules, and applicable client rules",
       "type": "blocking"
@@ -80,7 +95,7 @@
     },
     {
       "id": "editorial-render",
-      "check": "desktop, mobile, and applicable export renders were inspected without overflow or clipping",
+      "check": "desktop, mobile, and applicable export renders were inspected after final fonts loaded, without overflow, clipping, or collapsed component insets",
       "type": "blocking",
       "appliesTo": [
         "document",
