@@ -34,7 +34,7 @@ test("activates Brand Runtime only for >>brand and resolves Brand Packs", async 
 
     const explicit = context(run({ cwd: root, prompt: ">>brand checkgrow create a document" }));
     assert.match(explicit, /BRAND RUNTIME ACTIVE/);
-    assert.match(explicit, /Brand Runtime: v0\.2\.2/);
+    assert.match(explicit, /Brand Runtime: v0\.2\.3/);
     assert.match(explicit, /Brand Pack v0\.5\.1; client rules r3/);
     assert.match(explicit, /brand\/checkgrow/);
     assert.match(explicit, /validate --brand checkgrow/);

@@ -1,0 +1,72 @@
+{
+  "command": "update-runtime",
+  "description": "Update Brand Runtime through the active host while preserving every Brand Pack and client-owned rule.",
+  "version": "1.0.0",
+  "execution": "sequential",
+  "pre_conditions": [
+    {
+      "id": "pc1",
+      "check": "The user explicitly requested a Brand Runtime update or asked for update instructions",
+      "blocker": true
+    },
+    {
+      "id": "pc2",
+      "check": "The active host is known from the current session context",
+      "blocker": true
+    },
+    {
+      "id": "pc3",
+      "check": "references/runtime-update.json was read",
+      "blocker": true
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "name": "Confirm update target",
+      "type": "verify",
+      "description": "Confirm that the request targets Brand Runtime rather than a Brand Pack. Do not load or mutate Brand Pack files for this workflow."
+    },
+    {
+      "step": 2,
+      "name": "Resolve host",
+      "type": "execute",
+      "description": "Resolve Claude Code or Codex from the current session context. Do not infer the host from executable presence when both are installed."
+    },
+    {
+      "step": 3,
+      "name": "Refresh and update",
+      "type": "execute",
+      "description": "When execution was requested, run the host-specific marketplace refresh and plugin update commands in order with normal approval. When instructions only were requested, show the commands without executing."
+    },
+    {
+      "step": 4,
+      "name": "Verify installation",
+      "type": "verify",
+      "description": "Run the host-specific plugin listing command and report the installed Brand Runtime version."
+    },
+    {
+      "step": 5,
+      "name": "Handoff reload",
+      "type": "output",
+      "description": "Tell the user to run /reload-plugins in Claude Code or start a new session/thread. Never claim the current session loaded the updated plugin before reload."
+    }
+  ],
+  "post_conditions": [
+    {
+      "id": "post1",
+      "check": "The installed Brand Runtime version was verified or the exact update commands were provided",
+      "blocker": true
+    },
+    {
+      "id": "post2",
+      "check": "No Brand Pack, saved brand path, client rule, feedback reference, or plugin cache was edited manually",
+      "blocker": true
+    },
+    {
+      "id": "post3",
+      "check": "The user received the correct reload boundary for the active host",
+      "blocker": true
+    }
+  ]
+}

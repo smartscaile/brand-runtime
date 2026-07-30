@@ -1,6 +1,6 @@
 ---
 name: brand
-description: Apply and validate a Brand Pack from the client's configured brand folder before creating or reviewing branded websites, product interfaces, presentations, PDFs, documents, campaigns, or visual assets. Use when the Brand command is invoked, when a workspace or configured library contains Brand Packs, when the user names a brand, or whenever branded output must follow machine-readable tokens and guidelines exactly.
+description: Apply and validate Brand Packs, update the installed Brand Runtime plugin, and manage explicit client-owned brand rules. Use when the Brand command is invoked, when a workspace or configured library contains Brand Packs, when the user names a brand, when the user asks to update or upgrade Brand Runtime, or whenever branded output must follow machine-readable tokens and guidelines exactly.
 ---
 
 # Brand
@@ -10,10 +10,21 @@ Use the installed Brand Pack as the single source of truth for branded work. Thi
 ## Invocation
 
 - `>>brand <slug>`: use the named Brand Pack. The first token after `>>brand` is the slug; the remaining prompt is the work request.
+- `>>brand <slug> update Brand Runtime`: update the installed Brand Runtime for the active host without changing the Brand Pack.
 - `>>brand`: resolve automatically only when exactly one Brand Pack exists in the resolved folder named `brand`.
 - Never interpret normal request text as a slug when the command is invoked without one.
 
-## Required sequence
+## Runtime self-update
+
+When the user asks to update or upgrade Brand Runtime, stop the normal Brand Pack application sequence. Read `references/runtime-update.json` and execute `tasks/brand-update-runtime.json`.
+
+- Treat Brand Runtime and Brand Pack versions as independent.
+- Determine the active host from the current session context; do not guess from installed executables when both runtimes exist.
+- Execute the native marketplace refresh and plugin update commands when the user asked the agent to perform the update. Show the commands without executing only when the user asked for instructions.
+- Verify the installed version and state the reload boundary. Never claim the running session loaded the new version before `/reload-plugins` or a new session.
+- Never edit plugin caches, Brand Packs, saved brand paths, or client-owned rules during a runtime update.
+
+## Brand application sequence
 
 1. Read `rules/general.json` completely.
 2. Resolve the folder named `brand` from explicit CLI input, an environment override, a project-local folder, or the saved user configuration. Read `references/brand-root-config.json` when configuration is missing, invalid, or stale.
@@ -97,7 +108,9 @@ Read `references/client-rules-contract.json` before recording, replacing, deprec
 - `references/brand-pack-contract.json`: required payload structure and ownership.
 - `references/brand-root-config.json`: persistent folder configuration, discovery, precedence, and onboarding contract.
 - `references/client-rules-contract.json`: schema, lifecycle, and persistence policy for explicit client feedback.
+- `references/runtime-update.json`: runtime-specific update commands, verification, reload boundary, and safety rules.
 - `references/editorial-surface-guidelines.json`: flexible UI, optional page-canvas behavior, pagination, and visual QA guidance for documents and presentations.
 - `tasks/brand-apply.json`: sequential execution workflow.
+- `tasks/brand-update-runtime.json`: sequential self-update workflow for Claude Code and Codex.
 - `tasks/brand-learn.json`: explicit feedback-to-rule workflow.
 - `checklists/brand-quality-gate.json`: blocking delivery checks.

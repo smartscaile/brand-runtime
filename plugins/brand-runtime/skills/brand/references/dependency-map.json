@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.3.0",
   "updated": "2026-07-30",
   "description": "Dependency map for the universal Brand skill distributed by Brand Runtime.",
   "internals": [
@@ -24,6 +24,10 @@
       "defines": "client-owned rule schema, lifecycle, and version separation"
     },
     {
+      "file": "references/runtime-update.json",
+      "defines": "native Claude Code and Codex update commands, verification, reload boundaries, and Brand Pack preservation"
+    },
+    {
       "file": "references/editorial-surface-guidelines.json",
       "defines": "flexible composition, semantic iconography, token-based spacing relationships, content containment, optional page canvas, pagination, and visual QA for documents and presentations"
     },
@@ -38,6 +42,10 @@
     {
       "file": "tasks/brand-apply.json",
       "defines": "sequential application workflow"
+    },
+    {
+      "file": "tasks/brand-update-runtime.json",
+      "defines": "sequential Brand Runtime self-update workflow"
     },
     {
       "file": "tasks/brand-learn.json",
