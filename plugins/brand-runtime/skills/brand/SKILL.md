@@ -31,9 +31,10 @@ Use the installed Brand Pack as the single source of truth for branded work. Thi
 10. For `document` or `presentation`, read `references/editorial-surface-guidelines.json` and compose from the content's semantic structure.
 11. For HTML documents, choose continuous flow or a paginated page canvas from the intended reading and export experience. When paginated, derive the page geometry from the requested format or source aspect ratio instead of applying a universal fixed size.
 12. Inventory the returned `iconography` and map declared icons to real actions, capabilities, statuses, definition blocks, and editorial notes before choosing decorative dividers or text-only markers.
-13. Create or review the requested output without editing generated Brand Pack files.
-14. For editorial surfaces, preserve the complete content and order globally, then paginate by meaning instead of copying source page breaks mechanically.
-15. Re-run `validate`, render the relevant breakpoints/export format, and complete the target project's own checks before delivery.
+13. Build a spacing relationship map from the declared `layout.spacing` tokens before implementation: page or canvas margin, section gap, component inset, and internal stack gap.
+14. Create or review the requested output without editing generated Brand Pack files. Size text-bearing containers from content by default.
+15. For editorial surfaces, preserve the complete content and order globally, then paginate by meaning instead of copying source page breaks mechanically.
+16. Re-run `validate`, render the relevant breakpoints/export format after fonts load, and complete the target project's own checks before delivery. Fail the review when text or child bounds exceed a container, scroll dimensions reveal hidden overflow, or wrapping consumes the mapped edge inset.
 
 ## Commands
 
@@ -76,6 +77,9 @@ Read `references/client-rules-contract.json` before recording, replacing, deprec
 - Client-specific learned rules belong only in `<brand-folder>/<slug>/brand.rules.json`; update that file through the deterministic `learn` command.
 - Never scaffold, clone, rename, or synthesize a Brand Pack. New packs must come from the authorized Brand Portal/Vox workflow and be added as siblings inside the configured brand folder.
 - Prefer semantic token roles over primitive color values when building UI.
+- Treat spacing as a relationship system, not a collection of isolated values. Map structural margins, section gaps, component insets, and internal stack gaps to declared spacing tokens before composing.
+- Size text-bearing containers from content. Use fixed block dimensions only when the surface requires them and the final rendered text remains inside the declared inset at every target size.
+- Never use clipping, masking, hidden overflow, or line clamping to conceal authored content unless truncation is explicitly requested and visibly communicated by the interface.
 - Use only declared assets and preserve their proportions and intended theme.
 - Reuse semantically matching declared icons before drawing generic leader lines, initials, or decorative markers.
 - Create output-local icon extensions only when the user explicitly authorizes them and the pack declares enough construction guidance to preserve the icon family; never write the extension into the Brand Pack.

@@ -95,7 +95,7 @@ test("reports runtime version and persists explicit client rules independently",
   const fixture = await createBrandFixture();
   try {
     const initial = output(run(fixture.projectRoot, "validate", ["--brand", "checkgrow"]));
-    assert.equal(initial.runtimeVersion, "0.2.1");
+    assert.equal(initial.runtimeVersion, "0.2.2");
     assert.equal(initial.brandVersion, "0.5.3");
     assert.equal(initial.rulesSchemaVersion, "1.0.0");
     assert.equal(initial.rulesRevision, 0);

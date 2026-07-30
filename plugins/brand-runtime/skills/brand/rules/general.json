@@ -1,6 +1,6 @@
 {
-  "version": "2.1.0",
-  "updated": "2026-07-22",
+  "version": "2.2.0",
+  "updated": "2026-07-30",
   "description": "Universal rules for consuming, applying, and incrementally extending Brand Packs from a client-owned brand folder.",
   "rules": [
     {
@@ -87,6 +87,21 @@
       "id": "semantic-tokens-first",
       "severity": "high",
       "rule": "For interfaces, prefer semantic theme roles over primitive values and never invent missing states, colors, or families."
+    },
+    {
+      "id": "declared-spacing-system",
+      "severity": "critical",
+      "rule": "Before implementation, map page or canvas margins, section gaps, component insets, and internal stack gaps to declared layout.spacing tokens. Reuse those relationships consistently and never invent a one-off distance to make a single frame pass."
+    },
+    {
+      "id": "content-safe-containers",
+      "severity": "critical",
+      "rule": "Text-bearing containers must size from content by default. Fixed block dimensions are allowed only when the surface requires them and rendered text at every target size, after fonts load and wrapping stabilizes, remains inside the declared padding. Never conceal authored content with clipping, masking, hidden overflow, or line clamping unless truncation is explicitly requested and visibly communicated."
+    },
+    {
+      "id": "rendered-inset-qa",
+      "severity": "critical",
+      "rule": "Rendered QA must verify both containment and inset preservation: text and child bounds plus scroll dimensions stay inside each container, and wrapping does not consume the mapped bottom or trailing-edge spacing at any required breakpoint or export size."
     },
     {
       "id": "surface-rules-required",

@@ -1,7 +1,7 @@
 {
   "command": "apply",
   "description": "Validate and apply a Brand Pack to a surface without inventing identity or constraining composition to a fixed template.",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "execution": "sequential",
   "pre_conditions": [
     {
@@ -48,7 +48,7 @@
       "step": 4,
       "name": "Resolve surface context",
       "type": "execute",
-      "description": "Run context for the requested surface and map pack rules, active client rules, assets, iconography, typography, colors, layout, and voice."
+      "description": "Run context for the requested surface and map pack rules, active client rules, assets, iconography, typography, colors, layout, and voice. Build a spacing relationship map for page or canvas margins, section gaps, component insets, and internal stack gaps from declared layout.spacing tokens."
     },
     {
       "step": 5,
@@ -60,13 +60,13 @@
       "step": 6,
       "name": "Implement",
       "type": "execute",
-      "description": "Create the deliverable with declared pack values and applicable client rules. Reuse official iconography before decorative markers and use cards, dividers, or callouts only for a clear editorial function. For page canvas, share geometry between the sheet and @page and keep workspace, gaps, and shadows screen-only."
+      "description": "Create the deliverable with declared pack values, the spacing relationship map, and applicable client rules. Reuse official iconography before decorative markers and use cards, dividers, or callouts only for a clear editorial function. Size text-bearing containers from content by default; never conceal authored content to satisfy a fixed frame. For page canvas, share geometry between the sheet and @page and keep workspace, gaps, and shadows screen-only."
     },
     {
       "step": 7,
       "name": "Validate output",
       "type": "verify",
-      "description": "Re-run validate, project checks, and visual review at relevant breakpoints and export formats, including icon use, authorized extensions, emphasis treatments, and desktop/mobile/print page-canvas parity when applicable."
+      "description": "Re-run validate, project checks, and visual review at relevant breakpoints and export formats after final fonts load. Inspect text and child bounds, scroll dimensions, preserved bottom and trailing-edge insets, icon use, authorized extensions, emphasis treatments, and desktop/mobile/print page-canvas parity when applicable."
     }
   ],
   "post_conditions": [
@@ -93,6 +93,11 @@
     {
       "id": "post5",
       "check": "Paginated HTML derives its canvas from the final format, removes preview chrome in print, and remains readable on mobile",
+      "blocker": true
+    },
+    {
+      "id": "post6",
+      "check": "Text-bearing containers preserve complete content and their mapped spacing in every rendered target without hidden overflow or edge collisions",
       "blocker": true
     }
   ]

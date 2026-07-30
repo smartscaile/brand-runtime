@@ -1,6 +1,6 @@
 {
-  "version": "2.0.0",
-  "updated": "2026-07-22",
+  "version": "2.1.0",
+  "updated": "2026-07-30",
   "purpose": "Guide branded documents and presentations with compositional freedom and consistent quality.",
   "appliesTo": [
     "document",
@@ -19,6 +19,8 @@
     "Apply all active client rules returned for the target surface.",
     "Inventory and reuse official iconography before creating markers or local icons.",
     "Preserve complete content and its order unless editing is explicitly requested.",
+    "Map page margins, section gaps, component insets, and internal stack gaps to declared spacing tokens before composing.",
+    "Size text-bearing blocks from content unless the final format imposes a verified fixed constraint.",
     "When using page canvas, keep screen-sheet and print geometry consistent.",
     "Maintain contrast, legibility, semantic hierarchy, and absence of overflow.",
     "Render and review relevant formats before delivery."
@@ -30,7 +32,17 @@
     "Use whitespace to create rhythm without producing dead zones or excessive distance between related elements.",
     "Limit cards, dividers, and callouts to treatments that improve grouping, comparison, or functional emphasis; never make a rounded card with a colored left rule the automatic highlight treatment.",
     "Control text measure for comfortable reading and adapt scale to the actual content volume.",
+    "Use container padding and layout gap for internal rhythm; reset first and last child margins so collapsed or default margins cannot erase the intended inset.",
     "Allow page-level variation while preserving recognizable constants such as typography, margins, header, and pagination when applicable."
+  ],
+  "spacingAndContainmentGuidelines": [
+    "Create a spacing relationship map with four roles before implementation: page or canvas margin, section gap, component inset, and internal stack gap. Assign each role to a declared layout.spacing token.",
+    "Use the same mapped role for equivalent relationships across the deliverable. Change a role deliberately at a breakpoint instead of patching individual elements with one-off values.",
+    "Let text-bearing cards, callouts, captions, labels, and notes grow with their content. On a fixed slide or page, treat the available area as a composition constraint and rebalance copy, typography, or neighboring blocks instead of clipping.",
+    "Avoid fixed height, max-height, hidden overflow, masks, and line clamping for authored editorial content. Use them only when truncation is explicitly requested and the interface communicates that more content exists.",
+    "Use predictable border-box sizing, container padding, and layout gap. Reset first and last child margins inside components so wrapping cannot collapse or consume the intended inset.",
+    "After final fonts load and wrapping stabilizes, compare text and child bounds plus scroll dimensions against each container at every required viewport and export size.",
+    "Require the mapped bottom and trailing-edge inset to remain visibly present after wrapping. Zero overflow alone is insufficient when the last line touches or visually merges with the container edge."
   ],
   "iconographyGuidelines": [
     "Read the context iconography inventory and produce a content-to-function-to-official-asset map before designing components.",
@@ -60,15 +72,19 @@
     "Create a semantic structure of headings, paragraphs, lists, comparisons, and emphasis.",
     "Load applicable active client rules.",
     "Choose continuous flow or page canvas and record geometry derived from the final format when paginated.",
+    "Build the spacing relationship map from declared tokens before creating components.",
     "Inventory declared iconography and map assets to semantic content functions.",
     "Compose freely with brand tokens and assets.",
     "Paginate by units of meaning.",
-    "Render desktop, mobile, and the applicable export format.",
-    "Refine distance, density, hierarchy, and breaks until reading is fluid."
+    "Render desktop, mobile, and the applicable export format after final fonts load.",
+    "Inspect text and child bounds, scroll dimensions, and preserved edge insets; then refine distance, density, hierarchy, and breaks until reading is fluid."
   ],
   "visualReview": [
     "Do related elements appear close and aligned?",
     "Is there excessive space or compressed content?",
+    "Do equivalent relationships use the same declared spacing role, without one-off patches?",
+    "Does every text-bearing container retain its mapped inset on all edges after final wrapping?",
+    "Do child bounds and scroll dimensions remain within the container without clipping, masking, hidden overflow, or unintended line clamping?",
     "Is any heading orphaned or separated from its explanation?",
     "Was any component clipped or stripped of context across pages?",
     "Does hierarchy remain clear without depending only on color?",

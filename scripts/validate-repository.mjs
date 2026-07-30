@@ -16,6 +16,10 @@ const claudeMarketplace = await readJson(".claude-plugin/marketplace.json");
 const codexPlugin = await readJson("plugins/brand-runtime/.codex-plugin/plugin.json");
 const claudePlugin = await readJson("plugins/brand-runtime/.claude-plugin/plugin.json");
 const packageManifest = await readJson("package.json");
+const brandRules = await readJson("plugins/brand-runtime/skills/brand/rules/general.json");
+const editorialGuidelines = await readJson("plugins/brand-runtime/skills/brand/references/editorial-surface-guidelines.json");
+const brandQualityGate = await readJson("plugins/brand-runtime/skills/brand/checklists/brand-quality-gate.json");
+const brandApplyTask = await readJson("plugins/brand-runtime/skills/brand/tasks/brand-apply.json");
 
 function baseVersion(version) {
   return typeof version === "string" ? version.split("+")[0] : version;
@@ -35,6 +39,33 @@ expect(codexPlugin.author?.name === "smartscaile.", "Codex author must be smarts
 expect(claudePlugin.author?.name === "smartscaile.", "Claude author must be smartscaile.");
 expect(baseVersion(codexPlugin.version) === packageManifest.version, "Codex plugin base version must match package.json.");
 expect(baseVersion(claudePlugin.version) === packageManifest.version, "Claude plugin base version must match package.json.");
+
+for (const id of [
+  "declared-spacing-system",
+  "content-safe-containers",
+  "rendered-inset-qa",
+]) {
+  expect(brandRules.rules?.some((rule) => rule.id === id && rule.severity === "critical"), `Brand rules must include critical ${id}.`);
+}
+
+expect(
+  Array.isArray(editorialGuidelines.spacingAndContainmentGuidelines)
+    && editorialGuidelines.spacingAndContainmentGuidelines.length >= 6,
+  "Editorial guidelines must define spacing and containment guidance.",
+);
+
+for (const id of [
+  "layout-spacing-map",
+  "layout-content-containment",
+  "layout-rendered-insets",
+]) {
+  expect(brandQualityGate.checks?.some((check) => check.id === id && check.type === "blocking"), `Brand quality gate must include blocking ${id}.`);
+}
+
+expect(
+  brandApplyTask.post_conditions?.some((condition) => condition.id === "post6" && condition.blocker === true),
+  "Brand apply task must block delivery when text containment or mapped spacing fails.",
+);
 
 for (const path of [
   "plugins/brand-runtime/hooks/hooks.json",

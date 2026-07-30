@@ -1,6 +1,6 @@
 {
-  "version": "2.1.0",
-  "updated": "2026-07-22",
+  "version": "2.2.0",
+  "updated": "2026-07-30",
   "description": "Dependency map for the universal Brand skill distributed by Brand Runtime.",
   "internals": [
     {
@@ -25,7 +25,7 @@
     },
     {
       "file": "references/editorial-surface-guidelines.json",
-      "defines": "flexible composition, semantic iconography, optional page canvas, pagination, and visual QA for documents and presentations"
+      "defines": "flexible composition, semantic iconography, token-based spacing relationships, content containment, optional page canvas, pagination, and visual QA for documents and presentations"
     },
     {
       "file": "scripts/brand.ts",
@@ -45,7 +45,7 @@
     },
     {
       "file": "checklists/brand-quality-gate.json",
-      "defines": "blocking delivery and persistence checks"
+      "defines": "blocking delivery, spacing, containment, geometry, and persistence checks"
     },
     {
       "file": "adapters/openai.yaml",
