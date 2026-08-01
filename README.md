@@ -86,7 +86,7 @@ The activation context must reference the skill inside the installed plugin cach
 - `.agents/plugins/marketplace.json`: Codex marketplace manifest.
 - `.claude-plugin/marketplace.json`: Claude Code marketplace manifest.
 
-The plugin never contains client identity. Brand-specific tokens, assets, guidelines, and references live only in the separate `<brand-folder>/<slug>` Brand Pack. Explicit lasting feedback is stored in `<brand-folder>/<slug>/brand.rules.json` and becomes available immediately through the plugin's `context` command; it never requires a plugin release.
+The plugin never contains client identity. Brand-specific tokens, assets, guidelines, and references live only in the separate `<brand-folder>/<slug>` Brand Pack. The plugin contributes only an identity-neutral design foundation and a workflow that translates the selected pack into a project-local `docs/design/design-direction.md`. Explicit lasting feedback is stored in `<brand-folder>/<slug>/brand.rules.json` and becomes available immediately through the plugin's `context` command; it never requires a plugin release.
 
 ## Internal release check
 

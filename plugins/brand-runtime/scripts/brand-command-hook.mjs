@@ -116,14 +116,14 @@ function activationContext({ cwd, pluginRoot, runtimeVersion, requested, brandRe
     `Use the Brand Pack at ${brandRoot} (${packLabel(brandRoot)}).`,
     `Configured brand folder: ${brandResolution.brandRoot} (${brandResolution.source}).`,
     `Installed Brand Packs: ${availableLine}.`,
-    "Read and follow these files completely before creating or reviewing branded output:",
-    `1. ${skillRoot}/SKILL.md`,
-    `2. ${skillRoot}/rules/general.json`,
+    "Read and follow the universal skill before creating or reviewing branded output:",
+    `${skillRoot}/SKILL.md`,
     "",
     "Run these checks before operating:",
     `node --experimental-strip-types "${cli}" status --brand ${slug} --brand-root "${brandResolution.brandRoot}"`,
     `node --experimental-strip-types "${cli}" validate --brand ${slug} --brand-root "${brandResolution.brandRoot}"`,
-    "Stop if validation fails. The Brand Pack is the source of truth; do not copy brand-specific rules into the plugin.",
+    `node --experimental-strip-types "${cli}" context --brand ${slug} --surface <site|product|presentation|document> --brand-root "${brandResolution.brandRoot}"`,
+    "Stop if validation fails. The Brand Pack is required and remains the source of identity; universal design foundations never replace it.",
   ].join("\n");
 }
 

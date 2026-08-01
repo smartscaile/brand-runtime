@@ -11,7 +11,9 @@ Published by **smartscaile.**
 - Codex native fallback: `$brand`
 - Claude Code native fallback: `/brand-runtime:brand`
 
-The plugin owns Brand Pack application, explicit client learning, and host-native Brand Runtime updates. Its deterministic Brand Pack CLI provides `config`, `status`, `validate`, `context`, and `learn`. Client-specific identity, tokens, references, assets, and accepted feedback remain in `<brand-folder>/{slug}` and are never bundled into this plugin.
+The plugin owns Brand Pack application, project design-direction guidance, explicit client learning, and host-native Brand Runtime updates. Its deterministic Brand Pack CLI provides `config`, `status`, `validate`, `context`, and `learn`. Client-specific identity, tokens, references, assets, and accepted feedback remain in `<brand-folder>/{slug}` and are never bundled into this plugin.
+
+The universal skill includes an identity-neutral design foundation for hierarchy, spacing relationships, content containment, responsive behavior, interaction, and visual QA. It never supplies brand identity. For project creation or substantial redesign, the skill translates the validated Brand Pack into `docs/design/design-direction.md`, keeping sourced brand truth separate from project-owned application decisions.
 
 On the first `>>brand` invocation, the hook asks for the absolute path to the downloaded `brand` folder when no usable path is available. The saved configuration contains only that folder path. Direct children such as `brand/example-brand` and `brand/another-brand` are discovered dynamically, so a newly added Brand Pack needs no configuration update. When more than one pack is installed, invoke `>>brand <slug>`.
 

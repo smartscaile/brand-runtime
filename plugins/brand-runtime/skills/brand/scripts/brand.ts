@@ -437,6 +437,13 @@ async function context() {
     rulesSchemaVersion: validation.rulesSchemaVersion,
     rulesRevision: validation.rulesRevision,
     surface,
+    precedence: [
+      "active client rules",
+      "immutable Brand Pack",
+      "universal design foundation",
+      "project application decisions",
+    ],
+    projectDesignDirection: "docs/design/design-direction.md",
     rules: surfaces?.[surface] ?? [],
     clientRules,
     identity: source.identity,

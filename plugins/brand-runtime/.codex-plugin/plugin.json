@@ -1,7 +1,7 @@
 {
   "name": "brand-runtime",
-  "version": "0.2.3",
-  "description": "Apply private Brand Packs, update Brand Runtime, and evolve explicit client rules with one verified workflow in Codex and Claude Code.",
+  "version": "0.3.0",
+  "description": "Apply private Brand Packs through a universal design foundation and project-specific design direction in Codex and Claude Code.",
   "author": {
     "name": "smartscaile.",
     "url": "https://brand.smartscaile.com.br"
@@ -17,7 +17,7 @@
   "interface": {
     "displayName": "Brand Runtime",
     "shortDescription": "Apply Brand Packs and maintain Brand Runtime.",
-    "longDescription": "Brand Runtime configures one client-owned brand folder, dynamically discovers and validates Brand Packs, updates its installed plugin through the active runtime, and records explicit lasting feedback in each pack's local rules layer.",
+    "longDescription": "Brand Runtime validates external Brand Packs, translates them into project-specific design directions through an identity-neutral design foundation, and records explicit lasting feedback in each pack's local rules layer.",
     "developerName": "smartscaile.",
     "category": "Productivity",
     "capabilities": [
@@ -26,6 +26,7 @@
     ],
     "defaultPrompt": [
       ">>brand <installed-slug> create a branded document.",
+      ">>brand <installed-slug> define this project's design direction.",
       ">>brand <installed-slug> update Brand Runtime.",
       "Validate the installed Brand Pack before editing this page.",
       "Save this feedback as a permanent client brand rule."

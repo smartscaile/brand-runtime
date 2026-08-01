@@ -1,116 +1,148 @@
 ---
 name: brand
-description: Apply and validate Brand Packs, update the installed Brand Runtime plugin, and manage explicit client-owned brand rules. Use when the Brand command is invoked, when a workspace or configured library contains Brand Packs, when the user names a brand, when the user asks to update or upgrade Brand Runtime, or whenever branded output must follow machine-readable tokens and guidelines exactly.
+description: Apply and validate external Brand Packs, translate a selected pack into a project-local design direction, review branded output, manage explicit client-owned brand rules, or update Brand Runtime. Use when the Brand command is invoked, a user names a brand, a project requires a Brand Pack, or branded output must follow verified identity and design rules.
 ---
 
 # Brand
 
-Use the installed Brand Pack as the single source of truth for branded work. This skill is runtime-neutral: Codex, Claude Code, CI, and local scripts consume the same `<brand-folder>/{slug}` payload outside runtime-specific directories. The plugin owns the universal workflow; explicit client feedback is persisted only in the client-owned Brand Pack. Brand rules constrain identity and quality without prescribing a closed set of layouts.
+Use a validated, client-owned Brand Pack as the only source of brand identity. The plugin is universal: it may define workflow, structural design foundations, and quality checks, but it must never contain a client's colors, fonts, logos, voice, strategy, layout style, or learned preferences.
 
-## Invocation
+## Non-negotiable boundaries
 
-- `>>brand <slug>`: use the named Brand Pack. The first token after `>>brand` is the slug; the remaining prompt is the work request.
-- `>>brand <slug> update Brand Runtime`: update the installed Brand Runtime for the active host without changing the Brand Pack.
-- `>>brand`: resolve automatically only when exactly one Brand Pack exists in the resolved folder named `brand`.
-- Never interpret normal request text as a slug when the command is invoked without one.
+- Require a usable Brand Pack for every branded task. The universal foundation cannot replace, infer, clone, or synthesize one.
+- Keep Brand Packs outside runtime-specific directories as direct children of one configured folder named `brand`.
+- Treat `brand.source.json`, `tokens.json`, `brand-guidelines.md`, `build-manifest.json`, declared assets, and pack references as immutable.
+- Persist explicit lasting feedback only through `learn` into the selected pack's `brand.rules.json`.
+- Keep project-specific application decisions in the target project, not in the plugin or Brand Pack.
+- Prefer semantic tokens and declared assets. Report a conflict instead of inventing missing identity.
 
-## Runtime self-update
+## Resolve the request
 
-When the user asks to update or upgrade Brand Runtime, stop the normal Brand Pack application sequence. Read `references/runtime-update.json` and execute `tasks/brand-update-runtime.json`.
+Choose one workflow from the user's intent:
 
-- Treat Brand Runtime and Brand Pack versions as independent.
-- Determine the active host from the current session context; do not guess from installed executables when both runtimes exist.
-- Execute the native marketplace refresh and plugin update commands when the user asked the agent to perform the update. Show the commands without executing only when the user asked for instructions.
-- Verify the installed version and state the reload boundary. Never claim the running session loaded the new version before `/reload-plugins` or a new session.
-- Never edit plugin caches, Brand Packs, saved brand paths, or client-owned rules during a runtime update.
+1. **Apply or review a brand:** follow Brand application.
+2. **Record lasting feedback:** follow Client learning.
+3. **Update Brand Runtime:** follow Runtime update and do not load or modify Brand Pack content.
 
-## Brand application sequence
+`>>brand <slug>` selects the first token after the command as the Brand Pack slug. Without a slug, continue only when exactly one pack is discovered. Never interpret normal request text as a slug.
 
-1. Read `rules/general.json` completely.
-2. Resolve the folder named `brand` from explicit CLI input, an environment override, a project-local folder, or the saved user configuration. Read `references/brand-root-config.json` when configuration is missing, invalid, or stale.
-3. If no usable brand folder is resolved, ask the user for its absolute path, run `config set --brand-root <absolute-brand-folder>`, and stop branded work until it reports `ready`. Never ask the user to copy a Brand Pack into the current project.
-4. Select the requested slug. Without a slug, continue only when the resolved brand folder contains exactly one Brand Pack; otherwise show the discovered slugs and ask the user to select one.
-5. Resolve the current skill directory from the activation context, then run `node --experimental-strip-types <skill-dir>/scripts/brand.ts status --brand <slug>`.
-6. Run the same command with `validate`. Stop on any failed check.
-7. Load the declared files in this order:
-   - `<brand-folder>/<slug>/brand.source.json`
-   - `<brand-folder>/<slug>/tokens.json`
-   - `<brand-folder>/<slug>/brand-guidelines.md`
-   - `<brand-folder>/<slug>/build-manifest.json`
-8. When present, read `<brand-folder>/<slug>/brand.rules.json` completely. It is the client-owned incremental rule layer.
-9. Run `context --brand <slug> --surface <site|product|presentation|document>` and use both `rules` and `clientRules` as the implementation checklist.
-10. For `document` or `presentation`, read `references/editorial-surface-guidelines.json` and compose from the content's semantic structure.
-11. For HTML documents, choose continuous flow or a paginated page canvas from the intended reading and export experience. When paginated, derive the page geometry from the requested format or source aspect ratio instead of applying a universal fixed size.
-12. Inventory the returned `iconography` and map declared icons to real actions, capabilities, statuses, definition blocks, and editorial notes before choosing decorative dividers or text-only markers.
-13. Build a spacing relationship map from the declared `layout.spacing` tokens before implementation: page or canvas margin, section gap, component inset, and internal stack gap.
-14. Create or review the requested output without editing generated Brand Pack files. Size text-bearing containers from content by default.
-15. For editorial surfaces, preserve the complete content and order globally, then paginate by meaning instead of copying source page breaks mechanically.
-16. Re-run `validate`, render the relevant breakpoints/export format after fonts load, and complete the target project's own checks before delivery. Fail the review when text or child bounds exceed a container, scroll dimensions reveal hidden overflow, or wrapping consumes the mapped edge inset.
+## Brand application
 
-## Commands
+### 1. Resolve and validate
+
+Resolve the folder named `brand` from explicit input, an environment override, the nearest project-local folder, or saved user configuration. Read `references/brand-root-config.json` only when configuration is missing, invalid, ambiguous, or stale.
+
+Run:
 
 ```bash
-node --experimental-strip-types <skill-dir>/scripts/brand.ts config show
-node --experimental-strip-types <skill-dir>/scripts/brand.ts config set --brand-root <absolute-path-to-brand-folder>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts status --brand <slug>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts validate --brand <slug>
-node --experimental-strip-types <skill-dir>/scripts/brand.ts context --brand <slug> --surface site
-node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --brand <slug> --id <stable-id> --surface <surface> --instruction <rule> --feedback <summary>
 ```
 
-The configured path is the folder named `brand`, not an individual Brand Pack. Its direct children are sibling packs such as `brand/example-brand` and `brand/another-brand`. Discovery happens on every command, so adding another valid sibling pack never requires a configuration update. If `--brand` is omitted, automatic resolution is allowed only when exactly one pack is discovered.
+Confirm that the selected pack represents the brand of the requested deliverable. A technically valid pack is still unusable when the project or user identifies a different client, product, or brand owner. Stop and request the correct authorized pack instead of borrowing identity from another brand.
 
-## Brand folder resolution
+Stop when the pack is missing, ambiguous, incomplete, invalid, or semantically mismatched. If configuration is missing or stale, ask for the absolute path to the downloaded folder named `brand`, run `config set`, and stop branded work until it reports `ready`. Never ask the user to copy or recreate a pack.
 
-- Persist only the absolute path to the client-owned folder named `brand`; never persist a list of slugs.
-- Keep the configuration outside the plugin cache. By default it lives in the user's standard configuration directory and can be isolated with `BRAND_RUNTIME_CONFIG`.
-- Support `BRAND_RUNTIME_BRAND_ROOT` as an explicit environment override and a nearest project-local `brand/` folder as a portable project override.
-- If a saved path disappears, explain that it is stale and ask for the new absolute path. Do not erase it silently and do not fall back to copying packs into the working directory.
-- The `learn` command writes to the selected pack. If that external folder is outside the runtime's writable sandbox, request narrowly scoped write access for the configured brand folder instead of creating a second editable copy.
+### 2. Load only relevant context
+
+Read `references/design-foundation.md`, then run:
+
+```bash
+node --experimental-strip-types <skill-dir>/scripts/brand.ts context --brand <slug> --surface <site|product|presentation|document>
+```
+
+Use the returned surface rules, active client rules, identity, voice, semantic tokens, assets, and iconography as the implementation context. The CLI already validates pack files and hashes; do not load every source file into context by default. Read a full pack source or guideline only when the returned context is insufficient or a conflict must be resolved.
+
+Resolve instructions in this order:
+
+1. active client rules returned by `context`;
+2. immutable Brand Pack source, surface rules, tokens, guidelines, and declared assets;
+3. universal design foundation;
+4. project-owned application decisions.
+
+An active client rule may intentionally override an immutable pack value without rewriting the pack. Apply the override only when it supplies enough information for the requested use. When an override conflicts with the pack but leaves semantic roles, assets, states, or other required details unresolved, stop and request clarification instead of inventing the missing mapping. Record every resolved override or approved project exception in the design direction.
+
+For surface-specific composition and QA, read `references/surface-guidelines.md`.
+
+### 3. Create the project design direction
+
+For a project-based creation or substantial redesign, create or update `docs/design/design-direction.md` before implementation. Use `references/design-direction-template.md`.
+
+The design direction is the application layer between Brand Pack and deliverable. It must:
+
+- identify the selected pack, pack version, client-rules revision, surface, and source project;
+- preserve declared identity instead of redefining it;
+- translate brand rules into a concrete visual thesis for this project;
+- define layout relationships, typographic roles, color roles, imagery, iconography, motion, composition, and explicit anti-patterns;
+- separate sourced brand truth from project decisions and implementation notes;
+- use project-local machine-readable tokens only when the implementation needs them;
+- remain inside the target project and never be learned back into the Brand Pack automatically.
+
+If the file already exists, read it first and update only the decisions affected by the request. Do not overwrite approved project decisions silently. For a one-off artifact without a project workspace, keep the same reasoning in the working context rather than creating an unrelated file.
+
+### 4. Compose from content and intent
+
+Build a relationship map before implementation:
+
+- page or canvas margin;
+- section gap;
+- component inset;
+- internal stack gap.
+
+Map each relationship to declared pack tokens. Use the design direction to decide composition, density, imagery, and emphasis. Do not turn a Brand Pack into a fixed template catalog or repeat one component anatomy across every section.
+
+Inventory declared iconography before drawing or importing icons. Use an icon only for a real action, capability, status, category, or relationship. Create an output-local extension only with explicit user authorization and enough declared construction guidance to preserve the family.
+
+### 5. Validate the result
+
+Re-run pack validation, the target project's checks, and rendered visual QA after fonts load. Delivery is blocked when any applicable condition fails:
+
+- identity, assets, copy, or active client rules diverge from the selected pack;
+- project direction contradicts sourced brand truth without an explicit approved exception;
+- layout relationships use arbitrary one-off values instead of the mapped spacing system;
+- authored content is clipped, masked, hidden, or unintentionally truncated;
+- text or child bounds overflow a container, or wrapping consumes its bottom or trailing inset;
+- hierarchy, contrast, focus, or interaction states are unclear at a required breakpoint;
+- cards, dividers, badges, gradients, effects, or motion are decorative defaults without a semantic job;
+- the output feels mechanically repetitive instead of expressing the project's visual thesis;
+- document or presentation pagination separates related content or produces an invalid export.
 
 ## Client learning
 
-Treat learning as an explicit editorial action, not as automatic memory:
+Treat learning as an explicit editorial action:
 
-1. Apply one-off corrections only to the current deliverable.
-2. When the user clearly says a preference is permanent, normalize it into a concise English instruction and record it with `learn`.
-3. When permanence is ambiguous, ask whether the correction is deliverable-only or a lasting brand rule before writing.
-4. Use a stable, semantic rule id; choose the narrowest applicable surface; preserve a short English feedback summary; and attach evidence only from `references/feedback/`.
-5. Reuse an existing id to update or deprecate a rule. The CLI deduplicates unchanged input and increments the client rules revision only for a material change.
-6. Re-run `validate` and `context` after learning so the accepted rule affects subsequent work immediately without a plugin update.
+1. Apply one-off feedback only to the current deliverable or project design direction.
+2. When the user explicitly requests a permanent rule, read `references/client-rules-contract.json`.
+3. When permanence is ambiguous, ask whether it is project-only or a lasting brand preference.
+4. Normalize the rule into a stable semantic id, concise English instruction, narrowest surfaces, severity, and short feedback summary.
+5. Review existing rules for overlap, then run `learn`; never edit `brand.rules.json` manually.
+6. Re-run `validate` and `context` for the affected surface.
 
-Read `references/client-rules-contract.json` before recording, replacing, deprecating, or reviewing learned rules. Never edit the plugin cache or copy client rules into this skill.
+```bash
+node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --brand <slug> --id <id> --surface <surface> --instruction <rule> --feedback <summary>
+```
 
-## Decision rules
+## Runtime update
 
-- Technical truth comes from JSON and the build manifest. The HTML preview is a human reference, not an editable source.
-- Brand-specific colors, fonts, logos, voice, content, and layout rules must never be copied into this skill.
-- Client-specific learned rules belong only in `<brand-folder>/<slug>/brand.rules.json`; update that file through the deterministic `learn` command.
-- Never scaffold, clone, rename, or synthesize a Brand Pack. New packs must come from the authorized Brand Portal/Vox workflow and be added as siblings inside the configured brand folder.
-- Prefer semantic token roles over primitive color values when building UI.
-- Treat spacing as a relationship system, not a collection of isolated values. Map structural margins, section gaps, component insets, and internal stack gaps to declared spacing tokens before composing.
-- Size text-bearing containers from content. Use fixed block dimensions only when the surface requires them and the final rendered text remains inside the declared inset at every target size.
-- Never use clipping, masking, hidden overflow, or line clamping to conceal authored content unless truncation is explicitly requested and visibly communicated by the interface.
-- Use only declared assets and preserve their proportions and intended theme.
-- Reuse semantically matching declared icons before drawing generic leader lines, initials, or decorative markers.
-- Create output-local icon extensions only when the user explicitly authorizes them and the pack declares enough construction guidance to preserve the icon family; never write the extension into the Brand Pack.
-- If a requested treatment conflicts with the pack, report the conflict instead of silently inventing an exception.
-- Never edit `tokens.json`, `brand-guidelines.md`, `design-system.html`, or `build-manifest.json` manually.
-- Do not continue when versions, slugs, artifact hashes, or asset hashes diverge.
-- Treat layout patterns as starting points, not a closed catalog. Choose composition, grid, grouping, and emphasis according to the material.
-- Give cards, dividers, and callouts a semantic job. Do not default to a rounded surface with a colored left rule when an icon, typographic statement, data treatment, or plain editorial note communicates the role more clearly.
-- Use a centered page canvas only when page rhythm, print preview, or fixed-page export is part of the requested experience. Keep continuous reports and articles in natural document flow when pagination adds no value.
-- For paginated HTML, derive shared page width and height from the target format, keep the on-screen sheet and `@page` geometry aligned, treat workspace gaps and shadows as screen-only chrome, and collapse to a fluid shadowless mobile layout unless a fixed-page preview is explicitly required.
-- For documents and presentations, keep headings with their first content block, avoid awkward splits, and rebalance pages when export reveals orphaned or crowded content.
+When the user asks to update or upgrade Brand Runtime, read `references/runtime-update.json` and follow its host-specific sequence. Runtime and Brand Pack versions are independent. Never modify packs, client rules, feedback evidence, or saved brand paths during a runtime update. State the required reload or new-session boundary after verification.
 
-## Reference map
+## CLI
 
-- `references/brand-pack-contract.json`: required payload structure and ownership.
-- `references/brand-root-config.json`: persistent folder configuration, discovery, precedence, and onboarding contract.
-- `references/client-rules-contract.json`: schema, lifecycle, and persistence policy for explicit client feedback.
-- `references/runtime-update.json`: runtime-specific update commands, verification, reload boundary, and safety rules.
-- `references/editorial-surface-guidelines.json`: flexible UI, optional page-canvas behavior, pagination, and visual QA guidance for documents and presentations.
-- `tasks/brand-apply.json`: sequential execution workflow.
-- `tasks/brand-update-runtime.json`: sequential self-update workflow for Claude Code and Codex.
-- `tasks/brand-learn.json`: explicit feedback-to-rule workflow.
-- `checklists/brand-quality-gate.json`: blocking delivery checks.
+```bash
+node --experimental-strip-types <skill-dir>/scripts/brand.ts config show
+node --experimental-strip-types <skill-dir>/scripts/brand.ts config set --brand-root <absolute-brand-folder>
+node --experimental-strip-types <skill-dir>/scripts/brand.ts status --brand <slug>
+node --experimental-strip-types <skill-dir>/scripts/brand.ts validate --brand <slug>
+node --experimental-strip-types <skill-dir>/scripts/brand.ts context --brand <slug> --surface <site|product|presentation|document>
+node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --brand <slug> --id <id> --surface <surface> --instruction <rule> --feedback <summary>
+```
+
+## Reference routing
+
+- Read `references/brand-pack-contract.json` when reviewing pack structure, ownership, or immutability.
+- Read `references/brand-root-config.json` for configuration, discovery, or onboarding problems.
+- Read `references/client-rules-contract.json` before learning, updating, deprecating, or reviewing lasting client rules.
+- Read `references/design-foundation.md` for every branded creation or visual review.
+- Read `references/design-direction-template.md` when creating or updating a project design direction.
+- Read `references/surface-guidelines.md` for the selected output surface.
+- Read `references/runtime-update.json` only for Brand Runtime installation or update work.

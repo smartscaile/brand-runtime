@@ -95,7 +95,7 @@ test("reports runtime version and persists explicit client rules independently",
   const fixture = await createBrandFixture();
   try {
     const initial = output(run(fixture.projectRoot, "validate", ["--brand", "checkgrow"]));
-    assert.equal(initial.runtimeVersion, "0.2.3");
+    assert.match(initial.runtimeVersion, /^0\.3\.0(?:\+codex\.[a-z0-9.-]+)?$/);
     assert.equal(initial.brandVersion, "0.5.3");
     assert.equal(initial.rulesSchemaVersion, "1.0.0");
     assert.equal(initial.rulesRevision, 0);
@@ -122,6 +122,13 @@ test("reports runtime version and persists explicit client rules independently",
       "--brand", "checkgrow",
       "--surface", "document",
     ]));
+    assert.deepEqual(documentContext.precedence, [
+      "active client rules",
+      "immutable Brand Pack",
+      "universal design foundation",
+      "project application decisions",
+    ]);
+    assert.equal(documentContext.projectDesignDirection, "docs/design/design-direction.md");
     assert.equal(documentContext.clientRules.length, 1);
     assert.equal(documentContext.clientRules[0].id, "editorial.no-rounded-left-rule");
 
