@@ -4,9 +4,12 @@ Use this structure for `docs/design/design-direction.md`. Keep the document conc
 
 ```markdown
 ---
-brand: <slug>
-brand_version: <version>
-brand_rules_revision: <revision>
+mode: <brand-pack|brand-pending>
+brand: <slug|null>
+brand_version: <version|null>
+brand_rules_revision: <revision|null>
+identity_claim: <official|none>
+provisional: <true|false>
 surface: <site|product|presentation|document>
 status: <draft|approved>
 updated_at: <ISO-8601>
@@ -25,13 +28,13 @@ updated_at: <ISO-8601>
 
 ## Source boundary
 
-### Sourced from the Brand Pack
+### Official identity source
 
-- Identity rules:
-- Voice rules:
-- Declared assets:
-- Required tokens:
+- Brand Pack or `none`:
+- Identity and voice authority:
+- Declared assets and tokens:
 - Active brand rules:
+- Provisional boundary when brand-pending:
 
 ### Project decisions
 
@@ -44,7 +47,7 @@ updated_at: <ISO-8601>
 - Active project rules:
 - Relevant learnings:
 - Reused patterns and source projects:
-- Adaptations made for this Brand Pack:
+- Adaptations made for this direction mode:
 
 ## Visual thesis
 
@@ -118,9 +121,11 @@ List concrete treatments that would contradict this direction, including repetit
 
 ## Authorship rules
 
-- Copy facts from the Brand Pack accurately but summarize only what affects this project.
+- In `brand-pack`, copy facts from the Brand Pack accurately but summarize only what affects this project. Set `identity_claim: official` and `provisional: false`.
+- In `brand-pending`, set brand provenance fields to `null`, `identity_claim: none`, and `provisional: true`. State that no official identity is represented.
 - Label every unsourced application choice as a project decision.
 - Never add a new brand truth through this document.
 - Do not turn a project preference into a lasting client rule unless the user explicitly requests it.
-- When machine-readable tokens are necessary, create a project-local companion such as `docs/design/design-tokens.json` or the project's established token file and reference it from the direction.
+- When machine-readable tokens are necessary, create a project-local companion such as `docs/design/design-tokens.json` or the project's established token file and reference it from the direction. Mark identity-like tokens provisional in `brand-pending`.
 - Update metadata when the Brand Pack version or brand-rules revision changes, then reconcile affected decisions instead of regenerating the document blindly.
+- When a Brand Pack becomes available for a `brand-pending` project, reconcile every provisional identity choice against it before changing the mode.

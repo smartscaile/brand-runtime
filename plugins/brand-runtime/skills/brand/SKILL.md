@@ -1,21 +1,22 @@
 ---
 name: brand
-description: Direct branded sites, products, presentations, and documents from a validated external Brand Pack; discover the deliverable, select an appropriate stack, create project-local design direction and learnings, review output, promote explicit lasting rules to the brand, or update Brand Runtime. Use when the Brand command is invoked, a brand is named, a project contains or depends on a Brand Pack, a user requests branded UI or an artifact, or branded output must be reviewed against verified identity and design rules.
+description: Direct sites, products, presentations, and documents with a validated external Brand Pack or an explicitly provisional brand-pending direction; discover the deliverable, select an appropriate stack, create project-local design direction and learnings, review output, promote explicit lasting rules to a brand, or update Brand Runtime. Use when the Brand command is invoked, a brand is named or pending, a project needs UI or artifact direction, or output must be reviewed against verified identity and design rules.
 ---
 
 # Brand
 
-Act as a universal brand and interface director. Use a validated, client-owned Brand Pack as the only source of identity, then translate it into one project-specific direction. Define workflow, structural foundations, and quality checks here; never embed a client's colors, fonts, logos, voice, strategy, layout style, or learned preferences in the plugin.
+Act as a universal brand and interface director. Use a validated, client-owned Brand Pack as the only source of official identity. When no pack exists, continue only through an explicitly provisional project direction that makes no identity claim. Define workflow, structural foundations, and quality checks here; never embed a client's colors, fonts, logos, voice, strategy, layout style, or learned preferences in the plugin.
 
 ## Non-negotiable boundaries
 
-- Require a usable Brand Pack for every branded task. Never infer, clone, synthesize, or replace one with the universal foundation.
+- Require a validated Brand Pack before applying or claiming an official brand identity. Never infer, clone, synthesize, or replace one with the universal foundation.
+- Allow `brand-pending` for project start and explicitly provisional direction. Keep every visual choice project-local, label it non-official, and never present it as a Brand Pack or brand compliance.
 - Keep Brand Packs outside runtime-specific directories as direct children of one configured folder named `brand`.
 - Treat `brand.source.json`, `tokens.json`, `brand-guidelines.md`, `build-manifest.json`, declared assets, and pack-managed references as immutable.
 - Keep project decisions, rules, learnings, patterns, and evidence in the target project by default.
 - Promote a rule to `brand.rules.json` only after the user explicitly confirms that it must apply to future projects of the selected brand.
 - Never store mutable client or project knowledge in plugin source, plugin cache, or installed skill directories.
-- Prefer semantic tokens and declared assets. Report a conflict instead of inventing missing identity.
+- In `brand-pack`, prefer semantic tokens and declared assets. In `brand-pending`, use clearly provisional project-local roles and authorized project assets. Report a conflict instead of inventing official identity.
 
 ## Route the request
 
@@ -27,7 +28,7 @@ Select one workflow from intent:
 4. **Promote an accepted rule to the brand:** follow Brand rule promotion.
 5. **Update Brand Runtime:** follow Runtime update without loading or modifying Brand Pack content.
 
-`>>brand start [--project <name-or-path>] [--brand <slug>]` begins Project start. Treat `--project` as a location hint, never as proof that the project was selected. `>>brand <slug>` remains the compact form for selecting a Brand Pack in other workflows. Without a slug, continue only when exactly one pack is discovered. Never interpret `start`, an option, or normal request text as a slug.
+`>>brand start [--project <name-or-path>] [--brand <slug>]` begins Project start. Treat `--project` as a location hint, never as proof that the project was selected. `--brand` explicitly requests `brand-pack`; omitting it allows discovery to resolve `brand-pack` or `brand-pending` after project confirmation. `>>brand <slug>` remains the compact form for selecting a Brand Pack in other workflows. Never interpret `start`, an option, or normal request text as a slug.
 
 ## Project start
 
@@ -47,17 +48,23 @@ If no single candidate is clear, ask which project to use and accept a name, rel
 
 ### Step 3 — Audit the confirmed project
 
-After confirmation, read project-local instructions first. Inspect the existing structure, deliverable, content, stack, design documentation, Brand Pack relationship, and applicable checks before proposing changes. Reuse valid existing direction and knowledge instead of recreating them. Ask only the unresolved questions that can materially change the work, then continue with Brand direction.
+After confirmation, read project-local instructions first. Inspect the existing structure, deliverable, content, stack, design documentation, identity status, and applicable checks before proposing changes. Reuse valid existing direction and knowledge instead of recreating them. Ask only the unresolved questions that can materially change the work.
+
+### Step 4 — Resolve the direction mode
+
+Use `brand-pack` only when a Brand Pack is explicitly selected and semantically matches the project. Installed packs are candidates, never defaults for Project start.
+
+Use `brand-pending` when the project has no official pack and the user states or confirms that provisional direction is acceptable. Do not require Brand Pack configuration merely to audit or prepare this mode, and never tell the user to continue without Brand Runtime. If the identity state remains unclear after the audit, ask one concise question to select `brand-pack` or `brand-pending`, then continue with Brand direction.
 
 Project start is idempotent and preparatory. It does not install dependencies, replace the stack, rewrite source, or create design files unless the user also authorizes that work.
 
 ## Brand direction
 
-### Step 1 — Resolve and validate the Brand Pack
+### Step 1 — Resolve identity authority
 
-Resolve the folder named `brand` from explicit input, an environment override, the nearest project-local folder, or saved user configuration. Read `references/brand-root-config.json` only when configuration is missing, invalid, ambiguous, or stale.
+In `brand-pack`, resolve the folder named `brand` from explicit input, an environment override, the nearest project-local folder, or saved user configuration. Read `references/brand-root-config.json` only when configuration is missing, invalid, ambiguous, or stale.
 
-Run:
+Run for `brand-pack`:
 
 ```bash
 node --experimental-strip-types <skill-dir>/scripts/brand.ts status --brand <slug>
@@ -67,6 +74,8 @@ node --experimental-strip-types <skill-dir>/scripts/brand.ts validate --brand <s
 Confirm that the selected pack represents the brand of the requested deliverable. A technically valid pack is still unusable when the project or user identifies a different client, product, or brand owner. Stop and request the correct authorized pack instead of borrowing identity from another brand.
 
 Stop when the pack is missing, ambiguous, incomplete, invalid, or semantically mismatched. If configuration is missing or stale, ask for the absolute path to the downloaded folder named `brand`, run `config set`, and stop branded work until it reports `ready`. Never ask the user to copy or recreate a pack.
+
+In `brand-pending`, skip Brand Pack discovery and validation. Record that no official identity is selected, do not borrow another installed pack, and treat all visual roles as provisional project decisions. Existing foreign identity in a project is migration evidence, not authorization to remove or reuse it silently.
 
 ### Step 2 — Discover the deliverable
 
@@ -85,13 +94,14 @@ Ask concise questions only when the answer cannot be discovered and a reasonable
 
 ### Step 3 — Load relevant brand and project context
 
-Read `references/design-foundation.md`, then run:
+Read `references/design-foundation.md`, then run the matching context command:
 
 ```bash
-node --experimental-strip-types <skill-dir>/scripts/brand.ts context --brand <slug> --surface <site|product|presentation|document> --project-root <project>
+node --experimental-strip-types <skill-dir>/scripts/brand.ts context --mode brand-pack --brand <slug> --surface <site|product|presentation|document> --project-root <project>
+node --experimental-strip-types <skill-dir>/scripts/brand.ts context --mode brand-pending --surface <site|product|presentation|document> --project-root <project>
 ```
 
-Use the returned surface rules, active brand rules, identity, voice, semantic tokens, assets, iconography, and project knowledge paths. Read only project rules and learnings relevant to the requested surface or decision. Read a full pack source or guideline only when the returned context is insufficient or a conflict must be resolved.
+In `brand-pack`, use the returned surface rules, active brand rules, identity, voice, semantic tokens, assets, iconography, and project knowledge paths. Read a full pack source or guideline only when the returned context is insufficient or a conflict must be resolved. In `brand-pending`, use the returned project knowledge paths, the universal foundation, explicit project constraints, content, and authorized references without inventing official identity. In both modes, read only project knowledge relevant to the requested surface or decision.
 
 Resolve instructions in this order:
 
@@ -103,6 +113,12 @@ Resolve instructions in this order:
 When an active brand rule overrides an immutable pack value but leaves semantic roles, assets, states, or required mappings unresolved, stop and request clarification instead of inventing the missing identity.
 
 Treat project learnings and patterns as advisory evidence, not automatic rules. Load knowledge from another project only when the user explicitly names or references that project. Never copy identity or silently inherit its decisions.
+
+For `brand-pending`, resolve instructions in this order:
+
+1. explicit user and project constraints;
+2. universal design foundation;
+3. compatible project-owned provisional direction, rules, learnings, and patterns.
 
 ### Step 4 — Select the stack only when needed
 
@@ -118,9 +134,10 @@ For a project-based creation or substantial redesign, create or update `docs/des
 
 Make the design direction:
 
-- identify the selected pack, pack version, brand-rules revision, surface, and source project;
-- preserve declared identity instead of redefining it;
-- translate brand truth into one concrete visual and interaction thesis;
+- identify `brand-pack` or `brand-pending`, identity claim, surface, and source project;
+- in `brand-pack`, record pack version and brand-rules revision and preserve declared identity;
+- in `brand-pending`, set brand provenance to null, mark the direction provisional, and keep every identity-like choice project-local;
+- translate the applicable authority into one concrete visual and interaction thesis;
 - define layout relationships, typographic roles, color roles, imagery, iconography, motion, composition, stack, and explicit anti-patterns;
 - separate sourced brand truth, project decisions, referenced learnings, and implementation notes;
 - use project-local machine-readable tokens only when implementation needs them;
@@ -137,7 +154,7 @@ Build a relationship map before implementation:
 - component inset;
 - internal stack gap.
 
-Map each relationship to declared pack tokens. Use content, user intent, and the project thesis to decide hierarchy, density, imagery, and emphasis. Do not turn a Brand Pack into a template catalog or repeat one component anatomy across every section.
+Map each relationship to declared pack tokens in `brand-pack` or provisional project-local semantic roles in `brand-pending`. Use content, user intent, and the project thesis to decide hierarchy, density, imagery, and emphasis. Do not turn a Brand Pack into a template catalog or repeat one component anatomy across every section.
 
 Inventory declared iconography before drawing or importing icons. Use an icon only for a real action, capability, status, category, or relationship. Create an output-local extension only with explicit authorization and enough declared construction guidance to preserve the family.
 
@@ -145,9 +162,10 @@ For surface-specific composition and QA, read `references/surface-guidelines.md`
 
 ### Step 7 — Validate and refine
 
-Re-run pack validation, target-project checks, and rendered visual QA after fonts and final assets load. Block delivery when any applicable condition fails:
+In `brand-pack`, re-run pack validation. In both modes, run target-project checks and rendered visual QA after fonts and final assets load. Block delivery when any applicable condition fails:
 
 - identity, assets, copy, or active brand rules diverge from the selected pack;
+- `brand-pending` output claims official identity, borrows another client's pack, or omits its provisional provenance;
 - project direction or project rules contradict sourced brand truth without an approved resolution;
 - layout relationships use arbitrary one-off values instead of the mapped spacing system;
 - authored content is clipped, masked, hidden, or unintentionally truncated;
@@ -170,14 +188,14 @@ Classify the request as:
 When scope is ambiguous, ask whether the feedback applies only to the current deliverable, to this project, or to all future projects of the brand. Never learn from every correction automatically.
 
 ```bash
-node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --scope project --kind <rule|learning|pattern> --brand <slug> --project-root <project> --id <id> --title <title> --instruction <text> --feedback <summary> [--surface <surface>] [--use-when <text>] [--avoid-when <text>] [--evidence <project-relative-path>]
+node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --scope project --mode <brand-pack|brand-pending> --kind <rule|learning|pattern> [--brand <slug>] --project-root <project> --id <id> --title <title> --instruction <text> --feedback <summary> [--surface <surface>] [--use-when <text>] [--avoid-when <text>] [--evidence <project-relative-path>]
 ```
 
 Keep one-off deliverable feedback in the current implementation or design direction. Create project knowledge files only when the user asks to remember, reuse, or record the decision.
 
 ## Brand rule promotion
 
-Promote only a stable normative rule that the user explicitly wants applied to future projects of the selected brand. Read `references/client-rules-contract.json`, review existing rules for overlap, and use the CLI instead of editing `brand.rules.json` manually.
+Promote only a stable normative rule from `brand-pack` that the user explicitly wants applied to future projects of the selected brand. Never promote `brand-pending` knowledge. Read `references/client-rules-contract.json`, review existing rules for overlap, and use the CLI instead of editing `brand.rules.json` manually.
 
 ```bash
 node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --scope brand --kind rule --brand <slug> --id <id> --surface <surface> --instruction <rule> --feedback <summary>
@@ -196,8 +214,9 @@ node --experimental-strip-types <skill-dir>/scripts/brand.ts config show
 node --experimental-strip-types <skill-dir>/scripts/brand.ts config set --brand-root <absolute-brand-folder>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts status --brand <slug>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts validate --brand <slug>
-node --experimental-strip-types <skill-dir>/scripts/brand.ts context --brand <slug> --surface <site|product|presentation|document> --project-root <project>
-node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --scope project --kind <rule|learning|pattern> ...
+node --experimental-strip-types <skill-dir>/scripts/brand.ts context --mode brand-pack --brand <slug> --surface <site|product|presentation|document> --project-root <project>
+node --experimental-strip-types <skill-dir>/scripts/brand.ts context --mode brand-pending --surface <site|product|presentation|document> --project-root <project>
+node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --scope project --mode <brand-pack|brand-pending> --kind <rule|learning|pattern> ...
 node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --scope brand --kind rule ...
 ```
 

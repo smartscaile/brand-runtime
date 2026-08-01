@@ -34,7 +34,7 @@ test("activates Brand Runtime only for >>brand and resolves Brand Packs", async 
 
     const explicit = context(run({ cwd: root, prompt: ">>brand checkgrow create a document" }));
     assert.match(explicit, /BRAND RUNTIME ACTIVE/);
-    assert.match(explicit, /Brand Runtime: v0\.4\.0/);
+    assert.match(explicit, /Brand Runtime: v0\.4\.1/);
     assert.match(explicit, /Brand Pack v0\.5\.1; brand rules r3/);
     assert.match(explicit, /brand\/checkgrow/);
     assert.match(explicit, /validate --brand checkgrow/);
@@ -43,6 +43,16 @@ test("activates Brand Runtime only for >>brand and resolves Brand Packs", async 
 
     const automatic = context(run({ cwd: root, prompt: ">>brand" }));
     assert.match(automatic, /brand\/checkgrow/);
+
+    const pendingStart = context(run({
+      cwd: root,
+      prompt: ">>brand start --project imovel-invest-funnel",
+    }));
+    assert.match(pendingStart, /NO BRAND PACK SELECTED FOR PROJECT START/);
+    assert.match(pendingStart, /Do not auto-select an installed pack/);
+    assert.match(pendingStart, /continue inside Brand Runtime in brand-pending/);
+    assert.match(pendingStart, /context --mode brand-pending/);
+    assert.doesNotMatch(pendingStart, /Use the Brand Pack at/);
 
     const start = context(run({
       cwd: root,
@@ -53,6 +63,7 @@ test("activates Brand Runtime only for >>brand and resolves Brand Packs", async 
     assert.match(start, new RegExp(`Workspace reported by host: ${root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
     assert.match(start, /ask the user to confirm that exact project/);
     assert.match(start, /before following any Brand Pack selection/);
+    assert.match(start, /Explicit Brand Pack candidate:/);
     assert.match(start, /Brand Pack v0\.5\.1/);
     assert.doesNotMatch(start, /Requested: start/);
 
@@ -99,6 +110,14 @@ test("configures one global brand folder and discovers multiple Brand Packs", as
     assert.match(explicit, /Installed Brand Packs: checkgrow, wascen/);
     assert.match(explicit, /--brand-root/);
 
+    const pendingStart = context(run({
+      cwd: consumerRoot,
+      prompt: ">>brand start --project \"Client Workspace/Landing Page\"",
+    }, environment));
+    assert.match(pendingStart, /NO BRAND PACK SELECTED FOR PROJECT START/);
+    assert.match(pendingStart, /Installed Brand Packs visible from this workspace: checkgrow, wascen/);
+    assert.match(pendingStart, /Installed packs may belong to other clients/);
+
     const start = context(run({
       cwd: consumerRoot,
       prompt: ">>brand start --project \"Client Workspace/Landing Page\" --brand checkgrow",
@@ -126,6 +145,14 @@ test("asks for the brand folder when configuration is missing or stale", async (
     assert.match(missing, /absolute path to the downloaded folder named brand/);
     assert.match(missing, /config set --brand-root/);
     assert.match(missing, /Do not ask the user to copy/);
+
+    const pendingStart = context(run({
+      cwd: consumerRoot,
+      prompt: ">>brand start --project new-client-site",
+    }, environment));
+    assert.match(pendingStart, /NO BRAND PACK SELECTED FOR PROJECT START/);
+    assert.match(pendingStart, /continue inside Brand Runtime in brand-pending/);
+    assert.doesNotMatch(pendingStart, /BRAND FOLDER CONFIGURATION REQUIRED/);
 
     await mkdir(resolve(consumerRoot, "config"), { recursive: true });
     const stalePath = resolve(consumerRoot, "moved/brand");

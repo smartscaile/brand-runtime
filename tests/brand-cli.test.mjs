@@ -95,7 +95,7 @@ test("reports runtime version and promotes explicit brand rules independently", 
   const fixture = await createBrandFixture();
   try {
     const initial = output(run(fixture.projectRoot, "validate", ["--brand", "checkgrow"]));
-    assert.match(initial.runtimeVersion, /^0\.4\.0(?:\+codex\.[a-z0-9.-]+)?$/);
+    assert.match(initial.runtimeVersion, /^0\.4\.1(?:\+codex\.[a-z0-9.-]+)?$/);
     assert.equal(initial.brandVersion, "0.5.3");
     assert.equal(initial.rulesSchemaVersion, "1.0.0");
     assert.equal(initial.rulesRevision, 0);
@@ -236,6 +236,62 @@ test("stores explicit rules, learnings, and patterns as project-local Markdown",
     assert.deepEqual(projectContext.projectKnowledge.patterns, ["docs/design/patterns/site.editorial-hero.md"]);
   } finally {
     await rm(fixture.projectRoot, { recursive: true, force: true });
+  }
+});
+
+test("supports provisional project context and learning without a Brand Pack", async () => {
+  const projectRoot = await mkdtemp(resolve(tmpdir(), "brand-runtime-pending-"));
+  try {
+    const pendingContext = output(run(projectRoot, "context", [
+      "--mode", "brand-pending",
+      "--surface", "site",
+    ]));
+    assert.equal(pendingContext.valid, true);
+    assert.equal(pendingContext.mode, "brand-pending");
+    assert.equal(pendingContext.brandStatus, "pending");
+    assert.equal(pendingContext.identityClaim, "none");
+    assert.equal(pendingContext.provisional, true);
+    assert.equal(pendingContext.slug, null);
+    assert.equal(pendingContext.brandVersion, null);
+    assert.equal(pendingContext.projectKnowledge.root, projectRoot);
+    assert.deepEqual(pendingContext.brandRules, []);
+    assert.equal(pendingContext.identity, null);
+
+    const learning = output(run(projectRoot, "learn", [
+      "--scope", "project",
+      "--mode", "brand-pending",
+      "--kind", "learning",
+      "--id", "site.provisional-hierarchy",
+      "--surface", "site",
+      "--instruction", "Keep one dominant property image and one primary qualification action.",
+      "--feedback", "The provisional direction was approved for this MVP while identity remains pending.",
+    ]));
+    assert.equal(learning.mode, "brand-pending");
+    assert.equal(learning.slug, null);
+    assert.equal(learning.brandVersion, null);
+
+    const document = await readFile(resolve(projectRoot, learning.relativePath), "utf8");
+    assert.match(document, /mode: "brand-pending"/);
+    assert.match(document, /brand: null/);
+    assert.match(document, /brand_version: null/);
+
+    const mixedMode = run(projectRoot, "context", [
+      "--mode", "brand-pending",
+      "--brand", "another-client",
+      "--surface", "site",
+    ]);
+    assert.equal(mixedMode.status, 1);
+    assert.match(mixedMode.stderr, /Do not use --brand/);
+
+    const invalidPromotion = run(projectRoot, "learn", [
+      "--scope", "brand",
+      "--mode", "brand-pending",
+      "--kind", "rule",
+    ]);
+    assert.equal(invalidPromotion.status, 1);
+    assert.match(invalidPromotion.stderr, /cannot be promoted/);
+  } finally {
+    await rm(projectRoot, { recursive: true, force: true });
   }
 });
 

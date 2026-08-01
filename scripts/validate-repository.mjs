@@ -58,7 +58,9 @@ expect(baseVersion(claudePlugin.version) === packageManifest.version, "Claude pl
 
 expect(skill.split("\n").length < 500, "Brand SKILL.md must stay below 500 lines.");
 expect(skill.startsWith("---\nname: brand\ndescription:"), "Brand SKILL.md must declare canonical frontmatter.");
-expect(skill.includes("Require a usable Brand Pack for every branded task"), "Brand skill must require a Brand Pack for branded work.");
+expect(skill.includes("Require a validated Brand Pack before applying or claiming an official brand identity"), "Brand skill must require a Brand Pack for official identity.");
+expect(skill.includes("Allow `brand-pending`"), "Brand skill must retain provisional direction without a Brand Pack.");
+expect(skill.includes("never tell the user to continue without Brand Runtime"), "Brand skill must remain the director in brand-pending.");
 expect(skill.includes(">>brand start [--project <name-or-path>] [--brand <slug>]"), "Brand skill must define the project-start command.");
 expect(skill.includes("A host working directory and an explicit `--project` hint still require confirmation"), "Brand skill must require exact project confirmation.");
 expect(skill.includes("never require `projects/`"), "Brand skill must remain independent of client directory layout.");
@@ -79,13 +81,17 @@ expect(foundation.includes("identity-neutral"), "Design foundation must declare 
 expect(foundation.includes("Never treat this foundation as a fallback Brand Pack"), "Design foundation must not replace a Brand Pack.");
 expect(!/#[0-9a-f]{3,8}\b/i.test(foundation), "Design foundation must not embed brand color values.");
 expect(!/smartscaile|checkgrow|wascen/i.test(foundation), "Design foundation must not contain client or publisher identity rules.");
-expect(directionTemplate.includes("### Sourced from the Brand Pack"), "Design direction must separate sourced truth from project decisions.");
+expect(directionTemplate.includes("### Official identity source"), "Design direction must separate official identity from project decisions.");
 expect(directionTemplate.includes("### Project decisions"), "Design direction must identify project-owned decisions.");
+expect(directionTemplate.includes("mode: <brand-pack|brand-pending>"), "Design direction must record its authority mode.");
+expect(directionTemplate.includes("identity_claim: <official|none>"), "Design direction must record whether identity is official.");
+expect(directionTemplate.includes("provisional: <true|false>"), "Design direction must record provisional status.");
 expect(directionTemplate.includes("brand_version:"), "Design direction must record Brand Pack version provenance.");
 expect(directionTemplate.includes("brand_rules_revision:"), "Design direction must record brand-rules provenance.");
 expect(directionTemplate.includes("## Stack and implementation"), "Design direction must record the selected stack and fallbacks.");
 expect(projectLearning.includes("Markdown is the source of truth for project knowledge"), "Project learning must use Markdown as the contextual source of truth.");
 expect(projectLearning.includes("A reference to another project is provenance, not inheritance"), "Cross-project reuse must not create implicit inheritance.");
+expect(projectLearning.includes('mode: "brand-pending"'), "Project learning must support brand-pending provenance.");
 expect(stackSelection.includes("Treat the catalog as curated options, never as universal defaults"), "Stack guidance must remain consultative.");
 for (const library of ["React Bits", "Uiverse", "Motion", "Anime.js", "GSAP", "Three.js"]) {
   expect(stackSelection.includes(`### ${library}`), `Stack selection must describe ${library}.`);

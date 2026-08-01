@@ -93,19 +93,73 @@ function packLabel(brandRoot) {
   return `Brand Pack v${brandVersion}; brand rules r${rulesRevision}`;
 }
 
+function projectStartActivation({ cwd, pluginRoot, runtimeVersion, requested, projectHint, brandResolution }) {
+  const skillRoot = resolve(pluginRoot, "skills", "brand");
+  const cli = resolve(skillRoot, "scripts", "brand.ts");
+  const available = brandResolution.brands || [];
+  const availableLine = available.length > 0 ? available.join(", ") : "none";
+  const lines = [
+    "BRAND RUNTIME ACTIVE (>>brand detected)",
+    `Brand Runtime: v${runtimeVersion}`,
+    "",
+    projectStartContext({ cwd, projectHint }),
+    "",
+  ];
+
+  if (!requested) {
+    return [
+      ...lines,
+      "NO BRAND PACK SELECTED FOR PROJECT START",
+      `Installed Brand Packs visible from this workspace: ${availableLine}.`,
+      "Do not auto-select an installed pack or require Brand Pack configuration merely to start. Installed packs may belong to other clients.",
+      "After project confirmation and audit, use brand-pack only for an explicitly selected semantic match. If no official pack exists, continue inside Brand Runtime in brand-pending; do not tell the user to leave Brand Runtime.",
+      "In brand-pending, make no official identity claim and keep all visual roles provisional and project-local.",
+      `Pending context after confirmation: node --experimental-strip-types "${cli}" context --mode brand-pending --surface <site|product|presentation|document> --project-root "<confirmed-project>"`,
+      "",
+      `Universal skill: ${skillRoot}/SKILL.md`,
+    ].join("\n");
+  }
+
+  const selectedRoot = brandResolution.ok ? resolve(brandResolution.brandRoot, requested) : "";
+  if (!selectedRoot || !isDirectory(selectedRoot)) {
+    return [
+      ...lines,
+      `The explicitly requested Brand Pack could not be resolved: ${requested}. Installed: ${availableLine}.`,
+      "Do not substitute another installed Brand Pack.",
+      "After project confirmation, ask for the correct pack only if official identity is required. If the project has no official pack and the user approves provisional direction, continue in brand-pending without claiming brand compliance.",
+      "",
+      `Universal skill: ${skillRoot}/SKILL.md`,
+    ].join("\n");
+  }
+
+  return [
+    ...lines,
+    `Explicit Brand Pack candidate: ${selectedRoot} (${packLabel(selectedRoot)}).`,
+    "After project confirmation, verify that this pack semantically belongs to the project before using it.",
+    `node --experimental-strip-types "${cli}" status --brand ${requested} --brand-root "${brandResolution.brandRoot}"`,
+    `node --experimental-strip-types "${cli}" validate --brand ${requested} --brand-root "${brandResolution.brandRoot}"`,
+    `node --experimental-strip-types "${cli}" context --mode brand-pack --brand ${requested} --surface <site|product|presentation|document> --brand-root "${brandResolution.brandRoot}" --project-root "<confirmed-project>"`,
+    "Never fall back to another client's pack if semantic validation fails.",
+    "",
+    `Universal skill: ${skillRoot}/SKILL.md`,
+  ].join("\n");
+}
+
 function activationContext({ cwd, pluginRoot, runtimeVersion, action, requested, projectHint, brandResolution }) {
+  if (action === "start") {
+    return projectStartActivation({ cwd, pluginRoot, runtimeVersion, requested, projectHint, brandResolution });
+  }
+
   const skillRoot = resolve(pluginRoot, "skills", "brand");
   const cli = resolve(skillRoot, "scripts", "brand.ts");
   const available = brandResolution.brands || [];
   const availableLine = available.length > 0 ? available.join(", ") : "none";
   const configuredPath = brandResolution.brandRoot || brandResolution.configuredBrandRoot || "not configured";
-  const startContext = action === "start" ? ["", projectStartContext({ cwd, projectHint })] : [];
 
   if (!brandResolution.ok) {
     return [
       "BRAND RUNTIME ACTIVE (>>brand detected)",
       `Brand Runtime: v${runtimeVersion}`,
-      ...startContext,
       "",
       "BRAND FOLDER CONFIGURATION REQUIRED",
       `${brandResolution.reason} Current path: ${configuredPath}.`,
@@ -125,17 +179,13 @@ function activationContext({ cwd, pluginRoot, runtimeVersion, action, requested,
   const slug = requested || (available.length === 1 ? available[0] : "");
   const selectedRoot = slug ? resolve(brandResolution.brandRoot, slug) : "";
   if (!slug || !isDirectory(selectedRoot)) {
-    const selectionInstruction = action === "start"
-      ? "After project confirmation, ask the user to select one installed Brand Pack or invoke >>brand start --project <name-or-path> --brand <installed-slug>."
-      : "Ask the user to invoke >>brand <installed-slug> or select one of the installed slugs before branded work.";
     return [
       "BRAND RUNTIME ACTIVE (>>brand detected)",
       `Brand Runtime: v${runtimeVersion}`,
-      ...startContext,
       "",
       `The requested Brand Pack could not be resolved. Requested: ${requested || "not selected"}. Installed: ${availableLine}.`,
       "The configured brand folder supports multiple Brand Packs, but exactly one slug must be selected for each task.",
-      selectionInstruction,
+      "Ask the user to invoke >>brand <installed-slug> or select one of the installed slugs before branded work.",
       "If the intended slug is not installed, ask the user to obtain its Brand Pack from Brand Portal/Vox and add it as a sibling inside the configured brand folder. Never synthesize a pack.",
       "",
       `Universal skill: ${skillRoot}/SKILL.md`,
@@ -148,7 +198,6 @@ function activationContext({ cwd, pluginRoot, runtimeVersion, action, requested,
   return [
     "BRAND RUNTIME ACTIVE (>>brand detected)",
     `Brand Runtime: v${runtimeVersion}`,
-    ...startContext,
     "",
     `Use the Brand Pack at ${brandRoot} (${packLabel(brandRoot)}).`,
     `Configured brand folder: ${brandResolution.brandRoot} (${brandResolution.source}).`,

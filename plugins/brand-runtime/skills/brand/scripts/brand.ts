@@ -15,6 +15,7 @@ type RuleSeverity = "critical" | "high" | "medium" | "low";
 type RuleStatus = "active" | "deprecated";
 type LearnScope = "project" | "brand";
 type ProjectKnowledgeKind = "rule" | "learning" | "pattern";
+type DirectionMode = "brand-pack" | "brand-pending";
 
 type ClientRule = {
   id: string;
@@ -46,6 +47,7 @@ const RULE_SEVERITIES: RuleSeverity[] = ["critical", "high", "medium", "low"];
 const RULE_STATUSES: RuleStatus[] = ["active", "deprecated"];
 const LEARN_SCOPES: LearnScope[] = ["project", "brand"];
 const PROJECT_KNOWLEDGE_KINDS: ProjectKnowledgeKind[] = ["rule", "learning", "pattern"];
+const DIRECTION_MODES: DirectionMode[] = ["brand-pack", "brand-pending"];
 const PROJECT_KNOWLEDGE_DIRECTORIES: Record<ProjectKnowledgeKind, string> = {
   rule: "docs/design/rules",
   learning: "docs/design/learnings",
@@ -71,6 +73,14 @@ function option(name: string): string | undefined {
 function requiredOption(name: string): string {
   const value = option(name)?.trim();
   if (!value) throw new Error(`Use --${name} <value>.`);
+  return value;
+}
+
+function directionMode(): DirectionMode {
+  const value = (option("mode") ?? "brand-pack") as DirectionMode;
+  if (!DIRECTION_MODES.includes(value)) {
+    throw new Error(`Invalid direction mode "${value}". Use brand-pack or brand-pending.`);
+  }
   return value;
 }
 
@@ -469,19 +479,55 @@ async function validatePack() {
 }
 
 async function context() {
-  const validation = await validatePack();
-  if (!validation.valid) return validation;
-
   const surface = option("surface") as Surface | undefined;
   if (!surface || !SURFACES.includes(surface)) {
     throw new Error("Use --surface site|product|presentation|document.");
   }
 
+  const mode = directionMode();
+  const projectRoot = await resolveProjectRoot();
+  if (mode === "brand-pending") {
+    if (option("brand")) throw new Error("Do not use --brand with --mode brand-pending.");
+    return {
+      valid: true,
+      runtimeVersion: await runtimeVersion(),
+      mode,
+      brandStatus: "pending",
+      identityClaim: "none",
+      provisional: true,
+      slug: null,
+      brandVersion: null,
+      rulesSchemaVersion: null,
+      rulesRevision: null,
+      surface,
+      precedence: [
+        "explicit user and project constraints",
+        "universal design foundation",
+        "compatible project-owned provisional direction and rules",
+      ],
+      projectDesignDirection: "docs/design/design-direction.md",
+      projectKnowledge: await inspectProjectKnowledge(projectRoot),
+      rules: [],
+      brandRules: [],
+      clientRules: [],
+      identity: null,
+      voice: null,
+      colors: null,
+      typography: null,
+      layout: null,
+      motion: null,
+      assets: null,
+      iconography: null,
+    };
+  }
+
+  const validation = await validatePack();
+  if (!validation.valid) return validation;
+
   const root = validation.root;
   const source = await json(resolve(root, "brand.source.json"));
   const tokens = await json(resolve(root, "tokens.json"));
   const surfaces = source.surfaces as Record<string, unknown> | undefined;
-  const projectRoot = await resolveProjectRoot();
   const clientRulesDocument = await validateClientRules(root, validation.slug, []);
   const clientRules = clientRulesDocument?.rules.filter((rule) =>
     rule.status === "active" && (rule.surfaces.includes("all") || rule.surfaces.includes(surface))) ?? [];
@@ -489,6 +535,10 @@ async function context() {
   return {
     valid: true,
     runtimeVersion: validation.runtimeVersion,
+    mode,
+    brandStatus: "ready",
+    identityClaim: "official",
+    provisional: false,
     slug: validation.slug,
     brandVersion: validation.brandVersion,
     rulesSchemaVersion: validation.rulesSchemaVersion,
@@ -678,6 +728,7 @@ function renderProjectKnowledge({
   id,
   kind,
   status,
+  mode,
   brand,
   brandVersion,
   surfaces,
@@ -696,7 +747,8 @@ function renderProjectKnowledge({
   id: string;
   kind: ProjectKnowledgeKind;
   status: RuleStatus;
-  brand: string;
+  mode: DirectionMode;
+  brand: string | null;
   brandVersion: unknown;
   surfaces: RuleSurface[];
   sourceProject: string;
@@ -716,6 +768,7 @@ function renderProjectKnowledge({
     `id: ${JSON.stringify(id)}`,
     `kind: ${JSON.stringify(kind)}`,
     `status: ${JSON.stringify(status)}`,
+    `mode: ${JSON.stringify(mode)}`,
     `brand: ${JSON.stringify(brand)}`,
     `brand_version: ${JSON.stringify(brandVersion)}`,
     `surfaces: ${JSON.stringify(surfaces)}`,
@@ -744,9 +797,21 @@ function renderProjectKnowledge({
 }
 
 async function learnProject(kind: ProjectKnowledgeKind) {
-  const validation = await validatePack();
-  if (!validation.valid) {
-    throw new Error(`Cannot update project knowledge until the Brand Pack validates:\n- ${validation.errors.join("\n- ")}`);
+  const mode = directionMode();
+  let knowledgeRuntimeVersion: string;
+  let knowledgeBrand: string | null = null;
+  let knowledgeBrandVersion: unknown = null;
+  if (mode === "brand-pack") {
+    const validation = await validatePack();
+    if (!validation.valid) {
+      throw new Error(`Cannot update brand-pack project knowledge until the Brand Pack validates:\n- ${validation.errors.join("\n- ")}`);
+    }
+    knowledgeRuntimeVersion = validation.runtimeVersion;
+    knowledgeBrand = validation.slug;
+    knowledgeBrandVersion = validation.brandVersion;
+  } else {
+    if (option("brand")) throw new Error("Do not use --brand with --mode brand-pending.");
+    knowledgeRuntimeVersion = await runtimeVersion();
   }
 
   const id = requiredOption("id");
@@ -804,8 +869,9 @@ async function learnProject(kind: ProjectKnowledgeKind) {
     id,
     kind,
     status,
-    brand: validation.slug,
-    brandVersion: validation.brandVersion,
+    mode,
+    brand: knowledgeBrand,
+    brandVersion: knowledgeBrandVersion,
     surfaces,
     sourceProject,
     ...(sourcePath ? { sourcePath } : {}),
@@ -824,9 +890,10 @@ async function learnProject(kind: ProjectKnowledgeKind) {
     return {
       scope: "project",
       kind,
-      runtimeVersion: validation.runtimeVersion,
-      slug: validation.slug,
-      brandVersion: validation.brandVersion,
+      runtimeVersion: knowledgeRuntimeVersion,
+      mode,
+      slug: knowledgeBrand,
+      brandVersion: knowledgeBrandVersion,
       changed: false,
       projectRoot,
       relativePath,
@@ -838,9 +905,10 @@ async function learnProject(kind: ProjectKnowledgeKind) {
   return {
     scope: "project",
     kind,
-    runtimeVersion: validation.runtimeVersion,
-    slug: validation.slug,
-    brandVersion: validation.brandVersion,
+    runtimeVersion: knowledgeRuntimeVersion,
+    mode,
+    slug: knowledgeBrand,
+    brandVersion: knowledgeBrandVersion,
     changed: true,
     projectRoot,
     relativePath,
@@ -854,6 +922,9 @@ async function learn() {
 
   const requestedKind = option("kind")?.trim();
   if (scope === "brand") {
+    if (directionMode() !== "brand-pack") {
+      throw new Error("Brand-pending knowledge cannot be promoted to brand scope.");
+    }
     if (requestedKind && requestedKind !== "rule") {
       throw new Error("Only a rule can be promoted to the brand scope.");
     }

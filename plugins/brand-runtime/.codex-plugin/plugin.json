@@ -1,7 +1,7 @@
 {
   "name": "brand-runtime",
-  "version": "0.4.0",
-  "description": "Direct branded work from private Brand Packs with project-specific design direction, curated stack guidance, and project-local learning.",
+  "version": "0.4.1",
+  "description": "Direct official Brand Packs or provisional brand-pending work with project-specific design direction, stack guidance, and local learning.",
   "author": {
     "name": "smartscaile.",
     "url": "https://brand.smartscaile.com.br"
@@ -16,8 +16,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Brand Runtime",
-    "shortDescription": "Apply Brand Packs and maintain Brand Runtime.",
-    "longDescription": "Brand Runtime validates external Brand Packs, discovers the deliverable, translates brand truth into a project-specific design direction, guides stack selection, records project-local learnings and patterns, and promotes only explicit lasting rules to the selected brand.",
+    "shortDescription": "Direct Brand Packs or provisional projects.",
+    "longDescription": "Brand Runtime validates external Brand Packs for official identity or directs explicitly provisional brand-pending projects without claiming brand compliance. It discovers the deliverable, creates project-specific design direction, guides stack selection, records project-local learning, and promotes only explicit lasting rules from a validated brand.",
     "developerName": "smartscaile.",
     "category": "Productivity",
     "capabilities": [
@@ -25,6 +25,7 @@
       "Write"
     ],
     "defaultPrompt": [
+      ">>brand start --project <name-or-path>",
       ">>brand start --project <name-or-path> --brand <installed-slug>",
       ">>brand <installed-slug> create a branded document.",
       ">>brand <installed-slug> define this project's design direction.",

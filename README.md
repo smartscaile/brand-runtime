@@ -1,6 +1,6 @@
 # Brand Runtime
 
-A universal plugin for applying private Brand Packs from one client-owned library in Codex and Claude Code.
+A universal brand and interface director for validated private Brand Packs and explicitly provisional projects in Codex and Claude Code.
 
 Published by **smartscaile.**
 
@@ -30,7 +30,9 @@ To prepare a project before branded work, invoke:
 >>brand start --project <name-or-path> --brand <slug>
 ```
 
-`--project` is an optional discovery hint. `--brand` selects a Brand Pack and may be omitted only when exactly one pack is available. Brand Runtime uses the workspace reported by the host to propose a project, then asks the user to confirm its name and absolute path before inspecting or changing it. It accepts arbitrary client directory layouts and never assumes that the workspace root is the project.
+`--project` is an optional discovery hint. `--brand` explicitly selects a Brand Pack; when it is omitted, Brand Runtime audits the confirmed project before choosing `brand-pack` or `brand-pending`. Brand Runtime uses the workspace reported by the host to propose a project, then asks the user to confirm its name and absolute path before inspecting or changing it. It accepts arbitrary client directory layouts and never assumes that the workspace root is the project.
+
+`brand-pack` is required to apply or claim an official identity. `brand-pending` keeps Brand Runtime active for a project that has no official pack: direction and tokens remain provisional, project-local, and make no brand-compliance claim.
 
 On first use, if the plugin cannot find a project-local `brand/` folder or a saved user configuration, it asks for the absolute path to the folder named `brand` downloaded from Brand Portal. Configure the containing folder, not one Brand Pack:
 

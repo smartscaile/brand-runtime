@@ -29,7 +29,7 @@ Markdown is the source of truth for project knowledge because context, reasoning
 
 ## Authority
 
-- Treat an active project rule as binding only inside its project and only when it remains compatible with the selected Brand Pack.
+- Treat an active project rule as binding only inside its project and only when it remains compatible with the selected direction mode. Reconcile `brand-pending` knowledge when a Brand Pack arrives.
 - Treat learnings and patterns as advisory evidence.
 - Keep one-off deliverable changes in the implementation or design direction unless the user asks to remember them.
 - Never promote project knowledge to the brand automatically.
@@ -44,6 +44,7 @@ Use one Markdown file per stable id. Preserve `created_at`, update `updated_at`,
 id: "editorial-hero"
 kind: "pattern"
 status: "active"
+mode: "brand-pack"
 brand: "example-brand"
 brand_version: "1.0.0"
 surfaces: ["site"]
@@ -89,7 +90,7 @@ When reusing a pattern:
 
 1. Read the source pattern and its evidence.
 2. Validate that its purpose fits the current deliverable.
-3. Check it against the current Brand Pack, surface, content, stack, and constraints.
+3. Check it against the current direction mode, Brand Pack when present, surface, content, stack, and constraints.
 4. Adapt rather than copy its identity or implementation blindly.
 5. Record the source project and source path in the target design direction.
 6. Create a target-project pattern only when the user asks to retain the adaptation.
@@ -107,3 +108,5 @@ A reference to another project is provenance, not inheritance. The target projec
 7. Re-read the resulting file and reconcile the design direction when the new knowledge changes an active decision.
 
 When the intended scope is unclear, ask whether it is deliverable-only, project-level, or a lasting rule for the brand.
+
+For `brand-pending`, store `mode: "brand-pending"`, `brand: null`, and `brand_version: null`. Keep the knowledge project-local and never promote it to brand scope until a real Brand Pack exists and the rule is explicitly re-evaluated.
