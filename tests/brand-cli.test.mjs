@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
@@ -91,17 +91,19 @@ async function createBrandFixture() {
   return { projectRoot, brandRoot };
 }
 
-test("reports runtime version and persists explicit client rules independently", async () => {
+test("reports runtime version and promotes explicit brand rules independently", async () => {
   const fixture = await createBrandFixture();
   try {
     const initial = output(run(fixture.projectRoot, "validate", ["--brand", "checkgrow"]));
-    assert.match(initial.runtimeVersion, /^0\.3\.0(?:\+codex\.[a-z0-9.-]+)?$/);
+    assert.match(initial.runtimeVersion, /^0\.4\.0(?:\+codex\.[a-z0-9.-]+)?$/);
     assert.equal(initial.brandVersion, "0.5.3");
     assert.equal(initial.rulesSchemaVersion, "1.0.0");
     assert.equal(initial.rulesRevision, 0);
     assert.equal(initial.valid, true);
 
     const learnArgs = [
+      "--scope", "brand",
+      "--kind", "rule",
       "--brand", "checkgrow",
       "--id", "editorial.no-rounded-left-rule",
       "--surface", "document",
@@ -123,14 +125,19 @@ test("reports runtime version and persists explicit client rules independently",
       "--surface", "document",
     ]));
     assert.deepEqual(documentContext.precedence, [
-      "active client rules",
+      "active brand rules",
       "immutable Brand Pack",
       "universal design foundation",
-      "project application decisions",
+      "compatible project direction and rules",
     ]);
     assert.equal(documentContext.projectDesignDirection, "docs/design/design-direction.md");
+    assert.equal(documentContext.projectKnowledge.root, fixture.projectRoot);
+    assert.deepEqual(documentContext.projectKnowledge.rules, []);
+    assert.deepEqual(documentContext.projectKnowledge.learnings, []);
+    assert.deepEqual(documentContext.projectKnowledge.patterns, []);
     assert.equal(documentContext.clientRules.length, 1);
     assert.equal(documentContext.clientRules[0].id, "editorial.no-rounded-left-rule");
+    assert.deepEqual(documentContext.brandRules, documentContext.clientRules);
 
     const siteContext = output(run(fixture.projectRoot, "context", [
       "--brand", "checkgrow",
@@ -159,7 +166,128 @@ test("reports runtime version and persists explicit client rules independently",
   }
 });
 
-test("rejects an invalid client-owned rules layer", async () => {
+test("stores explicit rules, learnings, and patterns as project-local Markdown", async () => {
+  const fixture = await createBrandFixture();
+  try {
+    const references = resolve(fixture.projectRoot, "docs/design/references");
+    await mkdir(references, { recursive: true });
+    await writeFile(resolve(references, "editorial-hero.png"), "fixture");
+
+    const patternArgs = [
+      "--scope", "project",
+      "--kind", "pattern",
+      "--brand", "checkgrow",
+      "--id", "site.editorial-hero",
+      "--title", "Editorial hero",
+      "--surface", "site",
+      "--instruction", "Use an asymmetric editorial hero with one dominant property image and a compact qualification action.",
+      "--feedback", "The client approved this structure as the strongest direction for the funnel.",
+      "--rationale", "The composition establishes hierarchy without relying on repetitive cards.",
+      "--use-when", "The opening must establish property value and qualification intent together.",
+      "--avoid-when", "The page lacks a strong approved image or the primary task is dense product operation.",
+      "--evidence", "docs/design/references/editorial-hero.png",
+    ];
+    const pattern = output(run(fixture.projectRoot, "learn", patternArgs));
+    assert.equal(pattern.scope, "project");
+    assert.equal(pattern.kind, "pattern");
+    assert.equal(pattern.changed, true);
+    assert.equal(pattern.relativePath, "docs/design/patterns/site.editorial-hero.md");
+
+    const patternDocument = await readFile(resolve(fixture.projectRoot, pattern.relativePath), "utf8");
+    assert.match(patternDocument, /kind: "pattern"/);
+    assert.match(patternDocument, /brand: "checkgrow"/);
+    assert.match(patternDocument, /## Use when/);
+    assert.match(patternDocument, /## Avoid when/);
+    assert.match(patternDocument, /docs\/design\/references\/editorial-hero\.png/);
+
+    const duplicate = output(run(fixture.projectRoot, "learn", patternArgs));
+    assert.equal(duplicate.changed, false);
+
+    const projectRule = output(run(fixture.projectRoot, "learn", [
+      "--scope", "project",
+      "--kind", "rule",
+      "--brand", "checkgrow",
+      "--id", "site.no-generic-card-grid",
+      "--surface", "site",
+      "--instruction", "Do not repeat a generic card grid across funnel sections.",
+      "--feedback", "The repeated card anatomy made this project feel generic.",
+    ]));
+    assert.equal(projectRule.relativePath, "docs/design/rules/site.no-generic-card-grid.md");
+
+    const learning = output(run(fixture.projectRoot, "learn", [
+      "--scope", "project",
+      "--kind", "learning",
+      "--brand", "checkgrow",
+      "--id", "site.image-hierarchy",
+      "--surface", "site",
+      "--instruction", "A single large property image creates stronger hierarchy than several equal thumbnails.",
+      "--feedback", "The client preferred the art-directed composition during review.",
+    ]));
+    assert.equal(learning.relativePath, "docs/design/learnings/site.image-hierarchy.md");
+
+    await assert.rejects(access(resolve(fixture.brandRoot, "brand.rules.json")));
+
+    const projectContext = output(run(fixture.projectRoot, "context", [
+      "--brand", "checkgrow",
+      "--surface", "site",
+    ]));
+    assert.deepEqual(projectContext.projectKnowledge.rules, ["docs/design/rules/site.no-generic-card-grid.md"]);
+    assert.deepEqual(projectContext.projectKnowledge.learnings, ["docs/design/learnings/site.image-hierarchy.md"]);
+    assert.deepEqual(projectContext.projectKnowledge.patterns, ["docs/design/patterns/site.editorial-hero.md"]);
+  } finally {
+    await rm(fixture.projectRoot, { recursive: true, force: true });
+  }
+});
+
+test("requires explicit learning scope and complete pattern conditions", async () => {
+  const fixture = await createBrandFixture();
+  try {
+    const missingScope = run(fixture.projectRoot, "learn", [
+      "--kind", "learning",
+      "--brand", "checkgrow",
+      "--id", "site.example",
+      "--instruction", "Example.",
+      "--feedback", "Example.",
+    ]);
+    assert.equal(missingScope.status, 1);
+    assert.match(missingScope.stderr, /--scope/);
+
+    const incompletePattern = run(fixture.projectRoot, "learn", [
+      "--scope", "project",
+      "--kind", "pattern",
+      "--brand", "checkgrow",
+      "--id", "site.example",
+      "--instruction", "Example.",
+      "--feedback", "Example.",
+    ]);
+    assert.equal(incompletePattern.status, 1);
+    assert.match(incompletePattern.stderr, /--use-when and --avoid-when/);
+
+    const invalidPromotion = run(fixture.projectRoot, "learn", [
+      "--scope", "brand",
+      "--kind", "pattern",
+      "--brand", "checkgrow",
+    ]);
+    assert.equal(invalidPromotion.status, 1);
+    assert.match(invalidPromotion.stderr, /Only a rule can be promoted/);
+
+    const unsafeEvidence = run(fixture.projectRoot, "learn", [
+      "--scope", "project",
+      "--kind", "learning",
+      "--brand", "checkgrow",
+      "--id", "site.unsafe",
+      "--instruction", "Example.",
+      "--feedback", "Example.",
+      "--evidence", "../outside.png",
+    ]);
+    assert.equal(unsafeEvidence.status, 1);
+    assert.match(unsafeEvidence.stderr, /docs\/design\/references/);
+  } finally {
+    await rm(fixture.projectRoot, { recursive: true, force: true });
+  }
+});
+
+test("rejects an invalid brand-owned rules layer", async () => {
   const fixture = await createBrandFixture();
   try {
     await writeFile(resolve(fixture.brandRoot, "brand.rules.json"), `${JSON.stringify({
@@ -218,6 +346,15 @@ test("persists the brand folder once and discovers sibling Brand Packs dynamical
     assert.equal(selected.brandRoot, brandRoot);
     assert.equal(selected.brandRootSource, "user-config");
     assert.deepEqual(selected.availableBrands, ["checkgrow", "wascen"]);
+
+    const projectContext = output(runFrom(consumerRoot, "context", [
+      "--brand", "checkgrow",
+      "--surface", "site",
+      "--project-root", consumerRoot,
+    ], environment));
+    assert.equal(projectContext.slug, "checkgrow");
+    assert.equal(projectContext.projectKnowledge.root, consumerRoot);
+    assert.equal(projectContext.projectKnowledge.designDirection.present, false);
 
     const ambiguous = runFrom(consumerRoot, "status", [], environment);
     assert.equal(ambiguous.status, 1);

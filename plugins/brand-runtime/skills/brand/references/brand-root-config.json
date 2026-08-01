@@ -35,7 +35,7 @@
   },
   "resolutionPrecedence": [
     "explicit --brand-root",
-    "explicit --project-root/brand",
+    "valid explicit --project-root/brand, otherwise continue discovery from that project",
     "BRAND_RUNTIME_BRAND_ROOT",
     "nearest project-local brand folder",
     "saved user configuration"
@@ -56,5 +56,5 @@
     "When multiple packs are discovered, require one explicit slug for the current task.",
     "When another sibling pack is added later, discover it automatically without rewriting configuration."
   ],
-  "writeBoundary": "The learn command may update brand.rules.json inside the selected pack. Request narrowly scoped write access to the configured brand folder when the runtime sandbox requires it; never create a hidden editable copy."
+  "writeBoundary": "Only learn --scope brand may update brand.rules.json inside the selected pack. Project learning writes to the explicit target project's docs/design tree. Request narrowly scoped write access when the runtime sandbox requires it; never create a hidden editable copy."
 }

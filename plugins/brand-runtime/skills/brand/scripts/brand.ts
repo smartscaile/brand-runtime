@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
-import { access, readFile, rename, rm, writeFile } from "node:fs/promises";
-import { dirname, isAbsolute, relative, resolve } from "node:path";
+import { access, mkdir, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
+import { basename, dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   readBrandRootConfig,
@@ -13,6 +13,8 @@ type Surface = "site" | "product" | "presentation" | "document";
 type RuleSurface = Surface | "all";
 type RuleSeverity = "critical" | "high" | "medium" | "low";
 type RuleStatus = "active" | "deprecated";
+type LearnScope = "project" | "brand";
+type ProjectKnowledgeKind = "rule" | "learning" | "pattern";
 
 type ClientRule = {
   id: string;
@@ -42,6 +44,13 @@ const SURFACES: Surface[] = ["site", "product", "presentation", "document"];
 const RULE_SURFACES: RuleSurface[] = ["all", ...SURFACES];
 const RULE_SEVERITIES: RuleSeverity[] = ["critical", "high", "medium", "low"];
 const RULE_STATUSES: RuleStatus[] = ["active", "deprecated"];
+const LEARN_SCOPES: LearnScope[] = ["project", "brand"];
+const PROJECT_KNOWLEDGE_KINDS: ProjectKnowledgeKind[] = ["rule", "learning", "pattern"];
+const PROJECT_KNOWLEDGE_DIRECTORIES: Record<ProjectKnowledgeKind, string> = {
+  rule: "docs/design/rules",
+  learning: "docs/design/learnings",
+  pattern: "docs/design/patterns",
+};
 const args = process.argv.slice(2);
 const command = args[0] ?? "status";
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
@@ -123,6 +132,53 @@ function packPath(root: string, relativePath: string): string {
     throw new Error(`Brand Pack path escapes its root: ${relativePath}`);
   }
   return absolutePath;
+}
+
+function projectPath(root: string, relativePath: string): string {
+  if (!relativePath || isAbsolute(relativePath)) throw new Error(`Invalid project path "${relativePath}".`);
+  const absolutePath = resolve(root, relativePath);
+  const fromRoot = relative(root, absolutePath);
+  if (!fromRoot || fromRoot.startsWith("..") || isAbsolute(fromRoot)) {
+    throw new Error(`Project path escapes its root: ${relativePath}`);
+  }
+  return absolutePath;
+}
+
+async function resolveProjectRoot(): Promise<string> {
+  const root = resolve(process.cwd(), option("project-root") ?? ".");
+  try {
+    if (!(await stat(root)).isDirectory()) throw new Error("not a directory");
+  } catch {
+    throw new Error(`Project root does not exist or is not a directory: ${root}`);
+  }
+  return root;
+}
+
+async function markdownFiles(root: string, relativeDirectory: string): Promise<string[]> {
+  const directory = projectPath(root, relativeDirectory);
+  try {
+    return (await readdir(directory, { withFileTypes: true }))
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+      .map((entry) => `${relativeDirectory}/${entry.name}`)
+      .sort();
+  } catch {
+    return [];
+  }
+}
+
+async function inspectProjectKnowledge(root: string) {
+  const designDirection = "docs/design/design-direction.md";
+  return {
+    root,
+    designDirection: {
+      path: designDirection,
+      present: await exists(projectPath(root, designDirection)),
+    },
+    rules: await markdownFiles(root, PROJECT_KNOWLEDGE_DIRECTORIES.rule),
+    learnings: await markdownFiles(root, PROJECT_KNOWLEDGE_DIRECTORIES.learning),
+    patterns: await markdownFiles(root, PROJECT_KNOWLEDGE_DIRECTORIES.pattern),
+    evidenceDirectory: "docs/design/references",
+  };
 }
 
 function resolveBrandsRoot() {
@@ -425,6 +481,7 @@ async function context() {
   const source = await json(resolve(root, "brand.source.json"));
   const tokens = await json(resolve(root, "tokens.json"));
   const surfaces = source.surfaces as Record<string, unknown> | undefined;
+  const projectRoot = await resolveProjectRoot();
   const clientRulesDocument = await validateClientRules(root, validation.slug, []);
   const clientRules = clientRulesDocument?.rules.filter((rule) =>
     rule.status === "active" && (rule.surfaces.includes("all") || rule.surfaces.includes(surface))) ?? [];
@@ -438,13 +495,15 @@ async function context() {
     rulesRevision: validation.rulesRevision,
     surface,
     precedence: [
-      "active client rules",
+      "active brand rules",
       "immutable Brand Pack",
       "universal design foundation",
-      "project application decisions",
+      "compatible project direction and rules",
     ],
     projectDesignDirection: "docs/design/design-direction.md",
+    projectKnowledge: await inspectProjectKnowledge(projectRoot),
     rules: surfaces?.[surface] ?? [],
+    brandRules: clientRules,
     clientRules,
     identity: source.identity,
     voice: source.voice,
@@ -467,19 +526,24 @@ function ruleComparable(rule: ClientRule): Omit<ClientRule, "createdAt" | "updat
 }
 
 async function writeJsonAtomic(path: string, value: unknown): Promise<void> {
-  const temporary = resolve(dirname(path), `.${CLIENT_RULES_FILE}.${randomUUID()}.tmp`);
+  await writeTextAtomic(path, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+async function writeTextAtomic(path: string, value: string): Promise<void> {
+  await mkdir(dirname(path), { recursive: true });
+  const temporary = resolve(dirname(path), `.${basename(path)}.${randomUUID()}.tmp`);
   try {
-    await writeFile(temporary, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+    await writeFile(temporary, value, "utf8");
     await rename(temporary, path);
   } finally {
     await rm(temporary, { force: true });
   }
 }
 
-async function learn() {
+async function learnBrandRule() {
   const validation = await validatePack();
   if (!validation.valid) {
-    throw new Error(`Cannot update client rules until the Brand Pack validates:\n- ${validation.errors.join("\n- ")}`);
+    throw new Error(`Cannot update brand rules until the Brand Pack validates:\n- ${validation.errors.join("\n- ")}`);
   }
 
   const id = requiredOption("id");
@@ -542,6 +606,8 @@ async function learn() {
 
   if (existing && JSON.stringify(ruleComparable(existing)) === JSON.stringify(ruleComparable(nextRule))) {
     return {
+      scope: "brand",
+      kind: "rule",
       runtimeVersion: validation.runtimeVersion,
       slug: validation.slug,
       brandVersion: validation.brandVersion,
@@ -572,6 +638,8 @@ async function learn() {
   }
 
   return {
+    scope: "brand",
+    kind: "rule",
     runtimeVersion: updatedValidation.runtimeVersion,
     slug: updatedValidation.slug,
     brandVersion: updatedValidation.brandVersion,
@@ -581,6 +649,221 @@ async function learn() {
     path: rulesPath,
     rule: nextRule,
   };
+}
+
+function titleFromId(id: string): string {
+  return id
+    .split(/[.-]/u)
+    .filter(Boolean)
+    .map((part) => `${part[0]?.toUpperCase() ?? ""}${part.slice(1)}`)
+    .join(" ");
+}
+
+function frontmatterString(document: string, key: string): string | undefined {
+  const match = document.match(new RegExp(`^${key}:\\s*(.+)$`, "mu"));
+  if (!match?.[1]) return undefined;
+  try {
+    const value = JSON.parse(match[1]);
+    return typeof value === "string" ? value : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function markdownComparable(document: string): string {
+  return document.replace(/^updated_at:\s*.+$/mu, "updated_at: \"<ignored>\"");
+}
+
+function renderProjectKnowledge({
+  id,
+  kind,
+  status,
+  brand,
+  brandVersion,
+  surfaces,
+  sourceProject,
+  sourcePath,
+  createdAt,
+  updatedAt,
+  title,
+  instruction,
+  feedback,
+  rationale,
+  useWhen,
+  avoidWhen,
+  evidence,
+}: {
+  id: string;
+  kind: ProjectKnowledgeKind;
+  status: RuleStatus;
+  brand: string;
+  brandVersion: unknown;
+  surfaces: RuleSurface[];
+  sourceProject: string;
+  sourcePath?: string;
+  createdAt: string;
+  updatedAt: string;
+  title: string;
+  instruction: string;
+  feedback: string;
+  rationale?: string;
+  useWhen?: string;
+  avoidWhen?: string;
+  evidence: string[];
+}): string {
+  const lines = [
+    "---",
+    `id: ${JSON.stringify(id)}`,
+    `kind: ${JSON.stringify(kind)}`,
+    `status: ${JSON.stringify(status)}`,
+    `brand: ${JSON.stringify(brand)}`,
+    `brand_version: ${JSON.stringify(brandVersion)}`,
+    `surfaces: ${JSON.stringify(surfaces)}`,
+    `source_project: ${JSON.stringify(sourceProject)}`,
+    ...(sourcePath ? [`source_path: ${JSON.stringify(sourcePath)}`] : []),
+    `created_at: ${JSON.stringify(createdAt)}`,
+    `updated_at: ${JSON.stringify(updatedAt)}`,
+    "---",
+    "",
+    `# ${title}`,
+    "",
+    "## Instruction",
+    "",
+    instruction,
+    "",
+    "## Feedback",
+    "",
+    feedback,
+    ...(rationale ? ["", "## Rationale", "", rationale] : []),
+    ...(useWhen ? ["", "## Use when", "", useWhen] : []),
+    ...(avoidWhen ? ["", "## Avoid when", "", avoidWhen] : []),
+    ...(evidence.length ? ["", "## Evidence", "", ...evidence.map((path) => `- \`${path}\``)] : []),
+    "",
+  ];
+  return `${lines.join("\n")}\n`;
+}
+
+async function learnProject(kind: ProjectKnowledgeKind) {
+  const validation = await validatePack();
+  if (!validation.valid) {
+    throw new Error(`Cannot update project knowledge until the Brand Pack validates:\n- ${validation.errors.join("\n- ")}`);
+  }
+
+  const id = requiredOption("id");
+  assertRuleId(id);
+  const instruction = requiredOption("instruction");
+  const feedback = requiredOption("feedback");
+  const rationale = option("rationale")?.trim();
+  const useWhen = option("use-when")?.trim();
+  const avoidWhen = option("avoid-when")?.trim();
+  if (kind === "pattern" && (!useWhen || !avoidWhen)) {
+    throw new Error("Project patterns require --use-when and --avoid-when.");
+  }
+
+  const status = (option("status") ?? "active") as RuleStatus;
+  if (!RULE_STATUSES.includes(status)) throw new Error(`Invalid status "${status}".`);
+
+  const requestedSurfaces = splitValues(options("surface"));
+  const surfaces = (requestedSurfaces.length ? requestedSurfaces : ["all"]) as RuleSurface[];
+  for (const surface of surfaces) {
+    if (!RULE_SURFACES.includes(surface)) throw new Error(`Invalid project knowledge surface "${surface}".`);
+  }
+  if (surfaces.includes("all") && surfaces.length > 1) {
+    throw new Error("Use all by itself when project knowledge applies to every surface.");
+  }
+
+  const projectRoot = await resolveProjectRoot();
+  const evidence = splitValues(options("evidence"));
+  for (const evidencePath of evidence) {
+    if (!evidencePath.startsWith("docs/design/references/") || /[`\r\n]/u.test(evidencePath)) {
+      throw new Error(`Project evidence must use a safe path under docs/design/references/: ${evidencePath}`);
+    }
+    if (!(await exists(projectPath(projectRoot, evidencePath)))) {
+      throw new Error(`Project evidence file does not exist: ${evidencePath}`);
+    }
+  }
+
+  const sourcePath = option("source-path")?.trim();
+  if (sourcePath) {
+    const absoluteSource = isAbsolute(sourcePath) ? resolve(sourcePath) : projectPath(projectRoot, sourcePath);
+    if (!(await exists(absoluteSource))) throw new Error(`Source knowledge file does not exist: ${sourcePath}`);
+  }
+
+  const relativePath = `${PROJECT_KNOWLEDGE_DIRECTORIES[kind]}/${id}.md`;
+  const path = projectPath(projectRoot, relativePath);
+  const existingDocument = await exists(path) ? await readFile(path, "utf8") : undefined;
+  if (status === "deprecated" && !existingDocument) {
+    throw new Error("Only existing project knowledge can be deprecated.");
+  }
+
+  const now = new Date().toISOString();
+  const createdAt = existingDocument ? frontmatterString(existingDocument, "created_at") ?? now : now;
+  const title = (option("title")?.trim() || titleFromId(id)).replace(/[\r\n]+/gu, " ");
+  const sourceProject = (option("source-project")?.trim() || basename(projectRoot)).replace(/[\r\n]+/gu, " ");
+  const document = renderProjectKnowledge({
+    id,
+    kind,
+    status,
+    brand: validation.slug,
+    brandVersion: validation.brandVersion,
+    surfaces,
+    sourceProject,
+    ...(sourcePath ? { sourcePath } : {}),
+    createdAt,
+    updatedAt: now,
+    title,
+    instruction,
+    feedback,
+    ...(rationale ? { rationale } : {}),
+    ...(useWhen ? { useWhen } : {}),
+    ...(avoidWhen ? { avoidWhen } : {}),
+    evidence,
+  });
+
+  if (existingDocument && markdownComparable(existingDocument) === markdownComparable(document)) {
+    return {
+      scope: "project",
+      kind,
+      runtimeVersion: validation.runtimeVersion,
+      slug: validation.slug,
+      brandVersion: validation.brandVersion,
+      changed: false,
+      projectRoot,
+      relativePath,
+      path,
+    };
+  }
+
+  await writeTextAtomic(path, document);
+  return {
+    scope: "project",
+    kind,
+    runtimeVersion: validation.runtimeVersion,
+    slug: validation.slug,
+    brandVersion: validation.brandVersion,
+    changed: true,
+    projectRoot,
+    relativePath,
+    path,
+  };
+}
+
+async function learn() {
+  const scope = requiredOption("scope") as LearnScope;
+  if (!LEARN_SCOPES.includes(scope)) throw new Error(`Invalid learning scope "${scope}". Use project or brand.`);
+
+  const requestedKind = option("kind")?.trim();
+  if (scope === "brand") {
+    if (requestedKind && requestedKind !== "rule") {
+      throw new Error("Only a rule can be promoted to the brand scope.");
+    }
+    return learnBrandRule();
+  }
+
+  if (!requestedKind || !PROJECT_KNOWLEDGE_KINDS.includes(requestedKind as ProjectKnowledgeKind)) {
+    throw new Error("Project learning requires --kind rule|learning|pattern.");
+  }
+  return learnProject(requestedKind as ProjectKnowledgeKind);
 }
 
 async function configure() {

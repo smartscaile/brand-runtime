@@ -44,6 +44,6 @@
     "the saved configuration points to the containing folder named brand, never to one slug directory",
     "adding a valid sibling pack does not require a configuration change",
     "the universal plugin never stores client-specific identity or learned rules",
-    "client-owned rules use their own schema and revision and are not added to the immutable build manifest"
+    "promoted brand rules use their own schema and revision and are not added to the immutable build manifest"
   ]
 }

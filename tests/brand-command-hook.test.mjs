@@ -34,8 +34,8 @@ test("activates Brand Runtime only for >>brand and resolves Brand Packs", async 
 
     const explicit = context(run({ cwd: root, prompt: ">>brand checkgrow create a document" }));
     assert.match(explicit, /BRAND RUNTIME ACTIVE/);
-    assert.match(explicit, /Brand Runtime: v0\.3\.0/);
-    assert.match(explicit, /Brand Pack v0\.5\.1; client rules r3/);
+    assert.match(explicit, /Brand Runtime: v0\.4\.0/);
+    assert.match(explicit, /Brand Pack v0\.5\.1; brand rules r3/);
     assert.match(explicit, /brand\/checkgrow/);
     assert.match(explicit, /validate --brand checkgrow/);
     assert.match(explicit, /context --brand checkgrow --surface/);
@@ -43,6 +43,18 @@ test("activates Brand Runtime only for >>brand and resolves Brand Packs", async 
 
     const automatic = context(run({ cwd: root, prompt: ">>brand" }));
     assert.match(automatic, /brand\/checkgrow/);
+
+    const start = context(run({
+      cwd: root,
+      prompt: ">>brand start --project imovel-invest-funnel --brand checkgrow",
+    }));
+    assert.match(start, /PROJECT START REQUESTED/);
+    assert.match(start, /Project hint: imovel-invest-funnel/);
+    assert.match(start, new RegExp(`Workspace reported by host: ${root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
+    assert.match(start, /ask the user to confirm that exact project/);
+    assert.match(start, /before following any Brand Pack selection/);
+    assert.match(start, /Brand Pack v0\.5\.1/);
+    assert.doesNotMatch(start, /Requested: start/);
 
     const missing = context(run({ cwd: root, prompt: ">>brand missing" }));
     assert.match(missing, /could not be resolved/);
@@ -86,6 +98,14 @@ test("configures one global brand folder and discovers multiple Brand Packs", as
     assert.match(explicit, /user-config/);
     assert.match(explicit, /Installed Brand Packs: checkgrow, wascen/);
     assert.match(explicit, /--brand-root/);
+
+    const start = context(run({
+      cwd: consumerRoot,
+      prompt: ">>brand start --project \"Client Workspace/Landing Page\" --brand checkgrow",
+    }, environment));
+    assert.match(start, /PROJECT START REQUESTED/);
+    assert.match(start, /Project hint: Client Workspace\/Landing Page/);
+    assert.match(start, /Brand Pack v0\.5\.3/);
   } finally {
     await rm(libraryRoot, { recursive: true, force: true });
     await rm(consumerRoot, { recursive: true, force: true });

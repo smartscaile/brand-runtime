@@ -37,6 +37,8 @@ const runtimeUpdate = await readJson("plugins/brand-runtime/skills/brand/referen
 const skill = await readText("plugins/brand-runtime/skills/brand/SKILL.md");
 const foundation = await readText("plugins/brand-runtime/skills/brand/references/design-foundation.md");
 const directionTemplate = await readText("plugins/brand-runtime/skills/brand/references/design-direction-template.md");
+const projectLearning = await readText("plugins/brand-runtime/skills/brand/references/project-learning.md");
+const stackSelection = await readText("plugins/brand-runtime/skills/brand/references/stack-selection.md");
 const surfaceGuidelines = await readText("plugins/brand-runtime/skills/brand/references/surface-guidelines.md");
 
 expect(codexMarketplace.name === "smartscaile", "Codex marketplace publisher must be smartscaile.");
@@ -57,14 +59,21 @@ expect(baseVersion(claudePlugin.version) === packageManifest.version, "Claude pl
 expect(skill.split("\n").length < 500, "Brand SKILL.md must stay below 500 lines.");
 expect(skill.startsWith("---\nname: brand\ndescription:"), "Brand SKILL.md must declare canonical frontmatter.");
 expect(skill.includes("Require a usable Brand Pack for every branded task"), "Brand skill must require a Brand Pack for branded work.");
+expect(skill.includes(">>brand start [--project <name-or-path>] [--brand <slug>]"), "Brand skill must define the project-start command.");
+expect(skill.includes("A host working directory and an explicit `--project` hint still require confirmation"), "Brand skill must require exact project confirmation.");
+expect(skill.includes("never require `projects/`"), "Brand skill must remain independent of client directory layout.");
 expect(skill.includes("A technically valid pack is still unusable"), "Brand skill must block a Brand Pack that belongs to another represented brand.");
-expect(skill.includes("active client rules returned by `context`"), "Brand skill must define rule precedence.");
+expect(skill.includes("### Step 2 — Discover the deliverable"), "Brand skill must discover the deliverable before direction.");
+expect(skill.includes("active brand rules returned by `context`"), "Brand skill must define rule precedence.");
 expect(skill.includes("stop and request clarification instead of inventing"), "Brand skill must block unresolved rule conflicts.");
 expect(skill.includes("references/design-foundation.md"), "Brand skill must load the universal design foundation.");
 expect(skill.includes("docs/design/design-direction.md"), "Brand skill must create a project-local design direction.");
-expect(skill.includes("## Client learning"), "Brand skill must retain the explicit client-learning boundary.");
+expect(skill.includes("## Project learning"), "Brand skill must retain project-first learning.");
+expect(skill.includes("--scope project"), "Brand skill must write project knowledge explicitly.");
+expect(skill.includes("## Brand rule promotion"), "Brand skill must retain explicit brand-rule promotion.");
+expect(skill.includes("references/stack-selection.md"), "Brand skill must route stack decisions to curated guidance.");
 expect(skill.includes("## Runtime update"), "Brand skill must retain the runtime-update boundary.");
-expect(skill.includes("### 5. Validate the result"), "Brand skill must contain its canonical quality gate.");
+expect(skill.includes("### Step 7 — Validate and refine"), "Brand skill must contain its canonical quality gate.");
 
 expect(foundation.includes("identity-neutral"), "Design foundation must declare its identity-neutral boundary.");
 expect(foundation.includes("Never treat this foundation as a fallback Brand Pack"), "Design foundation must not replace a Brand Pack.");
@@ -73,6 +82,14 @@ expect(!/smartscaile|checkgrow|wascen/i.test(foundation), "Design foundation mus
 expect(directionTemplate.includes("### Sourced from the Brand Pack"), "Design direction must separate sourced truth from project decisions.");
 expect(directionTemplate.includes("### Project decisions"), "Design direction must identify project-owned decisions.");
 expect(directionTemplate.includes("brand_version:"), "Design direction must record Brand Pack version provenance.");
+expect(directionTemplate.includes("brand_rules_revision:"), "Design direction must record brand-rules provenance.");
+expect(directionTemplate.includes("## Stack and implementation"), "Design direction must record the selected stack and fallbacks.");
+expect(projectLearning.includes("Markdown is the source of truth for project knowledge"), "Project learning must use Markdown as the contextual source of truth.");
+expect(projectLearning.includes("A reference to another project is provenance, not inheritance"), "Cross-project reuse must not create implicit inheritance.");
+expect(stackSelection.includes("Treat the catalog as curated options, never as universal defaults"), "Stack guidance must remain consultative.");
+for (const library of ["React Bits", "Uiverse", "Motion", "Anime.js", "GSAP", "Three.js"]) {
+  expect(stackSelection.includes(`### ${library}`), `Stack selection must describe ${library}.`);
+}
 
 for (const surface of ["## Site", "## Product", "## Document", "## Presentation"]) {
   expect(surfaceGuidelines.includes(surface), `Surface guidelines must include ${surface.slice(3)}.`);
@@ -108,6 +125,8 @@ for (const path of [
   "plugins/brand-runtime/skills/brand/references/client-rules-contract.json",
   "plugins/brand-runtime/skills/brand/references/design-foundation.md",
   "plugins/brand-runtime/skills/brand/references/design-direction-template.md",
+  "plugins/brand-runtime/skills/brand/references/project-learning.md",
+  "plugins/brand-runtime/skills/brand/references/stack-selection.md",
   "plugins/brand-runtime/skills/brand/references/surface-guidelines.md",
   "plugins/brand-runtime/skills/brand/references/runtime-update.json",
   "plugins/brand-runtime/skills/brand/scripts/brand.ts",

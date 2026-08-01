@@ -24,6 +24,14 @@ Start a new session after installation and invoke:
 >>brand <slug>
 ```
 
+To prepare a project before branded work, invoke:
+
+```text
+>>brand start --project <name-or-path> --brand <slug>
+```
+
+`--project` is an optional discovery hint. `--brand` selects a Brand Pack and may be omitted only when exactly one pack is available. Brand Runtime uses the workspace reported by the host to propose a project, then asks the user to confirm its name and absolute path before inspecting or changing it. It accepts arbitrary client directory layouts and never assumes that the workspace root is the project.
+
 On first use, if the plugin cannot find a project-local `brand/` folder or a saved user configuration, it asks for the absolute path to the folder named `brand` downloaded from Brand Portal. Configure the containing folder, not one Brand Pack:
 
 ```text
@@ -34,7 +42,7 @@ On first use, if the plugin cannot find a project-local `brand/` folder or a sav
 
 The plugin stores only that absolute folder path in the user's standard configuration directory. It rescans direct children on every invocation, so adding another Brand Pack later requires no reconfiguration. With one installed pack, `>>brand` may resolve it automatically; with multiple packs, use `>>brand <slug>`.
 
-Activation reports three independent compatibility signals: the installed Brand Runtime version, the immutable Brand Pack version, and the client-owned rules revision.
+Activation reports three independent compatibility signals: the installed Brand Runtime version, the immutable Brand Pack version, and the client-owned brand-rules revision.
 
 Native fallbacks are `$brand` in Codex and `/brand-runtime:brand` in Claude Code.
 
@@ -47,7 +55,7 @@ codex plugin marketplace upgrade smartscaile
 codex plugin add brand-runtime@smartscaile
 ```
 
-Plugin updates replace the cached universal runtime. They do not modify client-owned `brand.rules.json`, `references/feedback/`, or the saved brand folder path.
+Plugin updates replace the cached universal runtime. They do not modify brand-owned `brand.rules.json`, `references/feedback/`, project knowledge, or the saved brand folder path.
 
 ## Update in Claude Code
 
@@ -66,7 +74,7 @@ claude plugin marketplace update smartscaile
 claude plugin update brand-runtime@smartscaile
 ```
 
-Then run `/reload-plugins` in the active Claude Code session or start a new session. Updating Brand Runtime never modifies Brand Packs, the saved brand folder path, or client-owned rules.
+Then run `/reload-plugins` in the active Claude Code session or start a new session. Updating Brand Runtime never modifies Brand Packs, the saved brand folder path, project knowledge, or brand rules.
 
 ## Client-equivalent test
 
@@ -86,7 +94,9 @@ The activation context must reference the skill inside the installed plugin cach
 - `.agents/plugins/marketplace.json`: Codex marketplace manifest.
 - `.claude-plugin/marketplace.json`: Claude Code marketplace manifest.
 
-The plugin never contains client identity. Brand-specific tokens, assets, guidelines, and references live only in the separate `<brand-folder>/<slug>` Brand Pack. The plugin contributes only an identity-neutral design foundation and a workflow that translates the selected pack into a project-local `docs/design/design-direction.md`. Explicit lasting feedback is stored in `<brand-folder>/<slug>/brand.rules.json` and becomes available immediately through the plugin's `context` command; it never requires a plugin release.
+The plugin never contains client identity or mutable project knowledge. Brand-specific tokens, assets, guidelines, and references live only in the separate `<brand-folder>/<slug>` Brand Pack. The plugin contributes an identity-neutral design foundation, a director workflow, and optional stack guidance that translate the selected pack into a project-local `docs/design/design-direction.md`.
+
+Explicit learning is project-first. Rules, learnings, patterns, and their evidence live under `docs/design/` in the target project as structured Markdown. The `context` command reports the available project knowledge without loading unrelated entries. Only a normative rule explicitly confirmed for future projects of the selected brand is promoted to `<brand-folder>/<slug>/brand.rules.json`.
 
 ## Internal release check
 

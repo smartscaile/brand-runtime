@@ -6,7 +6,7 @@ Use this structure for `docs/design/design-direction.md`. Keep the document conc
 ---
 brand: <slug>
 brand_version: <version>
-client_rules_revision: <revision>
+brand_rules_revision: <revision>
 surface: <site|product|presentation|document>
 status: <draft|approved>
 updated_at: <ISO-8601>
@@ -31,13 +31,20 @@ updated_at: <ISO-8601>
 - Voice rules:
 - Declared assets:
 - Required tokens:
-- Active client rules:
+- Active brand rules:
 
 ### Project decisions
 
 - Decisions introduced for this surface:
 - Explicit exceptions and approvals:
 - Open questions:
+
+### Project knowledge consulted
+
+- Active project rules:
+- Relevant learnings:
+- Reused patterns and source projects:
+- Adaptations made for this Brand Pack:
 
 ## Visual thesis
 
@@ -82,6 +89,17 @@ Describe in one or two sentences how this project should feel and the compositio
 - State transitions:
 - Reduced-motion behavior:
 
+## Stack and implementation
+
+- Existing stack:
+- Selected stack:
+- Why it fits this deliverable:
+- Alternatives considered and not selected:
+- Components or libraries approved by the user:
+- Animation owner and selected modules or plugins:
+- Accessibility and performance implications:
+- Fallbacks:
+
 ## Surface architecture
 
 Describe the ordered compositions or screens. For each one, state its thesis, principal evidence or content, visual treatment, and action.
@@ -105,4 +123,4 @@ List concrete treatments that would contradict this direction, including repetit
 - Never add a new brand truth through this document.
 - Do not turn a project preference into a lasting client rule unless the user explicitly requests it.
 - When machine-readable tokens are necessary, create a project-local companion such as `docs/design/design-tokens.json` or the project's established token file and reference it from the direction.
-- Update metadata when the Brand Pack version or client-rules revision changes, then reconcile affected decisions instead of regenerating the document blindly.
+- Update metadata when the Brand Pack version or brand-rules revision changes, then reconcile affected decisions instead of regenerating the document blindly.

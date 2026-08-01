@@ -45,7 +45,7 @@
     "Never add the marketplace again during an update when it is already configured.",
     "Never edit a runtime plugin cache manually.",
     "Never modify, replace, merge, regenerate, or delete Brand Packs during a Brand Runtime update.",
-    "Never modify the saved brand folder path, brand.rules.json, or references/feedback/ during a Brand Runtime update.",
+    "Never modify the saved brand folder path, brand.rules.json, references/feedback/, or project-owned design knowledge during a Brand Runtime update.",
     "Never claim the running session loaded the new version before its reload boundary."
   ]
 }

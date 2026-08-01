@@ -1,8 +1,8 @@
 {
   "name": "brand-runtime",
   "displayName": "Brand Runtime",
-  "version": "0.3.0",
-  "description": "Apply private Brand Packs through a universal design foundation and project-specific design direction in Codex and Claude Code.",
+  "version": "0.4.0",
+  "description": "Direct branded work from private Brand Packs with project-specific design direction, curated stack guidance, and project-local learning.",
   "author": {
     "name": "smartscaile.",
     "url": "https://brand.smartscaile.com.br"

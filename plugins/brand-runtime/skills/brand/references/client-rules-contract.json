@@ -2,7 +2,7 @@
   "version": "1.1.0",
   "updated": "2026-07-22",
   "file": "<brand-folder>/{slug}/brand.rules.json",
-  "purpose": "Persist explicit, accepted client feedback as a client-owned incremental layer without changing the universal plugin or immutable Brand Pack artifacts.",
+  "purpose": "Persist an explicit, accepted normative rule for future projects of one brand without changing the universal plugin or immutable Brand Pack artifacts.",
   "ownership": {
     "owner": "client Brand Pack library",
     "writer": "Brand Runtime learn command",
@@ -20,7 +20,7 @@
     "slug": "Brand Pack slug",
     "revision": "Positive integer incremented only for a material change",
     "updatedAt": "ISO-8601 timestamp",
-    "rules": "Array of client rules sorted by id"
+    "rules": "Array of promoted brand rules sorted by id"
   },
   "rule": {
     "required": {
@@ -54,15 +54,15 @@
     }
   },
   "write_policy": [
-    "Do not learn from every correction automatically.",
-    "Persist only when the user explicitly requests a lasting brand preference or confirms one after clarification.",
-    "Keep deliverable-only changes outside brand.rules.json.",
+    "Do not promote every project correction automatically.",
+    "Persist only when the user explicitly confirms that a normative rule must apply to future projects of the selected brand.",
+    "Keep deliverable-only changes and project rules, learnings, and patterns outside brand.rules.json.",
     "Use the learn command instead of editing brand.rules.json manually.",
     "Update an existing semantic id instead of adding a duplicate.",
     "Deprecate obsolete rules instead of deleting history.",
-    "Store evidence locally and never require a plugin release for client learning.",
+    "Store evidence locally and never require a plugin release for brand-rule promotion.",
     "Preserve brand.rules.json and references/feedback/ when upgrading or reinstalling the immutable Brand Pack.",
-    "Keep client rules untouched when the Brand Runtime plugin is upgraded or reinstalled."
+    "Keep brand rules untouched when the Brand Runtime plugin is upgraded or reinstalled."
   ],
   "versioning": {
     "runtimeVersion": "Version of the installed universal engine; read from the plugin manifest",

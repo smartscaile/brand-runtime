@@ -162,16 +162,21 @@ export function resolveBrandRoot({
   if (explicitBrandRoot) {
     return inspectResolvedRoot(resolve(cwd, explicitBrandRoot), "explicit");
   }
+  let projectSearchRoot = cwd;
   if (explicitProjectRoot) {
-    return inspectResolvedRoot(resolve(cwd, explicitProjectRoot, "brand"), "project-root");
+    projectSearchRoot = resolve(cwd, explicitProjectRoot);
+    const explicitProjectBrandRoot = resolve(projectSearchRoot, "brand");
+    if (isDirectory(explicitProjectBrandRoot)) {
+      return inspectResolvedRoot(explicitProjectBrandRoot, "project-root");
+    }
   }
 
   const environmentRoot = env[BRAND_ROOT_ENV]?.trim();
   if (environmentRoot) {
-    return inspectResolvedRoot(resolve(cwd, environmentRoot), "environment", { environmentVariable: BRAND_ROOT_ENV });
+    return inspectResolvedRoot(resolve(projectSearchRoot, environmentRoot), "environment", { environmentVariable: BRAND_ROOT_ENV });
   }
 
-  const projectBrandRoot = findProjectBrandRoot(cwd);
+  const projectBrandRoot = findProjectBrandRoot(projectSearchRoot);
   if (projectBrandRoot) return inspectResolvedRoot(projectBrandRoot, "project");
 
   return readBrandRootConfig({ env });

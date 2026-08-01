@@ -1,7 +1,7 @@
 {
   "name": "brand-runtime",
-  "version": "0.3.0",
-  "description": "Apply private Brand Packs through a universal design foundation and project-specific design direction in Codex and Claude Code.",
+  "version": "0.4.0",
+  "description": "Direct branded work from private Brand Packs with project-specific design direction, curated stack guidance, and project-local learning.",
   "author": {
     "name": "smartscaile.",
     "url": "https://brand.smartscaile.com.br"
@@ -17,7 +17,7 @@
   "interface": {
     "displayName": "Brand Runtime",
     "shortDescription": "Apply Brand Packs and maintain Brand Runtime.",
-    "longDescription": "Brand Runtime validates external Brand Packs, translates them into project-specific design directions through an identity-neutral design foundation, and records explicit lasting feedback in each pack's local rules layer.",
+    "longDescription": "Brand Runtime validates external Brand Packs, discovers the deliverable, translates brand truth into a project-specific design direction, guides stack selection, records project-local learnings and patterns, and promotes only explicit lasting rules to the selected brand.",
     "developerName": "smartscaile.",
     "category": "Productivity",
     "capabilities": [
@@ -25,11 +25,13 @@
       "Write"
     ],
     "defaultPrompt": [
+      ">>brand start --project <name-or-path> --brand <installed-slug>",
       ">>brand <installed-slug> create a branded document.",
       ">>brand <installed-slug> define this project's design direction.",
+      ">>brand <installed-slug> remember this pattern for the current project.",
       ">>brand <installed-slug> update Brand Runtime.",
       "Validate the installed Brand Pack before editing this page.",
-      "Save this feedback as a permanent client brand rule."
+      "Promote this accepted project rule to the brand."
     ],
     "brandColor": "#3A5651",
     "composerIcon": "./assets/icon.png",
