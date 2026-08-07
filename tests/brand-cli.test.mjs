@@ -95,7 +95,7 @@ test("reports runtime version and promotes explicit brand rules independently", 
   const fixture = await createBrandFixture();
   try {
     const initial = output(run(fixture.projectRoot, "validate", ["--brand", "checkgrow"]));
-    assert.match(initial.runtimeVersion, /^0\.4\.1(?:\+codex\.[a-z0-9.-]+)?$/);
+    assert.match(initial.runtimeVersion, /^0\.4\.2(?:\+codex\.[a-z0-9.-]+)?$/);
     assert.equal(initial.brandVersion, "0.5.3");
     assert.equal(initial.rulesSchemaVersion, "1.0.0");
     assert.equal(initial.rulesRevision, 0);

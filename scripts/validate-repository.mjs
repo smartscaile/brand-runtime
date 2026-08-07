@@ -40,6 +40,7 @@ const directionTemplate = await readText("plugins/brand-runtime/skills/brand/ref
 const projectLearning = await readText("plugins/brand-runtime/skills/brand/references/project-learning.md");
 const stackSelection = await readText("plugins/brand-runtime/skills/brand/references/stack-selection.md");
 const surfaceGuidelines = await readText("plugins/brand-runtime/skills/brand/references/surface-guidelines.md");
+const documentExport = await readText("plugins/brand-runtime/skills/brand/references/document-export.md");
 
 expect(codexMarketplace.name === "smartscaile", "Codex marketplace publisher must be smartscaile.");
 expect(claudeMarketplace.name === "smartscaile", "Claude marketplace publisher must be smartscaile.");
@@ -74,6 +75,7 @@ expect(skill.includes("## Project learning"), "Brand skill must retain project-f
 expect(skill.includes("--scope project"), "Brand skill must write project knowledge explicitly.");
 expect(skill.includes("## Brand rule promotion"), "Brand skill must retain explicit brand-rule promotion.");
 expect(skill.includes("references/stack-selection.md"), "Brand skill must route stack decisions to curated guidance.");
+expect(skill.includes("references/document-export.md"), "Brand skill must route fixed-page HTML and PDF delivery to its direct-download guidance.");
 expect(skill.includes("## Runtime update"), "Brand skill must retain the runtime-update boundary.");
 expect(skill.includes("### Step 7 — Validate and refine"), "Brand skill must contain its canonical quality gate.");
 
@@ -100,6 +102,14 @@ for (const library of ["React Bits", "Uiverse", "Motion", "Anime.js", "GSAP", "T
 for (const surface of ["## Site", "## Product", "## Document", "## Presentation"]) {
   expect(surfaceGuidelines.includes(surface), `Surface guidelines must include ${surface.slice(3)}.`);
 }
+
+expect(documentExport.includes("## Direct download contract"), "Document export guidance must define direct PDF download behavior.");
+expect(documentExport.includes("Content-Disposition: attachment"), "Document export guidance must define hosted attachment delivery.");
+expect(documentExport.includes("downloaded byte hash matches"), "Document export guidance must verify the actual downloaded artifact.");
+expect(documentExport.includes("URL.createObjectURL"), "Document export guidance must include the standalone Blob-download pattern.");
+expect(documentExport.includes("link.download = filename"), "Document export guidance must preserve a deliberate download filename.");
+expect(documentExport.includes("unexpected Type 3 fonts"), "Document export guidance must guard PDF font conversion.");
+expect(!/#[0-9a-f]{3,8}\b/i.test(documentExport), "Document export guidance must remain identity-neutral.");
 
 expect(
   runtimeUpdate.runtimes?.claude?.agentCommands?.join("\n")
@@ -131,6 +141,7 @@ for (const path of [
   "plugins/brand-runtime/skills/brand/references/client-rules-contract.json",
   "plugins/brand-runtime/skills/brand/references/design-foundation.md",
   "plugins/brand-runtime/skills/brand/references/design-direction-template.md",
+  "plugins/brand-runtime/skills/brand/references/document-export.md",
   "plugins/brand-runtime/skills/brand/references/project-learning.md",
   "plugins/brand-runtime/skills/brand/references/stack-selection.md",
   "plugins/brand-runtime/skills/brand/references/surface-guidelines.md",

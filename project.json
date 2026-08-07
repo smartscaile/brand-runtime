@@ -9,7 +9,7 @@
   "phase": "validation",
   "version": {
     "local_source": "package.json",
-    "current": "0.4.1"
+    "current": "0.4.2"
   },
   "source_of_truth": {
     "skill": "plugins/brand-runtime/skills/brand/SKILL.md",
@@ -29,6 +29,6 @@
     "tests": "9 passed",
     "skill_validation": "passed",
     "plugin_validation": "passed",
-    "codex_local_install": "0.4.1"
+    "codex_local_install": "0.4.2"
   }
 }

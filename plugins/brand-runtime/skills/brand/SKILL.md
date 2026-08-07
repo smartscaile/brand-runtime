@@ -160,6 +160,8 @@ Inventory declared iconography before drawing or importing icons. Use an icon on
 
 For surface-specific composition and QA, read `references/surface-guidelines.md`.
 
+For a document that requires a fixed-page HTML preview, browser-delivered PDF, or direct download action, also read `references/document-export.md`. Treat its preview, download, typography, and export checks as universal delivery mechanics, then style them only through the selected identity authority.
+
 ### Step 7 — Validate and refine
 
 In `brand-pack`, re-run pack validation. In both modes, run target-project checks and rendered visual QA after fonts and final assets load. Block delivery when any applicable condition fails:
@@ -174,6 +176,7 @@ In `brand-pack`, re-run pack validation. In both modes, run target-project check
 - cards, dividers, badges, gradients, effects, libraries, or motion are decorative defaults without a semantic job;
 - the output feels mechanically repetitive instead of expressing the project's thesis;
 - document or presentation pagination separates related content or produces an invalid export.
+- a requested direct PDF download opens or navigates to the PDF instead of downloading the finalized file, or the downloaded filename or bytes differ from the validated artifact.
 
 ## Project learning
 
@@ -230,4 +233,5 @@ node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --scope brand
 - Read `references/project-learning.md` before recording or reusing project rules, learnings, patterns, or cross-project references.
 - Read `references/stack-selection.md` only when selecting or recommending implementation libraries or stack.
 - Read `references/surface-guidelines.md` for the selected output surface.
+- Read `references/document-export.md` when a document requires fixed-page HTML preview, direct PDF delivery, or a download action.
 - Read `references/runtime-update.json` only for Brand Runtime installation or update work.
