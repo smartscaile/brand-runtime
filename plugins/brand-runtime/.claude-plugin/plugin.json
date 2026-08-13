@@ -1,8 +1,8 @@
 {
   "name": "brand-runtime",
   "displayName": "Brand Runtime",
-  "version": "0.4.2",
-  "description": "Direct official Brand Packs or provisional brand-pending work with project-specific design direction, stack guidance, and local learning.",
+  "version": "0.5.0",
+  "description": "Direct official Brand Packs or provisional brand-pending work, with a specialized presentation workflow for creation, refinement, export, and rendered QA.",
   "author": {
     "name": "smartscaile.",
     "url": "https://brand.smartscaile.com.br"
@@ -11,6 +11,8 @@
   "keywords": [
     "brand",
     "design-system",
-    "brand-pack"
+    "brand-pack",
+    "presentation",
+    "slides"
   ]
 }

@@ -27,6 +27,10 @@ function optionValue(prompt, name) {
   return (match?.[1] || match?.[2] || match?.[3] || "").trim();
 }
 
+function hasFlag(prompt, name) {
+  return new RegExp(`(?:^|\\s)--${name}(?=\\s|$)`, "iu").test(prompt);
+}
+
 function parseBrandRequest(prompt) {
   const command = prompt.match(/(?:^|\s)>>brand(?=\s|$)([\s\S]*)/iu);
   const tail = command?.[1] || "";
@@ -38,10 +42,29 @@ function parseBrandRequest(prompt) {
     : "";
 
   return {
+    entry: "brand",
     action,
     requested: explicitBrand || positionalBrand,
     projectHint: optionValue(tail, "project"),
+    presentation: hasFlag(tail, "presentation"),
   };
+}
+
+function parsePresentationRequest(prompt) {
+  const command = prompt.match(/(?:^|\s)>>presentation(?=\s|$)([\s\S]*)/iu);
+  const tail = command?.[1] || "";
+  return {
+    entry: "presentation",
+    action: "presentation",
+    requested: optionValue(tail, "brand").toLowerCase(),
+    projectHint: optionValue(tail, "project"),
+    presentation: true,
+  };
+}
+
+function parseRuntimeRequest(prompt) {
+  if (/(?:^|\s)>>presentation(?=\s|$)/iu.test(prompt)) return parsePresentationRequest(prompt);
+  return parseBrandRequest(prompt);
 }
 
 function projectStartContext({ cwd, projectHint }) {
@@ -213,28 +236,109 @@ function activationContext({ cwd, pluginRoot, runtimeVersion, action, requested,
   ].join("\n");
 }
 
+function presentationSkillContext(pluginRoot) {
+  const presentationSkillRoot = resolve(pluginRoot, "skills", "presentation");
+  return [
+    "",
+    "PRESENTATION WORKFLOW SELECTED",
+    `Read and follow the Presentation skill: ${presentationSkillRoot}/SKILL.md`,
+    "Use the Brand skill as identity authority and the Presentation skill for narrative, slide refinement, fixed-page HTML, export, and rendered QA.",
+    "Do not duplicate Brand Pack identity inside presentation mechanics.",
+  ].join("\n");
+}
+
+function directPresentationActivation({ cwd, pluginRoot, runtimeVersion, requested, projectHint, brandResolution }) {
+  const brandSkillRoot = resolve(pluginRoot, "skills", "brand");
+  const presentationSkillRoot = resolve(pluginRoot, "skills", "presentation");
+  const cli = resolve(brandSkillRoot, "scripts", "brand.ts");
+  const lines = [
+    "PRESENTATION RUNTIME ACTIVE (>>presentation detected)",
+    `Brand Runtime: v${runtimeVersion}`,
+    `Workspace reported by host: ${cwd}`,
+    `Project hint: ${projectHint || "not provided"}.`,
+    "Treat the workspace and --project as evidence. Confirm the exact target before project-wide inspection or writing when the target is not already established safely in the conversation.",
+    `Presentation skill: ${presentationSkillRoot}/SKILL.md`,
+    `Brand authority skill: ${brandSkillRoot}/SKILL.md`,
+    "Read the Presentation skill first. Read the Brand skill before applying official identity, creating project design direction, or recording reusable knowledge.",
+  ];
+
+  if (!requested) {
+    return [
+      ...lines,
+      "",
+      "NO BRAND PACK EXPLICITLY SELECTED",
+      "Do not auto-select a Brand Pack merely because it is the only installed pack; it may belong to another client.",
+      "Inspect confirmed project authority and existing design direction. Use brand-pack only for a recorded semantic match; otherwise continue as brand-pending without claiming official identity.",
+      `Pending context after project confirmation: node --experimental-strip-types "${cli}" context --mode brand-pending --surface presentation --project-root "<confirmed-project>"`,
+    ].join("\n");
+  }
+
+  if (!brandResolution.ok) {
+    return [
+      ...lines,
+      "",
+      `The explicitly requested Brand Pack could not be loaded: ${requested}.`,
+      `${brandResolution.reason} Current path: ${brandResolution.brandRoot || brandResolution.configuredBrandRoot || "not configured"}.`,
+      "Ask for the absolute path to the downloaded folder named brand, then configure it with:",
+      `node --experimental-strip-types "${cli}" config set --brand-root "<absolute-path-to-brand-folder>"`,
+      "Stop official branded presentation work until configuration reports ready. Never substitute another pack.",
+    ].join("\n");
+  }
+
+  const selectedRoot = resolve(brandResolution.brandRoot, requested);
+  if (!isDirectory(selectedRoot)) {
+    return [
+      ...lines,
+      "",
+      `The explicitly requested Brand Pack is not installed: ${requested}.`,
+      `Installed Brand Packs: ${(brandResolution.brands || []).join(", ") || "none"}.`,
+      "Do not substitute another Brand Pack. Stop official branded presentation work until the requested pack is available or the user explicitly chooses brand-pending.",
+    ].join("\n");
+  }
+
+  return [
+    ...lines,
+    "",
+    `Use the Brand Pack at ${selectedRoot} (${packLabel(selectedRoot)}).`,
+    `node --experimental-strip-types "${cli}" status --brand ${requested} --brand-root "${brandResolution.brandRoot}"`,
+    `node --experimental-strip-types "${cli}" validate --brand ${requested} --brand-root "${brandResolution.brandRoot}"`,
+    `node --experimental-strip-types "${cli}" context --mode brand-pack --brand ${requested} --surface presentation --brand-root "${brandResolution.brandRoot}" --project-root "<confirmed-project>"`,
+    "Stop if Brand Pack validation or semantic matching fails.",
+  ].join("\n");
+}
+
 function main() {
   const input = readInput();
   const prompt = typeof input.prompt === "string" ? input.prompt : "";
-  if (!/(?:^|\s)>>brand(?=\s|$)/u.test(prompt)) return;
+  if (!/(?:^|\s)>>(?:brand|presentation)(?=\s|$)/iu.test(prompt)) return;
 
   const cwd = typeof input.cwd === "string" && input.cwd
     ? input.cwd
     : process.env.CLAUDE_PROJECT_DIR || process.env.CODEX_PROJECT_DIR || process.cwd();
-  const request = parseBrandRequest(prompt);
+  const request = parseRuntimeRequest(prompt);
   const brandResolution = resolveBrandRoot({ cwd });
   const pluginRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
-  process.stdout.write(`${JSON.stringify({
-    hookSpecificOutput: {
-      hookEventName: "UserPromptSubmit",
-      additionalContext: activationContext({
+  const additionalContext = request.entry === "presentation"
+    ? directPresentationActivation({
         cwd,
         pluginRoot,
         runtimeVersion: pluginVersion(pluginRoot),
         ...request,
         brandResolution,
-      }),
+      })
+    : activationContext({
+        cwd,
+        pluginRoot,
+        runtimeVersion: pluginVersion(pluginRoot),
+        ...request,
+        brandResolution,
+      }) + (request.presentation ? presentationSkillContext(pluginRoot) : "");
+
+  process.stdout.write(`${JSON.stringify({
+    hookSpecificOutput: {
+      hookEventName: "UserPromptSubmit",
+      additionalContext,
     },
   })}\n`);
 }

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Presentation Runtime"
+  short_description: "Create and refine presentation systems"
+  default_prompt: "Use $presentation to refine this slide while preserving approved copy."

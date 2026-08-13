@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>__PRESENTATION_TITLE__</title>
+  <style>
+    :root {
+      /* Replace these provisional project tokens through Brand Runtime. */
+      --page: #f7f7f5;
+      --ink: #24221f;
+      --surface: #ecebe7;
+      --muted: #6f6c67;
+      --accent: #7d87df;
+      --canvas-w: 1280px;
+      --canvas-h: 720px;
+      --page-margin: 64px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      color: var(--ink);
+      background: #d9d8d4;
+      font-family: Arial, Helvetica, sans-serif;
+      font-synthesis: none;
+    }
+    button { font: inherit; }
+
+    .presentation-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      color: var(--page);
+      background: var(--ink);
+    }
+    .presentation-toolbar__title {
+      min-width: 0;
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .presentation-toolbar__count {
+      margin-left: auto;
+      color: #cbc8c2;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    .presentation-toolbar button {
+      min-height: 38px;
+      padding: 0 13px;
+      border: 1px solid #68645e;
+      border-radius: 6px;
+      color: var(--page);
+      background: transparent;
+      cursor: pointer;
+    }
+    .presentation-toolbar button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    .presentation-toolbar button:disabled { cursor: not-allowed; opacity: 0.45; }
+    .presentation-toolbar .presentation-toolbar__download {
+      border-color: var(--accent);
+      color: var(--ink);
+      background: var(--accent);
+      font-weight: 700;
+    }
+
+    .presentation-shell {
+      min-height: calc(100vh - 60px);
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      overflow: hidden;
+    }
+    .presentation-stage { position: relative; }
+    .presentation-deck {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: var(--canvas-w);
+      height: var(--canvas-h);
+      transform-origin: top left;
+    }
+    .slide {
+      position: relative;
+      width: var(--canvas-w);
+      height: var(--canvas-h);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 48px var(--page-margin) 44px;
+      color: var(--ink);
+      background: var(--page);
+    }
+    .slide[hidden] { display: none; }
+    .slide--dark { color: var(--page); background: var(--ink); }
+    .slide__top {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .slide--dark .slide__top { color: #bdb9b2; }
+    .slide__content { max-width: 1040px; margin-top: 96px; }
+    .slide__eyebrow {
+      margin: 0 0 16px;
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .slide h1, .slide h2, .slide p { margin-top: 0; }
+    .slide h1, .slide h2 {
+      margin-bottom: 22px;
+      font-size: 68px;
+      line-height: 0.97;
+      letter-spacing: -0.05em;
+    }
+    .slide__lead { max-width: 860px; color: #4b4844; font-size: 25px; line-height: 1.35; }
+    .slide--dark .slide__lead { color: #d8d5cf; }
+    .slide__footer {
+      position: absolute;
+      right: var(--page-margin);
+      bottom: 22px;
+      left: var(--page-margin);
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .slide--dark .slide__footer { color: #9f9b94; }
+
+    .chapter-marker {
+      position: absolute;
+      top: 84px;
+      right: 24px;
+      width: 104px;
+      display: grid;
+      grid-template-columns: 1fr 24px;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+    .chapter-marker::after { content: ""; height: 2px; background: var(--accent); }
+    .slide--dark .chapter-marker { color: #d8d5cf; }
+
+    @media (max-width: 760px) {
+      .presentation-toolbar { gap: 7px; padding-inline: 10px; }
+      .presentation-toolbar__title { display: none; }
+      .presentation-toolbar__count { margin-left: 0; }
+      .presentation-toolbar button { padding-inline: 9px; }
+      .presentation-shell { padding: 12px; }
+    }
+
+    @page { size: 13.333333in 7.5in; margin: 0; }
+    @media print {
+      html, body { width: 13.333333in; margin: 0; background: white; }
+      .presentation-toolbar { display: none !important; }
+      .presentation-shell { display: block; min-height: 0; padding: 0; overflow: visible; }
+      .presentation-stage { width: auto !important; height: auto !important; }
+      .presentation-deck { position: static; width: auto; height: auto; transform: none !important; }
+      .slide, .slide[hidden] {
+        display: flex !important;
+        break-after: page;
+        page-break-after: always;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+      .slide:last-child { break-after: auto; page-break-after: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="presentation-toolbar" aria-label="Presentation controls">
+    <div class="presentation-toolbar__title">__PRESENTATION_TITLE__</div>
+    <button id="presentation-previous" type="button">Previous</button>
+    <button id="presentation-next" type="button">Next</button>
+    <div class="presentation-toolbar__count"><span id="presentation-current">1</span> / <span id="presentation-total">2</span></div>
+    <button id="presentation-download" class="presentation-toolbar__download" type="button" disabled>Download PDF</button>
+  </header>
+
+  <main class="presentation-shell">
+    <div class="presentation-stage" id="presentation-stage">
+      <div class="presentation-deck" id="presentation-deck">
+        <!-- Replace these mechanics-only sample slides with project-authored content. -->
+        <section class="slide slide--dark" data-title="Opening" data-source="Project brief">
+          <div class="slide__top"><span>Project / Presentation</span><span>01 / Opening</span></div>
+          <div class="chapter-marker">Opening</div>
+          <div class="slide__content">
+            <p class="slide__eyebrow">One governing idea</p>
+            <h1>Build the narrative before decorating the slide.</h1>
+            <p class="slide__lead">This starter supplies delivery mechanics only. Replace its provisional tokens and sample content through Brand Runtime.</p>
+          </div>
+          <div class="slide__footer"><span>Source: Project brief</span><span>01</span></div>
+        </section>
+
+        <section class="slide" hidden data-title="Evidence" data-source="Project analysis">
+          <div class="slide__top"><span>Project / Evidence</span><span>02 / Evidence</span></div>
+          <div class="chapter-marker">Evidence</div>
+          <div class="slide__content">
+            <p class="slide__eyebrow">A second slide</p>
+            <h2>Use structure to make the relationship visible.</h2>
+            <p class="slide__lead">Add authored diagrams, comparisons, data, or imagery according to the actual message. Do not retain this placeholder composition.</p>
+          </div>
+          <div class="slide__footer"><span>Source: Project analysis</span><span>02</span></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script id="presentation-pdf-payload" type="application/octet-stream">__PDF_PAYLOAD__</script>
+  <script>
+    const presentationSlides = Array.from(document.querySelectorAll(".slide"));
+    const presentationStage = document.querySelector("#presentation-stage");
+    const presentationDeck = document.querySelector("#presentation-deck");
+    const presentationCurrent = document.querySelector("#presentation-current");
+    const presentationTotal = document.querySelector("#presentation-total");
+    const presentationPrevious = document.querySelector("#presentation-previous");
+    const presentationNext = document.querySelector("#presentation-next");
+    const presentationDownload = document.querySelector("#presentation-download");
+    const presentationPayload = document.querySelector("#presentation-pdf-payload");
+    let presentationIndex = 0;
+
+    function showPresentationSlide(index) {
+      presentationIndex = Math.max(0, Math.min(presentationSlides.length - 1, index));
+      presentationSlides.forEach((slide, slideIndex) => { slide.hidden = slideIndex !== presentationIndex; });
+      presentationCurrent.textContent = String(presentationIndex + 1);
+      presentationPrevious.disabled = presentationIndex === 0;
+      presentationNext.disabled = presentationIndex === presentationSlides.length - 1;
+      window.location.hash = `slide-${presentationIndex + 1}`;
+    }
+
+    function fitPresentationDeck() {
+      const availableWidth = Math.max(320, window.innerWidth - 56);
+      const availableHeight = Math.max(180, window.innerHeight - 112);
+      const scale = Math.min(availableWidth / 1280, availableHeight / 720);
+      presentationStage.style.width = `${1280 * scale}px`;
+      presentationStage.style.height = `${720 * scale}px`;
+      presentationDeck.style.transform = `scale(${scale})`;
+    }
+
+    presentationPrevious.addEventListener("click", () => showPresentationSlide(presentationIndex - 1));
+    presentationNext.addEventListener("click", () => showPresentationSlide(presentationIndex + 1));
+    window.addEventListener("keydown", event => {
+      if (["ArrowRight", "PageDown", " "].includes(event.key)) { event.preventDefault(); showPresentationSlide(presentationIndex + 1); }
+      if (["ArrowLeft", "PageUp"].includes(event.key)) { event.preventDefault(); showPresentationSlide(presentationIndex - 1); }
+      if (event.key === "Home") showPresentationSlide(0);
+      if (event.key === "End") showPresentationSlide(presentationSlides.length - 1);
+    });
+    window.addEventListener("resize", fitPresentationDeck);
+
+    const encodedPresentationPdf = presentationPayload.textContent.trim();
+    if (encodedPresentationPdf.length > 100 && /^[A-Za-z0-9+/=]+$/.test(encodedPresentationPdf)) {
+      presentationDownload.disabled = false;
+      presentationDownload.addEventListener("click", () => {
+        try {
+          const binary = atob(encodedPresentationPdf);
+          const bytes = Uint8Array.from(binary, character => character.charCodeAt(0));
+          const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "__PDF_DOWNLOAD_FILENAME__";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+        } catch {
+          presentationDownload.textContent = "Download unavailable";
+          presentationDownload.disabled = true;
+        }
+      });
+    }
+
+    const requestedPresentationSlide = Number(window.location.hash.replace("#slide-", ""));
+    showPresentationSlide(Number.isFinite(requestedPresentationSlide) && requestedPresentationSlide > 0 ? requestedPresentationSlide - 1 : 0);
+    fitPresentationDeck();
+    window.__presentationReady = Promise.all([
+      document.fonts.ready,
+      ...Array.from(document.images).map(image => image.complete
+        ? Promise.resolve()
+        : new Promise(resolve => {
+            image.addEventListener("load", resolve, { once: true });
+            image.addEventListener("error", resolve, { once: true });
+          })),
+    ]);
+  </script>
+</body>
+</html>

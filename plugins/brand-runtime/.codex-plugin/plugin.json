@@ -1,7 +1,7 @@
 {
   "name": "brand-runtime",
-  "version": "0.4.2",
-  "description": "Direct official Brand Packs or provisional brand-pending work with project-specific design direction, stack guidance, and local learning.",
+  "version": "0.5.0+codex.20260812104827",
+  "description": "Direct official Brand Packs or provisional brand-pending work, with a specialized presentation workflow for creation, refinement, export, and rendered QA.",
   "author": {
     "name": "smartscaile.",
     "url": "https://brand.smartscaile.com.br"
@@ -11,13 +11,15 @@
   "keywords": [
     "brand",
     "design-system",
-    "brand-pack"
+    "brand-pack",
+    "presentation",
+    "slides"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Brand Runtime",
-    "shortDescription": "Direct Brand Packs or provisional projects.",
-    "longDescription": "Brand Runtime validates external Brand Packs for official identity or directs explicitly provisional brand-pending projects without claiming brand compliance. It discovers the deliverable, creates project-specific design direction, guides stack selection, records project-local learning, and promotes only explicit lasting rules from a validated brand.",
+    "shortDescription": "Direct brands and presentation systems.",
+    "longDescription": "Brand Runtime validates external Brand Packs for official identity or directs explicitly provisional brand-pending projects without claiming brand compliance. It includes a specialized Presentation skill for narrative structure, slide refinement, deterministic HTML-to-PDF delivery, and rendered QA while keeping brand identity external.",
     "developerName": "smartscaile.",
     "category": "Productivity",
     "capabilities": [
@@ -27,6 +29,8 @@
     "defaultPrompt": [
       ">>brand start --project <name-or-path>",
       ">>brand start --project <name-or-path> --brand <installed-slug>",
+      ">>presentation --project <name-or-path> --brand <installed-slug> refine slide 03.",
+      ">>brand <installed-slug> --presentation create a 16:9 strategy deck.",
       ">>brand <installed-slug> create a branded document.",
       ">>brand <installed-slug> define this project's design direction.",
       ">>brand <installed-slug> remember this pattern for the current project.",

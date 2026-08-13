@@ -1,11 +1,11 @@
 {
   "name": "@smartscaile/brand-runtime",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node scripts/validate-repository.mjs && node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs",
-    "test": "node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs",
+    "check": "node scripts/validate-repository.mjs && node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/presentation-runtime.test.mjs",
+    "test": "node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/presentation-runtime.test.mjs",
     "validate": "node scripts/validate-repository.mjs"
   }
 }

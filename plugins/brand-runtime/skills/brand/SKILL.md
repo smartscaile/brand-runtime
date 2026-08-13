@@ -30,6 +30,8 @@ Select one workflow from intent:
 
 `>>brand start [--project <name-or-path>] [--brand <slug>]` begins Project start. Treat `--project` as a location hint, never as proof that the project was selected. `--brand` explicitly requests `brand-pack`; omitting it allows discovery to resolve `brand-pack` or `brand-pending` after project confirmation. `>>brand <slug>` remains the compact form for selecting a Brand Pack in other workflows. Never interpret `start`, an option, or normal request text as a slug.
 
+`>>brand <slug> --presentation <request>` selects official identity first and then delegates narrative, slide refinement, HTML delivery, PDF export, and rendered QA to `../presentation/SKILL.md`. Brand remains the identity and project-knowledge authority; Presentation remains the surface workflow. Do not duplicate either skill's rules in the other.
+
 ## Project start
 
 Use Project start to establish the target safely before auditing or preparing branded work.
