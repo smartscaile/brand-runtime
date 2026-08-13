@@ -9,10 +9,11 @@
   "phase": "validation",
   "version": {
     "local_source": "package.json",
-    "current": "0.4.2"
+    "current": "0.5.0"
   },
   "source_of_truth": {
     "skill": "plugins/brand-runtime/skills/brand/SKILL.md",
+    "presentation_skill": "plugins/brand-runtime/skills/presentation/SKILL.md",
     "cli": "plugins/brand-runtime/skills/brand/scripts/brand.ts",
     "codex_manifest": "plugins/brand-runtime/.codex-plugin/plugin.json",
     "claude_manifest": "plugins/brand-runtime/.claude-plugin/plugin.json",
@@ -26,9 +27,9 @@
   "validation": {
     "command": "npm run check",
     "status": "passed",
-    "tests": "9 passed",
+    "tests": "12 passed",
     "skill_validation": "passed",
     "plugin_validation": "passed",
-    "codex_local_install": "0.4.2"
+    "codex_local_install": "0.5.0+codex.20260812104827"
   }
 }

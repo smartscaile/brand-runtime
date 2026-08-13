@@ -1,5 +1,5 @@
 {
-  "description": "Activate Brand Runtime when a prompt invokes >>brand.",
+  "description": "Activate Brand Runtime when a prompt invokes >>brand or >>presentation.",
   "hooks": {
     "UserPromptSubmit": [
       {

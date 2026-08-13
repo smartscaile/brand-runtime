@@ -24,6 +24,18 @@ Start a new session after installation and invoke:
 >>brand <slug>
 ```
 
+The same installation includes the Presentation skill. Invoke it directly:
+
+```text
+>>presentation --project <name-or-path> --brand <slug> refine slide 03
+```
+
+Or select identity first:
+
+```text
+>>brand <slug> --presentation create a 16:9 strategy deck
+```
+
 To prepare a project before branded work, invoke:
 
 ```text
@@ -46,7 +58,7 @@ The plugin stores only that absolute folder path in the user's standard configur
 
 Activation reports three independent compatibility signals: the installed Brand Runtime version, the immutable Brand Pack version, and the client-owned brand-rules revision.
 
-Native fallbacks are `$brand` in Codex and `/brand-runtime:brand` in Claude Code.
+Native fallbacks are `$brand` and `$presentation` in Codex, plus `/brand-runtime:brand` and `/brand-runtime:presentation` in Claude Code.
 
 ## Update in Codex
 
@@ -92,7 +104,8 @@ The activation context must reference the skill inside the installed plugin cach
 
 - `plugins/brand-runtime`: shared plugin distributed to both runtimes.
 - `plugins/brand-runtime/skills/brand`: canonical source for the reusable workflow and Brand Pack validation CLI.
-- `plugins/brand-runtime/hooks/hooks.json`: `>>brand` activation for supported hook runtimes.
+- `plugins/brand-runtime/skills/presentation`: canonical source for presentation creation, refinement, deterministic delivery, and rendered QA.
+- `plugins/brand-runtime/hooks/hooks.json`: `>>brand` and `>>presentation` activation for supported hook runtimes.
 - `.agents/plugins/marketplace.json`: Codex marketplace manifest.
 - `.claude-plugin/marketplace.json`: Claude Code marketplace manifest.
 

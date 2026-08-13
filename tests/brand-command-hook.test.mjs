@@ -22,7 +22,7 @@ function context(output) {
   return JSON.parse(output).hookSpecificOutput?.additionalContext || "";
 }
 
-test("activates Brand Runtime only for >>brand and resolves Brand Packs", async () => {
+test("activates Brand Runtime for >>brand and resolves Brand Packs", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "brand-runtime-hook-"));
   try {
     const brandRoot = resolve(root, "brand/checkgrow");
@@ -34,7 +34,7 @@ test("activates Brand Runtime only for >>brand and resolves Brand Packs", async 
 
     const explicit = context(run({ cwd: root, prompt: ">>brand checkgrow create a document" }));
     assert.match(explicit, /BRAND RUNTIME ACTIVE/);
-    assert.match(explicit, /Brand Runtime: v0\.4\.2/);
+    assert.match(explicit, /Brand Runtime: v0\.5\.0/);
     assert.match(explicit, /Brand Pack v0\.5\.1; brand rules r3/);
     assert.match(explicit, /brand\/checkgrow/);
     assert.match(explicit, /validate --brand checkgrow/);
@@ -43,6 +43,15 @@ test("activates Brand Runtime only for >>brand and resolves Brand Packs", async 
 
     const automatic = context(run({ cwd: root, prompt: ">>brand" }));
     assert.match(automatic, /brand\/checkgrow/);
+
+    const brandedPresentation = context(run({
+      cwd: root,
+      prompt: ">>brand checkgrow --presentation create a strategy deck",
+    }));
+    assert.match(brandedPresentation, /BRAND RUNTIME ACTIVE/);
+    assert.match(brandedPresentation, /PRESENTATION WORKFLOW SELECTED/);
+    assert.match(brandedPresentation, /skills\/presentation\/SKILL\.md/);
+    assert.match(brandedPresentation, /Brand Pack v0\.5\.1/);
 
     const pendingStart = context(run({
       cwd: root,
@@ -71,6 +80,47 @@ test("activates Brand Runtime only for >>brand and resolves Brand Packs", async 
     assert.match(missing, /could not be resolved/);
     assert.match(missing, /Brand Portal\/Vox/);
     assert.match(missing, /Never synthesize a pack/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("activates Presentation directly with optional Brand Pack authority", async () => {
+  const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-hook-"));
+  try {
+    const brandRoot = resolve(root, "brand/checkgrow");
+    await mkdir(brandRoot, { recursive: true });
+    await writeFile(resolve(brandRoot, "brand.source.json"), `${JSON.stringify({ slug: "checkgrow", brandVersion: "0.7.0" }, null, 2)}\n`);
+    await writeFile(resolve(brandRoot, "brand.rules.json"), `${JSON.stringify({ revision: 4 }, null, 2)}\n`);
+
+    const direct = context(run({
+      cwd: root,
+      prompt: ">>presentation --project client-deck refine slide 03",
+    }));
+    assert.match(direct, /PRESENTATION RUNTIME ACTIVE/);
+    assert.match(direct, /Brand Runtime: v0\.5\.0/);
+    assert.match(direct, /Project hint: client-deck/);
+    assert.match(direct, /Presentation skill: .*skills\/presentation\/SKILL\.md/);
+    assert.match(direct, /NO BRAND PACK EXPLICITLY SELECTED/);
+    assert.match(direct, /brand-pending/);
+    assert.doesNotMatch(direct, /Use the Brand Pack at/);
+
+    const branded = context(run({
+      cwd: root,
+      prompt: ">>presentation --project client-deck --brand checkgrow refine slide 03",
+    }));
+    assert.match(branded, /PRESENTATION RUNTIME ACTIVE/);
+    assert.match(branded, /Use the Brand Pack at/);
+    assert.match(branded, /Brand Pack v0\.7\.0; brand rules r4/);
+    assert.match(branded, /--surface presentation/);
+    assert.match(branded, /validate --brand checkgrow/);
+
+    const missing = context(run({
+      cwd: root,
+      prompt: ">>presentation --brand missing create a deck",
+    }));
+    assert.match(missing, /explicitly requested Brand Pack is not installed/);
+    assert.match(missing, /Never substitute|Do not substitute/);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

@@ -35,6 +35,13 @@ const claudePlugin = await readJson("plugins/brand-runtime/.claude-plugin/plugin
 const packageManifest = await readJson("package.json");
 const runtimeUpdate = await readJson("plugins/brand-runtime/skills/brand/references/runtime-update.json");
 const skill = await readText("plugins/brand-runtime/skills/brand/SKILL.md");
+const presentationSkill = await readText("plugins/brand-runtime/skills/presentation/SKILL.md");
+const presentationCopy = await readText("plugins/brand-runtime/skills/presentation/references/copy-and-evidence.md");
+const presentationVisual = await readText("plugins/brand-runtime/skills/presentation/references/visual-system.md");
+const presentationRefinement = await readText("plugins/brand-runtime/skills/presentation/references/refinement.md");
+const presentationHtml = await readText("plugins/brand-runtime/skills/presentation/references/html-delivery.md");
+const presentationQa = await readText("plugins/brand-runtime/skills/presentation/references/qa.md");
+const presentationStarter = await readText("plugins/brand-runtime/skills/presentation/assets/html-starter/presentation.html");
 const foundation = await readText("plugins/brand-runtime/skills/brand/references/design-foundation.md");
 const directionTemplate = await readText("plugins/brand-runtime/skills/brand/references/design-direction-template.md");
 const projectLearning = await readText("plugins/brand-runtime/skills/brand/references/project-learning.md");
@@ -56,6 +63,7 @@ expect(codexPlugin.author?.name === "smartscaile.", "Codex author must be smarts
 expect(claudePlugin.author?.name === "smartscaile.", "Claude author must be smartscaile.");
 expect(baseVersion(codexPlugin.version) === packageManifest.version, "Codex plugin base version must match package.json.");
 expect(baseVersion(claudePlugin.version) === packageManifest.version, "Claude plugin base version must match package.json.");
+expect(packageManifest.version === "0.5.0", "Presentation release must use Brand Runtime v0.5.0.");
 
 expect(skill.split("\n").length < 500, "Brand SKILL.md must stay below 500 lines.");
 expect(skill.startsWith("---\nname: brand\ndescription:"), "Brand SKILL.md must declare canonical frontmatter.");
@@ -63,6 +71,8 @@ expect(skill.includes("Require a validated Brand Pack before applying or claimin
 expect(skill.includes("Allow `brand-pending`"), "Brand skill must retain provisional direction without a Brand Pack.");
 expect(skill.includes("never tell the user to continue without Brand Runtime"), "Brand skill must remain the director in brand-pending.");
 expect(skill.includes(">>brand start [--project <name-or-path>] [--brand <slug>]"), "Brand skill must define the project-start command.");
+expect(skill.includes(">>brand <slug> --presentation <request>"), "Brand skill must route brand-first presentation work.");
+expect(skill.includes("../presentation/SKILL.md"), "Brand skill must link to the Presentation skill without duplicating it.");
 expect(skill.includes("A host working directory and an explicit `--project` hint still require confirmation"), "Brand skill must require exact project confirmation.");
 expect(skill.includes("never require `projects/`"), "Brand skill must remain independent of client directory layout.");
 expect(skill.includes("A technically valid pack is still unusable"), "Brand skill must block a Brand Pack that belongs to another represented brand.");
@@ -78,6 +88,32 @@ expect(skill.includes("references/stack-selection.md"), "Brand skill must route 
 expect(skill.includes("references/document-export.md"), "Brand skill must route fixed-page HTML and PDF delivery to its direct-download guidance.");
 expect(skill.includes("## Runtime update"), "Brand skill must retain the runtime-update boundary.");
 expect(skill.includes("### Step 7 — Validate and refine"), "Brand skill must contain its canonical quality gate.");
+
+expect(presentationSkill.split("\n").length < 500, "Presentation SKILL.md must stay below 500 lines.");
+expect(presentationSkill.startsWith("---\nname: presentation\ndescription:"), "Presentation SKILL.md must declare canonical frontmatter.");
+expect(presentationSkill.includes(">>presentation [--project <name-or-path>] [--brand <slug>] <request>"), "Presentation skill must define direct invocation.");
+expect(presentationSkill.includes(">>brand <slug> --presentation <request>"), "Presentation skill must define brand-first invocation.");
+expect(presentationSkill.includes("../brand/SKILL.md"), "Presentation skill must delegate identity authority to Brand.");
+expect(presentationSkill.includes("present up to three distinct directions"), "Presentation refinement must support meaningful alternatives when ambiguous.");
+expect(presentationSkill.includes("no CSS or SVG blur filters"), "Presentation skill must block renderer-fragile blur effects.");
+expect(presentationSkill.includes("no Type 3 PDF fonts"), "Presentation skill must block Type 3 PDF fonts.");
+expect(presentationSkill.includes("Previous, Next, page count, and Download PDF"), "Presentation skill must define the shared HTML controls.");
+expect(presentationSkill.includes("scripts/presentation-runtime.mjs"), "Presentation skill must use its deterministic runtime.");
+expect(presentationCopy.includes("Source copy"), "Presentation copy guidance must preserve source authority.");
+expect(presentationCopy.includes("Approved copy"), "Presentation copy guidance must lock accepted copy.");
+expect(presentationVisual.includes("Anchor the chapter marker"), "Presentation visual guidance must standardize the chapter marker.");
+expect(presentationRefinement.includes("### Conservative"), "Presentation refinement must define conservative direction.");
+expect(presentationRefinement.includes("### Editorial"), "Presentation refinement must define editorial direction.");
+expect(presentationRefinement.includes("### Structural"), "Presentation refinement must define structural direction.");
+expect(presentationHtml.includes("recipient must not need browser print"), "Presentation delivery must download validated PDF bytes.");
+expect(presentationQa.includes("Render every page with `pdftoppm`"), "Presentation QA must render every PDF page.");
+expect(presentationQa.includes("at least two rendering paths") || presentationQa.includes("second renderer"), "Presentation QA must require multi-render checks for fragile composition.");
+expect(presentationStarter.includes("Previous"), "Presentation starter must include Previous control.");
+expect(presentationStarter.includes("Next"), "Presentation starter must include Next control.");
+expect(presentationStarter.includes("Download PDF"), "Presentation starter must include Download PDF control.");
+expect(presentationStarter.includes("__PDF_PAYLOAD__"), "Presentation starter must expose the PDF payload placeholder.");
+expect(presentationStarter.includes("window.__presentationReady"), "Presentation starter must expose deterministic readiness.");
+expect(!/boont|checkgrow|wascen/i.test([presentationSkill, presentationCopy, presentationVisual, presentationRefinement, presentationHtml, presentationQa, presentationStarter].join("\n")), "Presentation skill must remain client-neutral.");
 
 expect(foundation.includes("identity-neutral"), "Design foundation must declare its identity-neutral boundary.");
 expect(foundation.includes("Never treat this foundation as a fallback Brand Pack"), "Design foundation must not replace a Brand Pack.");
@@ -147,6 +183,15 @@ for (const path of [
   "plugins/brand-runtime/skills/brand/references/surface-guidelines.md",
   "plugins/brand-runtime/skills/brand/references/runtime-update.json",
   "plugins/brand-runtime/skills/brand/scripts/brand.ts",
+  "plugins/brand-runtime/skills/presentation/SKILL.md",
+  "plugins/brand-runtime/skills/presentation/agents/openai.yaml",
+  "plugins/brand-runtime/skills/presentation/assets/html-starter/presentation.html",
+  "plugins/brand-runtime/skills/presentation/references/copy-and-evidence.md",
+  "plugins/brand-runtime/skills/presentation/references/html-delivery.md",
+  "plugins/brand-runtime/skills/presentation/references/qa.md",
+  "plugins/brand-runtime/skills/presentation/references/refinement.md",
+  "plugins/brand-runtime/skills/presentation/references/visual-system.md",
+  "plugins/brand-runtime/skills/presentation/scripts/presentation-runtime.mjs",
 ]) {
   await access(resolve(root, path));
 }

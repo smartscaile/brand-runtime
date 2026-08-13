@@ -8,11 +8,17 @@ Published by **smartscaile.**
 
 - Shared command: `>>brand <slug>`
 - Project onboarding: `>>brand start [--project <name-or-path>] [--brand <slug>]`
+- Presentation workflow: `>>presentation [--project <name-or-path>] [--brand <slug>] <request>`
+- Brand-first presentation workflow: `>>brand <slug> --presentation <request>`
 - Runtime update: `>>brand <slug> update Brand Runtime`
 - Codex native fallback: `$brand`
+- Codex presentation fallback: `$presentation`
 - Claude Code native fallback: `/brand-runtime:brand`
+- Claude Code presentation fallback: `/brand-runtime:presentation`
 
 The plugin owns Brand Pack application, provisional project direction, deliverable discovery, stack guidance, explicit project learning, brand-rule promotion, and host-native Brand Runtime updates. Its deterministic CLI provides `config`, `status`, `validate`, `context`, and `learn`. Client-specific identity, tokens, references, assets, and mutable project knowledge are never bundled into this plugin.
+
+The bundled Presentation skill owns presentation narrative, slide-by-slide refinement, identity-neutral HTML mechanics, exact PDF download, export-safe composition rules, and rendered QA. `>>presentation` activates it directly. `--brand <slug>` delegates identity to the Brand skill, while an omitted brand remains project-resolved or explicitly `brand-pending`. Installing Brand Runtime installs both skills together.
 
 The universal skill includes an identity-neutral design foundation for hierarchy, spacing relationships, content containment, responsive behavior, interaction, and visual QA. It never supplies brand identity. For project creation or substantial redesign, the skill translates the validated Brand Pack into `docs/design/design-direction.md`, keeping sourced brand truth separate from project-owned application decisions.
 
@@ -22,4 +28,4 @@ On the first `>>brand` invocation, the hook asks for the absolute path to the do
 
 `brand.source.json` and generated artifacts are immutable pack data. Project rules, learnings, and patterns are structured Markdown under the target project's `docs/design/` tree. `brand.rules.json` remains the separate client-owned incremental layer for only those normative rules explicitly promoted to all future projects of that brand.
 
-Plugin hooks must be reviewed and trusted before `>>brand` can inject activation context.
+Plugin hooks must be reviewed and trusted before `>>brand` or `>>presentation` can inject activation context.
