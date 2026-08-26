@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "brand-runtime",
+  "version": "0.5.0",
+  "description": "Direct official Brand Packs or provisional brand-pending work, with a specialized HTML-first presentation workflow.",
+  "author": {
+    "name": "smartscaile.",
+    "url": "https://brand.smartscaile.com.br"
+  },
+  "homepage": "https://github.com/smartscaile/brand-runtime",
+  "repository": "https://github.com/smartscaile/brand-runtime",
+  "keywords": [
+    "brand",
+    "design-system",
+    "brand-pack",
+    "presentation",
+    "slides"
+  ]
+}

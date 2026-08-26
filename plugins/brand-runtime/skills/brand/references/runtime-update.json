@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "updated": "2026-07-30",
+  "updated": "2026-08-26",
   "purpose": "Update the installed Brand Runtime through the active host without changing Brand Packs or client-owned state.",
   "intentRules": [
     "Treat Brand Runtime and Brand Pack as separate versioned products.",
@@ -31,12 +31,36 @@
       "reload": [
         "Start a new Codex thread so the updated skill is loaded."
       ]
+    },
+    "hermes": {
+      "managedSource": {
+        "agentCommands": [
+          "hermes plugins install smartscaile/brand-runtime/plugins/brand-runtime --force --enable",
+          "hermes plugins doctor brand-runtime --ci",
+          "hermes plugins show brand-runtime"
+        ]
+      },
+      "linkedSource": {
+        "detection": "Before updating, check whether the installed Brand Runtime path is a symbolic link.",
+        "action": "When linked, do not run the managed reinstall or replace the link. Update the canonical source repository through its approved workflow, preserve the link, then run verificationCommands.",
+        "verificationCommands": [
+          "hermes plugins doctor brand-runtime --ci",
+          "hermes plugins show brand-runtime"
+        ]
+      },
+      "userPrompt": ">>brand <installed-slug> update Brand Runtime",
+      "reload": [
+        "Start a new Hermes session so the updated skill index is loaded."
+      ]
     }
   },
   "workflow": [
     "Confirm that the request targets Brand Runtime, not a Brand Pack.",
     "Resolve the active host from the current session.",
-    "If the user asked the agent to perform the update, run the host's agentCommands in order with the normal approval required for network and plugin installation changes.",
+    "For Hermes, select managed installation or linked-source mode before running any update command.",
+    "For non-Hermes hosts, if the user asked the agent to perform the update, run the host's agentCommands in order with the normal approval required for network and plugin installation changes.",
+    "For a managed Hermes installation, if the user asked the agent to perform the update, run runtimes.hermes.managedSource.agentCommands in order with the normal approval required for network and plugin installation changes.",
+    "For a linked-source Hermes installation, never run managedSource.agentCommands; update the canonical source repository through its approved workflow, preserve the link, then run linkedSource.verificationCommands.",
     "If the user asked only for instructions, present the commands without executing them.",
     "Read the verification command output and report the installed Brand Runtime version.",
     "State the host-specific reload boundary and do not continue branded work under the assumption that the running session already loaded the new plugin."
@@ -44,6 +68,7 @@
   "guardrails": [
     "Never add the marketplace again during an update when it is already configured.",
     "Never edit a runtime plugin cache manually.",
+    "For Hermes, never run the managed reinstall when the installed Brand Runtime path is a symbolic link; preserve the link and update only its canonical source repository.",
     "Never modify, replace, merge, regenerate, or delete Brand Packs during a Brand Runtime update.",
     "Never modify the saved brand folder path, brand.rules.json, references/feedback/, or project-owned design knowledge during a Brand Runtime update.",
     "Never claim the running session loaded the new version before its reload boundary."

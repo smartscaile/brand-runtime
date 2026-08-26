@@ -1,0 +1,81 @@
+# Superfícies e artefatos do Brand Runtime
+
+Este arquivo inventaria as superfícies, famílias de composição e contratos
+reutilizáveis do runtime. Ele não define identidade de cliente e não substitui
+um Brand Pack validado, a direção local de uma entrega ou `DESIGNSYSTEM.MD`.
+
+## Base observada
+
+- Stack detectada: Node.js ESM e Chrome DevTools Protocol; Poppler é usado somente no modo PDF explícito.
+- Produto: plugin universal para Codex e Claude Code.
+- Superfícies: sites, produtos, apresentações e documentos.
+- Entrega de apresentações: HTML determinístico por padrão; PDF e QA PDF são opt-in.
+
+Confirme os manifests e as fronteiras principais antes de completar o modelo genérico.
+
+## Fontes de autoridade
+
+| Camada | Fonte | Responsabilidade |
+| --- | --- | --- |
+| Identidade | Brand Pack externo validado | Tokens, assets, voz e regras oficiais do cliente |
+| Direção da entrega | `docs/design/design-direction.md` no projeto consumidor | Tese visual, composição, ritmo e exceções locais |
+| Sistema universal | `plugins/brand-runtime/skills/*` | Workflow, contratos, gates, renderização e QA neutros |
+| Aprendizado | `docs/design/` no projeto consumidor | Evidências e decisões reutilizáveis sem contaminar o core |
+
+## Superfícies e famílias
+
+| Superfície | Família ou bloco | Fonte atual | Contrato e estados | Consumidores | Status |
+| --- | --- | --- | --- | --- | --- |
+| Apresentação | Família semântica project-local | `skills/presentation/` + `presentation.spec.json` | `id`, `job`, `family`, thresholds, aprovações, freeze e QA | Decks HTML; PDF opt-in | Contrato v1 ativo |
+| Site ou produto | A mapear | `skills/brand/references/` | Hierarquia, interação, responsividade, estados e acessibilidade | Projetos consumidores | A mapear |
+| Documento | A mapear | `skills/brand/references/document-export.md` | Estrutura, identidade, paginação e exportação | Documentos finais | A mapear |
+
+## Inventário de apresentação
+
+Cada família de slide deve ser registrada com intenção narrativa, composição,
+limites de reuso e evidência renderizada. Uma classe CSS ou um template não é,
+por si só, uma família visual aprovada.
+
+| Família | Papel narrativo | Estrutura | Variações permitidas | Limite de repetição | Evidência |
+| --- | --- | --- | --- | --- | --- |
+| Slug declarado no projeto | Um job narrativo por slide | Composição definida pela direção local | Variações justificadas semanticamente | `qualityPolicy.maxConsecutiveFamily` | Metadados HTML, spec e renders de QA |
+
+## Estados de apresentação
+
+O relatório separa:
+
+- `technicalQa`: integridade técnica e de render;
+- `systemDiagnostics`: contrato e thresholds explicáveis;
+- `approvals.content` e `approvals.visual`: decisões humanas;
+- `freeze`: vínculo humano aos hashes de HTML, PDF e spec;
+- `deliveryState`: precedência determinística até `frozen`.
+
+Não existe estado final genérico `passed`. Decks sem contrato v1 permanecem `legacy-unverified` e não recebem metadados inferidos.
+
+## Viewer HTML-first
+
+| Bloco | Finalidade | Arquivo | Estados e ações | Consumidores | Regra de reaproveitamento |
+| --- | --- | --- | --- | --- | --- |
+| Toolbar de apresentação | Navegar e salvar a apresentação | `plugins/brand-runtime/skills/presentation/assets/html-starter/presentation.html` | Previous/Next, contador, foco visível; sem payload: `Save PDF` chama `window.print()`; com payload validado: `Download PDF` baixa os bytes exatos; falha de decode desabilita a ação | HTML standalone e HTML com PDF opt-in | Preservar IDs, keyboard navigation, `@media print` e estados; identidade visual permanece project-local |
+
+O viewer não possui menu global nem formulário. A navegação principal é direta pelos botões Previous/Next e por Left/Right, Page Up/Page Down, Home e End. A ação Save PDF abre o diálogo nativo do navegador; cancelar o diálogo não altera o deck. Os controles são excluídos de impressão, e o foco permanece visível por teclado.
+
+## Regras de composição
+
+1. Identidade, direção de arte, sistema de composição e conteúdo são camadas
+   distintas e devem ter autoridade explícita.
+2. Nenhum preset estético genérico entra no core como identidade implícita.
+3. Antes de escalar uma apresentação inteira, validar um conjunto pequeno de
+   slides representativos que prove narrativa, direção de arte e sistema.
+4. Reuso significa preservar intenção e qualidade, não repetir o mesmo arranjo
+   de headline, cards, screenshots ou divisores.
+5. Toda família nova ou alterada registra consumidores, estados, limites,
+   acessibilidade e evidência visual no mesmo trabalho.
+6. QA técnico é obrigatório, mas não equivale a aprovação de direção visual.
+
+## Dívidas e lacunas observadas
+
+| Lacuna | Evidência | Próxima decisão |
+| --- | --- | --- |
+| Diagnósticos v1 cobrem apenas paridade, repetição consecutiva e eyebrow | Contrato v1 | Calibrar novos findings com decks avaliados por pessoas, sem score de gosto |
+| Golden decks ainda não possuem conjunto governado | Runtime atual | Definir proveniência, autorização e uso de regressão em spec posterior |

@@ -3,9 +3,16 @@
   "version": "0.5.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.20.0"
+  },
   "scripts": {
-    "check": "node scripts/validate-repository.mjs && node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/presentation-runtime.test.mjs",
-    "test": "node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/presentation-runtime.test.mjs",
+    "check": "node scripts/validate-repository.mjs && node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/hermes-plugin-integration.test.mjs tests/presentation-runtime.test.mjs",
+    "test": "node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/hermes-plugin-integration.test.mjs tests/presentation-runtime.test.mjs",
+    "test:tdd": "node --test tests/presentation-runtime.test.mjs",
     "validate": "node scripts/validate-repository.mjs"
+  },
+  "devDependencies": {
+    "@promovaweb/specsfy": "^0.8.1"
   }
 }

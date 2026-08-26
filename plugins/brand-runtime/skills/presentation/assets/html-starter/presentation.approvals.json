@@ -1,0 +1,12 @@
+{
+  "schema": "smartscaile.presentation-approvals.v1",
+  "content": {
+    "status": "pending"
+  },
+  "visual": {
+    "status": "pending"
+  },
+  "freeze": {
+    "status": "pending"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smartscaile.com/brand-runtime/presentation-approvals.v1.schema.json",
+  "title": "Smartscaile Presentation Approvals v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "content", "visual", "freeze"],
+  "properties": {
+    "schema": { "const": "smartscaile.presentation-approvals.v1" },
+    "content": { "$ref": "#/$defs/decision" },
+    "visual": { "$ref": "#/$defs/decision" },
+    "freeze": { "$ref": "#/$defs/freeze" }
+  },
+  "$defs": {
+    "pending": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": { "status": { "const": "pending" } }
+    },
+    "decided": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "actor", "decidedAt", "scope", "evidence"],
+      "properties": {
+        "status": { "enum": ["approved", "rejected", "invalidated"] },
+        "actor": { "type": "string", "minLength": 1 },
+        "decidedAt": { "type": "string", "format": "date-time" },
+        "scope": { "type": "string", "minLength": 1 },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "decision": {
+      "oneOf": [
+        { "$ref": "#/$defs/pending" },
+        { "$ref": "#/$defs/decided" }
+      ]
+    },
+    "freeze": {
+      "oneOf": [
+        { "$ref": "#/$defs/pending" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "actor", "decidedAt", "scope", "evidence", "hashes"],
+          "properties": {
+            "status": { "const": "frozen" },
+            "actor": { "type": "string", "minLength": 1 },
+            "decidedAt": { "type": "string", "format": "date-time" },
+            "scope": { "type": "string", "minLength": 1 },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "hashes": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["htmlSha256", "pdfSha256", "specSha256"],
+              "properties": {
+                "htmlSha256": { "$ref": "#/$defs/sha256" },
+                "pdfSha256": { "$ref": "#/$defs/sha256" },
+                "specSha256": { "$ref": "#/$defs/sha256" }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "actor", "decidedAt", "scope", "evidence"],
+          "properties": {
+            "status": { "const": "invalidated" },
+            "actor": { "type": "string", "minLength": 1 },
+            "decidedAt": { "type": "string", "format": "date-time" },
+            "scope": { "type": "string", "minLength": 1 },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      ]
+    },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

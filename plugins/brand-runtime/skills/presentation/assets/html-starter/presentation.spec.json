@@ -1,0 +1,21 @@
+{
+  "schema": "smartscaile.presentation-spec.v1",
+  "title": "Untitled Presentation",
+  "briefStatus": "draft",
+  "qualityPolicy": {
+    "maxConsecutiveFamily": 2,
+    "maxEyebrowRatio": 0.5
+  },
+  "slides": [
+    {
+      "id": "opening",
+      "job": "context",
+      "family": "statement"
+    },
+    {
+      "id": "evidence",
+      "job": "proof",
+      "family": "evidence"
+    }
+  ]
+}

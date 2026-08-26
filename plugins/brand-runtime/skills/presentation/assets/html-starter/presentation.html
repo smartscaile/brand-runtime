@@ -192,29 +192,28 @@
     <button id="presentation-previous" type="button">Previous</button>
     <button id="presentation-next" type="button">Next</button>
     <div class="presentation-toolbar__count"><span id="presentation-current">1</span> / <span id="presentation-total">2</span></div>
-    <button id="presentation-download" class="presentation-toolbar__download" type="button" disabled>Download PDF</button>
+    <button id="presentation-download" class="presentation-toolbar__download" type="button">Save PDF</button>
   </header>
 
   <main class="presentation-shell">
     <div class="presentation-stage" id="presentation-stage">
       <div class="presentation-deck" id="presentation-deck">
         <!-- Replace these mechanics-only sample slides with project-authored content. -->
-        <section class="slide slide--dark" data-title="Opening" data-source="Project brief">
+        <section class="slide slide--dark" data-slide-id="opening" data-slide-job="context" data-slide-family="statement" data-title="Opening" data-source="Project brief">
           <div class="slide__top"><span>Project / Presentation</span><span>01 / Opening</span></div>
           <div class="chapter-marker">Opening</div>
           <div class="slide__content">
-            <p class="slide__eyebrow">One governing idea</p>
+            <p class="slide__eyebrow" data-presentation-role="eyebrow">One governing idea</p>
             <h1>Build the narrative before decorating the slide.</h1>
             <p class="slide__lead">This starter supplies delivery mechanics only. Replace its provisional tokens and sample content through Brand Runtime.</p>
           </div>
           <div class="slide__footer"><span>Source: Project brief</span><span>01</span></div>
         </section>
 
-        <section class="slide" hidden data-title="Evidence" data-source="Project analysis">
+        <section class="slide" hidden data-slide-id="evidence" data-slide-job="proof" data-slide-family="evidence" data-title="Evidence" data-source="Project analysis">
           <div class="slide__top"><span>Project / Evidence</span><span>02 / Evidence</span></div>
           <div class="chapter-marker">Evidence</div>
           <div class="slide__content">
-            <p class="slide__eyebrow">A second slide</p>
             <h2>Use structure to make the relationship visible.</h2>
             <p class="slide__lead">Add authored diagrams, comparisons, data, or imagery according to the actual message. Do not retain this placeholder composition.</p>
           </div>
@@ -267,7 +266,7 @@
 
     const encodedPresentationPdf = presentationPayload.textContent.trim();
     if (encodedPresentationPdf.length > 100 && /^[A-Za-z0-9+/=]+$/.test(encodedPresentationPdf)) {
-      presentationDownload.disabled = false;
+      presentationDownload.textContent = "Download PDF";
       presentationDownload.addEventListener("click", () => {
         try {
           const binary = atob(encodedPresentationPdf);
@@ -285,6 +284,8 @@
           presentationDownload.disabled = true;
         }
       });
+    } else {
+      presentationDownload.addEventListener("click", () => window.print());
     }
 
     const requestedPresentationSlide = Number(window.location.hash.replace("#slide-", ""));

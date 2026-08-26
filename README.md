@@ -1,6 +1,6 @@
 # Brand Runtime
 
-A universal brand and interface director for validated private Brand Packs and explicitly provisional projects in Codex and Claude Code.
+A universal brand and interface director for validated private Brand Packs and explicitly provisional projects in Codex, Claude Code, and Hermes.
 
 Published by **smartscaile.**
 
@@ -17,6 +17,17 @@ codex plugin add brand-runtime@smartscaile
 claude plugin marketplace add smartscaile/brand-runtime
 claude plugin install brand-runtime@smartscaile
 ```
+
+## Install in Hermes
+
+```bash
+hermes plugins install smartscaile/brand-runtime/plugins/brand-runtime --enable
+hermes plugins doctor brand-runtime --ci
+```
+
+Hermes loads the portable `brand` and `presentation` skills under a deterministic plugin namespace. Start a new Hermes session and use the agent tool `skills_list` to inspect their qualified names. Agent Plugins v1 does not load the Codex/Claude hook adapter, so Hermes routes requests through its skill index rather than `hooks/hooks.json`.
+
+For local development, `~/.hermes/plugins/brand-runtime` may be a symbolic link to this package's canonical source. Preserve that link: do not run the managed force-install over it.
 
 Start a new session after installation and invoke:
 
@@ -90,6 +101,20 @@ claude plugin update brand-runtime@smartscaile
 
 Then run `/reload-plugins` in the active Claude Code session or start a new session. Updating Brand Runtime never modifies Brand Packs, the saved brand folder path, project knowledge, or brand rules.
 
+## Update in Hermes
+
+For a managed installation from GitHub, reinstall the plugin subdirectory because `hermes plugins update` requires a `.git` directory inside the installed package:
+
+```bash
+hermes plugins install smartscaile/brand-runtime/plugins/brand-runtime --force --enable
+hermes plugins doctor brand-runtime --ci
+hermes plugins show brand-runtime
+```
+
+For a linked-source development installation, do not run the force-install or replace the link. Update the canonical source repository through its approved workflow, preserve the link, then run only `doctor` and `show` from the sequence above.
+
+Start a new Hermes session after the update so the skill index is rebuilt. Updating the plugin does not modify Brand Packs, the saved brand folder path, project knowledge, or brand rules.
+
 ## Client-equivalent test
 
 Test in a consumer workspace without a repo-local or user-authored fallback copy of the Brand skill. After installing or reinstalling the plugin, start a new session and invoke:
@@ -102,7 +127,8 @@ The activation context must reference the skill inside the installed plugin cach
 
 ## Architecture
 
-- `plugins/brand-runtime`: shared plugin distributed to both runtimes.
+- `plugins/brand-runtime`: shared plugin distributed to Codex, Claude Code, and Hermes.
+- `plugins/brand-runtime/plugin.json`: portable Agent Plugins v1 manifest used by Hermes.
 - `plugins/brand-runtime/skills/brand`: canonical source for the reusable workflow and Brand Pack validation CLI.
 - `plugins/brand-runtime/skills/presentation`: canonical source for presentation creation, refinement, deterministic delivery, and rendered QA.
 - `plugins/brand-runtime/hooks/hooks.json`: `>>brand` and `>>presentation` activation for supported hook runtimes.
