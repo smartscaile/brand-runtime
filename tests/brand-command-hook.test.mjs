@@ -1,11 +1,15 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
 
 const hook = resolve(import.meta.dirname, "../plugins/brand-runtime/scripts/brand-command-hook.mjs");
+const runtimeVersion = JSON.parse(await readFile(
+  resolve(import.meta.dirname, "../plugins/brand-runtime/.codex-plugin/plugin.json"),
+  "utf8",
+)).version;
 
 function run(input, environment = {}) {
   const result = spawnSync(process.execPath, [hook], {
@@ -34,7 +38,7 @@ test("activates Brand Runtime for >>brand and resolves Brand Packs", async () =>
 
     const explicit = context(run({ cwd: root, prompt: ">>brand checkgrow create a document" }));
     assert.match(explicit, /BRAND RUNTIME ACTIVE/);
-    assert.match(explicit, /Brand Runtime: v0\.5\.0/);
+    assert.ok(explicit.includes(`Brand Runtime: v${runtimeVersion}`));
     assert.match(explicit, /Brand Pack v0\.5\.1; brand rules r3/);
     assert.match(explicit, /brand\/checkgrow/);
     assert.match(explicit, /validate --brand checkgrow/);
@@ -98,7 +102,7 @@ test("activates Presentation directly with optional Brand Pack authority", async
       prompt: ">>presentation --project client-deck refine slide 03",
     }));
     assert.match(direct, /PRESENTATION RUNTIME ACTIVE/);
-    assert.match(direct, /Brand Runtime: v0\.5\.0/);
+    assert.ok(direct.includes(`Brand Runtime: v${runtimeVersion}`));
     assert.match(direct, /Project hint: client-deck/);
     assert.match(direct, /Presentation skill: .*skills\/presentation\/SKILL\.md/);
     assert.match(direct, /NO BRAND PACK EXPLICITLY SELECTED/);

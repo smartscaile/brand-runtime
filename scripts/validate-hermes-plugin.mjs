@@ -21,17 +21,10 @@ const HERMES_MANAGED_UPDATE_COMMANDS = [
   "hermes plugins show brand-runtime",
 ];
 
-const HERMES_LINKED_VERIFICATION_COMMANDS = [
-  "hermes plugins doctor brand-runtime --ci",
-  "hermes plugins show brand-runtime",
-];
-
 const HERMES_RELOAD = "Start a new Hermes session so the updated skill index is loaded.";
-const HERMES_MODE_WORKFLOW = "For Hermes, select managed installation or linked-source mode before running any update command.";
 const NON_HERMES_UPDATE_WORKFLOW = "For non-Hermes hosts, if the user asked the agent to perform the update, run the host's agentCommands in order with the normal approval required for network and plugin installation changes.";
 const HERMES_MANAGED_UPDATE_WORKFLOW = "For a managed Hermes installation, if the user asked the agent to perform the update, run runtimes.hermes.managedSource.agentCommands in order with the normal approval required for network and plugin installation changes.";
-const HERMES_LINKED_UPDATE_WORKFLOW = "For a linked-source Hermes installation, never run managedSource.agentCommands; update the canonical source repository through its approved workflow, preserve the link, then run linkedSource.verificationCommands.";
-const HERMES_LINK_GUARDRAIL = "For Hermes, never run the managed reinstall when the installed Brand Runtime path is a symbolic link; preserve the link and update only its canonical source repository.";
+const HERMES_MANAGED_GUARDRAIL = "Hermes installations are managed per profile; never point the installed plugin directory at a source checkout.";
 
 function expect(value, message) {
   if (!value) throw new Error(message);
@@ -98,27 +91,10 @@ export function validateHermesRuntimeUpdate(contract) {
   expect(isRecord(hermes.managedSource), "Hermes runtime update must define managed-source behavior.");
   expectExactArray(hermes.managedSource.agentCommands, HERMES_MANAGED_UPDATE_COMMANDS, "Hermes managed update commands");
   expectExactArray(hermes.reload, [HERMES_RELOAD], "Hermes reload instructions");
+  expect(!("linkedSource" in hermes), "Hermes runtime update must not define linked-source behavior.");
 
-  expect(isRecord(hermes.linkedSource), "Hermes runtime update must define linked-source behavior.");
-  expect(
-    typeof hermes.linkedSource.detection === "string" && hermes.linkedSource.detection.includes("symbolic link"),
-    "Hermes linked-source detection must check for a symbolic link.",
-  );
-  expect(
-    typeof hermes.linkedSource.action === "string"
-      && hermes.linkedSource.action.includes("do not run the managed reinstall")
-      && hermes.linkedSource.action.includes("preserve the link"),
-    "Hermes linked-source action must preserve the link and skip managed reinstall.",
-  );
-  expectExactArray(
-    hermes.linkedSource.verificationCommands,
-    HERMES_LINKED_VERIFICATION_COMMANDS,
-    "Hermes linked-source verification commands",
-  );
-
-  expect(Array.isArray(contract.workflow) && contract.workflow.includes(HERMES_MODE_WORKFLOW), "Runtime update workflow must select the Hermes installation mode.");
+  expect(Array.isArray(contract.workflow), "Runtime update workflow must be an array.");
   expect(contract.workflow.includes(NON_HERMES_UPDATE_WORKFLOW), "Runtime update workflow must dispatch non-Hermes commands separately.");
   expect(contract.workflow.includes(HERMES_MANAGED_UPDATE_WORKFLOW), "Runtime update workflow must dispatch managed Hermes commands conditionally.");
-  expect(contract.workflow.includes(HERMES_LINKED_UPDATE_WORKFLOW), "Runtime update workflow must protect linked Hermes sources conditionally.");
-  expect(Array.isArray(contract.guardrails) && contract.guardrails.includes(HERMES_LINK_GUARDRAIL), "Runtime update guardrails must protect linked Hermes sources.");
+  expect(Array.isArray(contract.guardrails) && contract.guardrails.includes(HERMES_MANAGED_GUARDRAIL), "Runtime update guardrails must require managed Hermes installs.");
 }

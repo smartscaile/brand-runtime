@@ -18,6 +18,8 @@ uma. Preserve decisões humanas nas seções livres deste arquivo.
 - O plugin é empacotado para Codex e Claude Code por manifests independentes em
   `plugins/brand-runtime/.codex-plugin/` e
   `plugins/brand-runtime/.claude-plugin/`.
+- O Hermes consome o manifest portátil Agent Plugins v1 em
+  `plugins/brand-runtime/plugin.json` por instalação gerenciada em cada perfil.
 - Skills e referências Markdown são parte executável do produto e vivem em
   `plugins/brand-runtime/skills/`.
 - A apresentação usa HTML/CSS e o navegador local para renderização; PDF e

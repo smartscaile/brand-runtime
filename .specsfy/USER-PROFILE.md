@@ -25,6 +25,7 @@ produção.
 | --- | --- | --- | --- | --- |
 | Interação | Profundidade das orientações | Experiente; pode trabalhar diretamente com arquitetura, contratos, testes e integrações | Conversa atual | 2026-08-26 |
 | Apresentações | Formato padrão de entrega | HTML standalone por padrão; a pessoa gera e baixa o PDF manualmente a partir do HTML; geração de PDF no Runtime somente por opt-in explícito | Conversa atual | 2026-08-26 |
+| Hermes | Forma de instalação do Brand Runtime | Plugin gerenciado em cada perfil; não usar symlink nem apontar a instalação para o checkout de desenvolvimento | Conversa atual | 2026-08-26 |
 
 ## Uso pelo setup
 

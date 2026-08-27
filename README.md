@@ -21,13 +21,13 @@ claude plugin install brand-runtime@smartscaile
 ## Install in Hermes
 
 ```bash
-hermes plugins install smartscaile/brand-runtime/plugins/brand-runtime --enable
+hermes plugins install smartscaile/brand-runtime/plugins/brand-runtime --force --enable
 hermes plugins doctor brand-runtime --ci
 ```
 
 Hermes loads the portable `brand` and `presentation` skills under a deterministic plugin namespace. Start a new Hermes session and use the agent tool `skills_list` to inspect their qualified names. Agent Plugins v1 does not load the Codex/Claude hook adapter, so Hermes routes requests through its skill index rather than `hooks/hooks.json`.
 
-For local development, `~/.hermes/plugins/brand-runtime` may be a symbolic link to this package's canonical source. Preserve that link: do not run the managed force-install over it.
+`--force` acknowledges the reviewed scanner findings for this approved Smartscaile repository and also supports managed replacement during updates. Do not use it with an untrusted source. Hermes installs the plugin as a profile-scoped regular directory.
 
 Start a new session after installation and invoke:
 
@@ -103,15 +103,13 @@ Then run `/reload-plugins` in the active Claude Code session or start a new sess
 
 ## Update in Hermes
 
-For a managed installation from GitHub, reinstall the plugin subdirectory because `hermes plugins update` requires a `.git` directory inside the installed package:
+Reinstall the plugin subdirectory because `hermes plugins update` requires a `.git` directory inside the installed package, while managed subdirectory installs intentionally contain only the plugin package:
 
 ```bash
 hermes plugins install smartscaile/brand-runtime/plugins/brand-runtime --force --enable
 hermes plugins doctor brand-runtime --ci
 hermes plugins show brand-runtime
 ```
-
-For a linked-source development installation, do not run the force-install or replace the link. Update the canonical source repository through its approved workflow, preserve the link, then run only `doctor` and `show` from the sequence above.
 
 Start a new Hermes session after the update so the skill index is rebuilt. Updating the plugin does not modify Brand Packs, the saved brand folder path, project knowledge, or brand rules.
 

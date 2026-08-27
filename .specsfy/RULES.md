@@ -9,7 +9,7 @@ Confirme os manifests e as fronteiras principais antes de completar o modelo gen
 
 - Mantenha identidade, regras, tokens e assets específicos de clientes fora do plugin; consuma-os somente por Brand Packs externos validados.
 
-- Mantenha o fluxo principal equivalente e validado em Codex e Claude Code.
+- Mantenha o fluxo principal equivalente e validado em Codex, Claude Code e Hermes.
 
 ## Código e qualidade
 
@@ -26,5 +26,7 @@ Confirme os manifests e as fronteiras principais antes de completar o modelo gen
 ## Operação
 
 - Mantenha aprendizados e decisões de entregas em docs/design/ no projeto consumidor; promova ao Brand Pack somente regras normativas explicitamente confirmadas.
+
+- Instale e atualize o Brand Runtime no Hermes como plugin gerenciado por perfil; não aponte o diretório instalado para um checkout de desenvolvimento.
 
 ## Regras específicas do projeto

@@ -62,7 +62,7 @@ test("rejects unknown portable manifest fields and malformed metadata", () => {
   );
 });
 
-test("requires executable managed and linked-source Hermes update modes", async () => {
+test("requires the executable managed Hermes update mode", async () => {
   const contract = await readJson("plugins/brand-runtime/skills/brand/references/runtime-update.json");
 
   assert.doesNotThrow(() => validateHermesRuntimeUpdate(contract));
@@ -72,10 +72,7 @@ test("requires executable managed and linked-source Hermes update modes", async 
     "hermes plugins doctor brand-runtime --ci",
     "hermes plugins show brand-runtime",
   ]);
-  assert.deepEqual(contract.runtimes.hermes.linkedSource.verificationCommands, [
-    "hermes plugins doctor brand-runtime --ci",
-    "hermes plugins show brand-runtime",
-  ]);
+  assert.equal(contract.runtimes.hermes.linkedSource, undefined);
 
   const unsafe = structuredClone(contract);
   unsafe.runtimes.hermes.agentCommands = unsafe.runtimes.hermes.managedSource.agentCommands;

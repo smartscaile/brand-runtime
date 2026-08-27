@@ -80,7 +80,7 @@ expect(claudePlugin.author?.name === "smartscaile.", "Claude author must be smar
 expect(baseVersion(codexPlugin.version) === packageManifest.version, "Codex plugin base version must match package.json.");
 expect(baseVersion(claudePlugin.version) === packageManifest.version, "Claude plugin base version must match package.json.");
 expect(baseVersion(portablePlugin.version) === packageManifest.version, "Portable plugin version must match package.json.");
-expect(packageManifest.version === "0.5.0", "Presentation release must use Brand Runtime v0.5.0.");
+expect(packageManifest.version === "0.6.0", "Hermes managed release must use Brand Runtime v0.6.0.");
 
 expect(skill.split("\n").length < 500, "Brand SKILL.md must stay below 500 lines.");
 expect(skill.startsWith("---\nname: brand\ndescription:"), "Brand SKILL.md must declare canonical frontmatter.");

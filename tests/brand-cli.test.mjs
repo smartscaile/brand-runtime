@@ -7,6 +7,10 @@ import { resolve } from "node:path";
 import test from "node:test";
 
 const cli = resolve(import.meta.dirname, "../plugins/brand-runtime/skills/brand/scripts/brand.ts");
+const runtimeVersion = JSON.parse(await readFile(
+  resolve(import.meta.dirname, "../plugins/brand-runtime/.codex-plugin/plugin.json"),
+  "utf8",
+)).version;
 
 function hash(value) {
   return createHash("sha256").update(value).digest("hex");
@@ -95,7 +99,7 @@ test("reports runtime version and promotes explicit brand rules independently", 
   const fixture = await createBrandFixture();
   try {
     const initial = output(run(fixture.projectRoot, "validate", ["--brand", "checkgrow"]));
-    assert.match(initial.runtimeVersion, /^0\.5\.0(?:\+codex\.[a-z0-9.-]+)?$/);
+    assert.equal(initial.runtimeVersion, runtimeVersion);
     assert.equal(initial.brandVersion, "0.5.3");
     assert.equal(initial.rulesSchemaVersion, "1.0.0");
     assert.equal(initial.rulesRevision, 0);

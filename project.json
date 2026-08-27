@@ -4,12 +4,12 @@
     "name": "brand-runtime",
     "vendor": "smartscaile.",
     "subtype": "cross-runtime-brand-plugin",
-    "description": "Plugin universal para aplicar Brand Packs privados em Codex e Claude Code."
+    "description": "Plugin universal para aplicar Brand Packs privados em Codex, Claude Code e Hermes."
   },
   "phase": "validation",
   "version": {
     "local_source": "package.json",
-    "current": "0.5.0"
+    "current": "0.6.0"
   },
   "source_of_truth": {
     "skill": "plugins/brand-runtime/skills/brand/SKILL.md",
@@ -17,19 +17,21 @@
     "cli": "plugins/brand-runtime/skills/brand/scripts/brand.ts",
     "codex_manifest": "plugins/brand-runtime/.codex-plugin/plugin.json",
     "claude_manifest": "plugins/brand-runtime/.claude-plugin/plugin.json",
+    "hermes_manifest": "plugins/brand-runtime/plugin.json",
     "repository_validation": "scripts/validate-repository.mjs"
   },
   "constraints": [
     "O plugin não pode conter identidade, regras ou assets específicos de clientes.",
     "Brand Packs e regras aprendidas permanecem externos e pertencem ao cliente.",
-    "A implementação deve funcionar em Codex e Claude Code."
+    "A implementação deve funcionar em Codex, Claude Code e Hermes.",
+    "A instalação Hermes é gerenciada por perfil e não aponta para um checkout de desenvolvimento."
   ],
   "validation": {
     "command": "npm run check",
     "status": "passed",
-    "tests": "12 passed",
+    "tests": "52 passed",
     "skill_validation": "passed",
     "plugin_validation": "passed",
-    "codex_local_install": "0.5.0+codex.20260812104827"
+    "codex_local_install": "0.6.0+codex.20260826234555"
   }
 }

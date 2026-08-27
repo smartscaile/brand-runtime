@@ -62,3 +62,7 @@
 | npm | transitiva | yargs | 16.2.2 | yargs the modern, pirate-themed, successor to optimist. | https://github.com/yargs/yargs |
 | npm | transitiva | yargs-parser | 20.2.9 | the mighty option parser used by yargs | https://github.com/yargs/yargs-parser |
 <!-- specsfy:documentator:end -->
+
+## Revisão da release 0.6.0
+
+- O bump do pacote raiz de 0.5.0 para 0.6.0 não adiciona, remove nem altera dependências; o inventário acima permanece válido.

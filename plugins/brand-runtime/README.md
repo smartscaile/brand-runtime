@@ -4,6 +4,15 @@ Universal Brand Runtime for Codex, Claude Code, and Hermes. Use validated Brand 
 
 Published by **smartscaile.**
 
+## Hermes managed installation
+
+```bash
+hermes plugins install smartscaile/brand-runtime/plugins/brand-runtime --force --enable
+hermes plugins doctor brand-runtime --ci
+```
+
+Use `--force` only with this approved Smartscaile source. Hermes installs the package as a profile-scoped regular directory. Run the same install command to replace an earlier managed version, then start a new session.
+
 ## Runtime entry points
 
 - Shared command: `>>brand <slug>`

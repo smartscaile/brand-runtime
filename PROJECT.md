@@ -50,7 +50,7 @@ ficam em `.specsfy/STACK.md`, `.specsfy/DATABASE.md`, `INTERFACE.md` e
 
 ## Estado atual e oportunidade
 
-A versão canônica é `0.5.0` e está em fase de validação. A próxima evolução
-pretendida é transformar qualidade visual, especialmente em apresentações, em
-um sistema especificável e verificável: narrativa, direção de arte, famílias de
-composição, limites de repetição, aprovação visual e freeze real.
+A versão canônica é `0.6.0`. Ela publica o contrato de qualidade visual,
+o fluxo de apresentações HTML-first e o pacote portátil para Hermes. No Hermes,
+a distribuição é gerenciada por perfil e atualizada por reinstalação verificada
+da fonte oficial, sem apontar o diretório instalado para o checkout do runtime.
