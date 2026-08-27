@@ -6,7 +6,7 @@
 | Ordem | Spec | Estado | Milestones |
 | --- | --- | --- | --- |
 | 01 | 0001-contrato-v1-diagnosticos-apresentacoes | Complete | — |
-| 02 | 0002-release-v060-hermes-gerenciado | Implementing | — |
+| 02 | 0002-release-v060-hermes-gerenciado | Complete | — |
 
 ## Marcos
 

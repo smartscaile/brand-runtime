@@ -5,7 +5,7 @@
 | Formato | Specsfy/2.0 |
 | ID | SPEC-0002 |
 | Slug | 0002-release-v060-hermes-gerenciado |
-| Status | Implementing |
+| Status | Complete |
 | Effort | 4 |
 | Effort updated at | 2026-08-26 |
 | Effort rationale | Mudança pequena de produto, mas com versionamento multi-runtime, onboarding remoto, instalação externa e publicação no main. |
@@ -13,7 +13,7 @@
 | Milestones | Release v0.6.0 |
 | Definition Gate | Passed |
 | Plan Gate | Passed |
-| Delivery Gate | Pending |
+| Delivery Gate | Passed |
 | Evidence Contract | 1 |
 | Interface para pessoas | Não |
 | Atualizada em | 2026-08-26 |
@@ -325,15 +325,15 @@ package-lock.json
 
 | Requisito | Cenário BDD | Nível | Arquivo/comando esperado | Evidência |
 | --- | --- | --- | --- | --- |
-| FR-001 | AC-001 | Contrato | `node --test tests/spec-0002/hermes-managed-release.test.mjs` | 3/3 |
-| FR-001 | AC-002 | Integração | instalação em `HERMES_HOME` temporário | Exit 0, diretório regular 0.6.0 |
-| FR-001 | AC-003 | Integração | discovery/skill_view em processo novo | 2/2 skills carregadas |
-| FR-002 | AC-001 | Contrato | `npm run validate` | Exit 0 |
-| FR-002 | AC-002 | Contrato/E2E | teste focal + reinstalação real | 7/7 e reinstall exit 0 |
-| FR-002 | AC-003 | Contrato | busca de orientação de symlink | READMEs/contrato sem orientação linkada |
-| NFR-001 | AC-001 | Regressão | `npm run check` | 52/52 |
-| NFR-001 | AC-002 | Segurança | Plugin Doctor e varredura estática | Doctor 0; 0 achados; 0 resíduos |
-| NFR-001 | AC-003 | Revisão | revisão independente fail-closed | `passed: true`, zero blockers |
+| FR-001 | AC-001 | Contrato | `node --test tests/spec-0002/hermes-managed-release.test.mjs` | Passed — 3/3 |
+| FR-001 | AC-002 | Integração | instalação em `HERMES_HOME` temporário | Passed — exit 0, diretório regular 0.6.0 |
+| FR-001 | AC-003 | Integração | discovery/skill_view em processo novo | Passed — 2/2 skills carregadas |
+| FR-002 | AC-001 | Contrato | `npm run validate` | Passed — exit 0 |
+| FR-002 | AC-002 | Contrato/E2E | teste focal + reinstalação real | Passed — 3/3 e reinstall exit 0 |
+| FR-002 | AC-003 | Contrato | busca de orientação de symlink | Passed — READMEs/contrato sem orientação linkada |
+| NFR-001 | AC-001 | Regressão | `npm run check` | Passed — 52/52 |
+| NFR-001 | AC-002 | Segurança | Plugin Doctor e varredura estática | Passed — Doctor 0; 0 achados; 0 resíduos |
+| NFR-001 | AC-003 | Revisão | revisão independente fail-closed | Passed — `passed: true`, zero blockers |
 
 ### 13. Validações
 
@@ -351,9 +351,9 @@ package-lock.json
 
 #### Gate do Ato III — Entrega
 
-- **Resultado**: Pending
-- **Comando**: `node .agents/skills/specsfy-06-tdd-bdd/scripts/check_traceability.mjs specs/in-progress/0002-release-v060-hermes-gerenciado/spec.md tests/spec-0002 --full-chain`
-- **Achados**: Pending.
+- **Resultado**: Passed
+- **Comando**: `node .agents/skills/specsfy-06-tdd-bdd/scripts/check_traceability.mjs specs/completed/0002-release-v060-hermes-gerenciado/spec.md tests/spec-0002 --full-chain`
+- **Achados**: Comando canônico passou 7/7 com `--full-chain`; `npm run check` passou 52/52; review independente `deleg_cd7ef142` passou; instalação pública limpa e Hermes ativo carregaram 0.6.0 com duas skills.
 
 ### 14. Tarefas
 
@@ -406,14 +406,15 @@ package-lock.json
   - [x] **VERIFY**: 0.6.0, diretório regular, duas skills, 52/52, rastreabilidade 7/7 e zero resíduos confirmados.
   - [x] **EVIDENCE**: `deleg_cd7ef142` retornou `passed: true`, sem security_concerns, logic_errors ou suggestions.
   - [x] **IMPROVE**: Expectativas históricas de 0.5.0 agora derivam a versão do manifest canônico; reviewer fail-closed despachado.
-  <!-- specsfy:evidence {"task":"T006","refs":["US-001","FR-001","FR-002","NFR-001","AC-001","AC-002","AC-003"],"files":["package.json","tests/hermes-plugin-integration.test.mjs","tests/spec-0002/hermes-managed-release.test.mjs","specs/in-progress/0002-release-v060-hermes-gerenciado/spec.md"],"commands":[{"run":"npm run check","exit":0},{"run":"node .agents/skills/specsfy-06-tdd-bdd/scripts/check_traceability.mjs specs/in-progress/0002-release-v060-hermes-gerenciado/spec.md tests/spec-0002 --full-chain","exit":0},{"run":"hermes plugins doctor plugins/brand-runtime --ci","exit":0}],"review":"deleg_cd7ef142: passed=true; security_concerns=[]; logic_errors=[]"} -->
+  <!-- specsfy:evidence {"task":"T006","refs":["US-001","FR-001","FR-002","NFR-001","AC-001","AC-002","AC-003"],"files":["package.json","tests/hermes-plugin-integration.test.mjs","tests/spec-0002/hermes-managed-release.test.mjs","specs/completed/0002-release-v060-hermes-gerenciado/spec.md"],"commands":[{"run":"npm run check","exit":0},{"run":"node .agents/skills/specsfy-06-tdd-bdd/scripts/check_traceability.mjs specs/completed/0002-release-v060-hermes-gerenciado/spec.md tests/spec-0002 --full-chain","exit":0},{"run":"hermes plugins doctor plugins/brand-runtime --ci","exit":0}],"review":"deleg_cd7ef142: passed=true; security_concerns=[]; logic_errors=[]"} -->
 
-- [ ] T007 [CODE] Instalar v0.6.0 no Hermes ativo, criar commit de `package.json` e publicar `main` — Refs: US-001, FR-001, FR-002, NFR-001, AC-001, AC-002, AC-003 — Depends: T006
-  - [ ] **PREP**: Confirmar revisão aprovada e working tree restrito.
-  - [ ] **EXECUTE**: Commitar, publicar e reinstalar da fonte remota.
-  - [ ] **VERIFY**: Ler `origin/main`, plugin ativo e skill discovery após publicação.
-  - [ ] **EVIDENCE**: Registrar commit, versão instalada e verificação remota.
-  - [ ] **IMPROVE**: Registrar ausência de tag conforme convenção atual ou criar tarefa futura.
+- [x] T007 [CODE] Instalar v0.6.0 no Hermes ativo, criar commit de `package.json` e publicar `main` — Refs: US-001, FR-001, FR-002, NFR-001, AC-001, AC-002, AC-003 — Depends: T006
+  - [x] **PREP**: Review aprovado, `origin/main` sem divergência e working tree restrito confirmados.
+  - [x] **EXECUTE**: Commit `65c0d2ab18329adfaab4693b67e167b95685f4d4` publicado em `main`; plugin reinstalado da fonte remota.
+  - [x] **VERIFY**: Instalação pública limpa e Hermes ativo retornaram 0.6.0, diretórios regulares, Doctor PASS e duas skills carregadas.
+  - [x] **EVIDENCE**: O artefato de release `65c0d2ab18329adfaab4693b67e167b95685f4d4` foi publicado em `main` e permanece fixado na metadata ativa; `brand` e `presentation` carregaram em processo novo.
+  - [x] **IMPROVE**: Sem tag conforme convenção atual; pin histórico ativo foi movido explicitamente com `--ref` para o commit publicado.
+  <!-- specsfy:evidence {"task":"T007","refs":["US-001","FR-001","FR-002","NFR-001","AC-001","AC-002","AC-003"],"files":["package.json","plugins/brand-runtime/plugin.json","README.md","plugins/brand-runtime/skills/brand/references/runtime-update.json"],"commands":[{"run":"git push origin main","exit":0},{"run":"hermes plugins install smartscaile/brand-runtime/plugins/brand-runtime --force --enable --ref 65c0d2ab18329adfaab4693b67e167b95685f4d4","exit":0},{"run":"hermes plugins doctor brand-runtime --ci","exit":0}],"commit":"65c0d2ab18329adfaab4693b67e167b95685f4d4","public_smoke":"0.6.0; regular directory; 2/2 skills loaded"} -->
 
 ### 15. Ordem de execução
 
@@ -447,14 +448,15 @@ package-lock.json
 - **DEC-002**: Suportar somente instalação Hermes gerenciada — decisão explícita do usuário e isolamento por perfil.
 - **DEC-003**: Atualizar via reinstalação `--force --enable` — o pacote instalado de subdiretório não contém `.git`, portanto `plugins update` não é executável.
 - **DEC-004**: Não criar tag nesta fatia — o histórico atual não usa tags; publicação em `main` preserva a convenção observada.
+- **DEC-005**: Instalações novas sem `--ref` acompanham o `main`; uma instalação previamente fixada exige `--ref <novo SHA>` para mover o pin, conforme a proteção nativa do Hermes.
 
 ### 18. Definition of Done
 
-- [ ] `Definition Gate` está `Passed`.
-- [ ] `Plan Gate` está `Passed`.
-- [ ] `Delivery Gate` está `Passed`.
-- [ ] Todos os cenários `AC` aplicáveis passam.
-- [ ] Todos os requisitos possuem evidência de verificação.
-- [ ] Todas as tarefas na seção 14 estão concluídas.
-- [ ] Testes e checks estáticos disponíveis passam.
-- [ ] Plugin ativo e remoto declaram 0.6.0 após publicação.
+- [x] `Definition Gate` está `Passed`.
+- [x] `Plan Gate` está `Passed`.
+- [x] `Delivery Gate` está `Passed`.
+- [x] Todos os cenários `AC` aplicáveis passam.
+- [x] Todos os requisitos possuem evidência de verificação.
+- [x] Todas as tarefas na seção 14 estão concluídas.
+- [x] Testes e checks estáticos disponíveis passam.
+- [x] Plugin ativo e remoto declaram 0.6.0 após publicação.
