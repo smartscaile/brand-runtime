@@ -23,7 +23,7 @@ flowchart LR
 O plugin distribuído permanece identidade-neutro. Brand Packs e conhecimento
 mutável pertencem respectivamente ao cliente e ao projeto consumidor.
 
-## Distribuição Hermes na v0.6.0
+## Distribuição Hermes na v0.6.1
 
 O Hermes instala o pacote portátil como diretório regular gerenciado em cada
 perfil. Instalação e atualização usam o instalador nativo contra a fonte

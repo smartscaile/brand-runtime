@@ -50,7 +50,7 @@ ficam em `.specsfy/STACK.md`, `.specsfy/DATABASE.md`, `INTERFACE.md` e
 
 ## Estado atual e oportunidade
 
-A versão canônica é `0.6.0`. Ela publica o contrato de qualidade visual,
-o fluxo de apresentações HTML-first e o pacote portátil para Hermes. No Hermes,
+A versão canônica é `0.6.1`. Esta patch release incorpora o Viewer UI refinado
+ao fluxo de apresentações HTML-first e ao pacote portátil para Hermes. No Hermes,
 a distribuição é gerenciada por perfil e atualizada por reinstalação verificada
 da fonte oficial, sem apontar o diretório instalado para o checkout do runtime.

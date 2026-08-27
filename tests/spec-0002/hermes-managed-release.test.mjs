@@ -20,7 +20,7 @@ function markdownSection(markdown, heading) {
   return markdown.slice(start, next === -1 ? undefined : next);
 }
 
-test("SPECSFY: AC-001 US-001 FR-001 FR-002 NFR-001 requires Brand Runtime v0.6.0 across release metadata", async () => {
+test("SPECSFY: AC-001 US-001 FR-001 FR-002 NFR-001 requires Brand Runtime v0.6.1 across release metadata", async () => {
   const packageManifest = await readJson("package.json");
   const packageLock = await readJson("package-lock.json");
   const project = await readJson("project.json");
@@ -28,13 +28,13 @@ test("SPECSFY: AC-001 US-001 FR-001 FR-002 NFR-001 requires Brand Runtime v0.6.0
   const claude = await readJson("plugins/brand-runtime/.claude-plugin/plugin.json");
   const codex = await readJson("plugins/brand-runtime/.codex-plugin/plugin.json");
 
-  assert.equal(packageManifest.version, "0.6.0");
-  assert.equal(packageLock.version, "0.6.0");
-  assert.equal(packageLock.packages[""].version, "0.6.0");
-  assert.equal(project.version.current, "0.6.0");
-  assert.equal(portable.version, "0.6.0");
-  assert.equal(claude.version, "0.6.0");
-  assert.match(codex.version, /^0\.6\.0\+codex\.\d{14}$/);
+  assert.equal(packageManifest.version, "0.6.1");
+  assert.equal(packageLock.version, "0.6.1");
+  assert.equal(packageLock.packages[""].version, "0.6.1");
+  assert.equal(project.version.current, "0.6.1");
+  assert.equal(portable.version, "0.6.1");
+  assert.equal(claude.version, "0.6.1");
+  assert.match(codex.version, /^0\.6\.1\+codex\.\d{14}$/);
 });
 
 test("SPECSFY: AC-002 US-001 FR-001 FR-002 NFR-001 requires the executable managed Hermes install and update command", async () => {
