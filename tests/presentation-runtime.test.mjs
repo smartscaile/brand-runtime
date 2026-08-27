@@ -1350,7 +1350,8 @@ test("SPECSFY: AC-007 exports standalone HTML without generating PDF by default"
     assert.equal("pdfInspection" in report, false);
     const shareable = await readFile(html, "utf8");
     assert.equal(report.html.sha256, createHash("sha256").update(shareable).digest("hex"));
-    assert.match(shareable, />Save PDF<\/button>/);
+    assert.match(shareable, /id="presentation-download"[^>]*aria-label="Save PDF"/);
+    assert.match(shareable, /id="presentation-download-label"[^>]*>Save PDF<\/span>/);
     assert.match(shareable, /window\.print\(\)/);
     assert.doesNotMatch(shareable, /__PDF_PAYLOAD__/);
     assert.deepEqual((await readdir(root)).filter((name) => name.endsWith(".pdf")), []);

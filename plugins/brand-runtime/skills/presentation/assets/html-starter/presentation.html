@@ -15,70 +15,183 @@
       --canvas-w: 1280px;
       --canvas-h: 720px;
       --page-margin: 64px;
+
+      /* Viewer chrome is universal and never governs the printable canvas. */
+      --viewer-bg: #151614;
+      --viewer-surface: #242522;
+      --viewer-surface-hover: #30312d;
+      --viewer-border: #3b3c37;
+      --viewer-text: #f4f4ef;
+      --viewer-muted: #a5a69e;
+      --viewer-focus: #b7bcff;
     }
 
     * { box-sizing: border-box; }
-    html, body { min-height: 100%; margin: 0; }
+    html, body { width: 100%; min-height: 100%; margin: 0; }
     body {
-      color: var(--ink);
-      background: #d9d8d4;
+      color: var(--viewer-text);
+      background: var(--viewer-bg);
       font-family: Arial, Helvetica, sans-serif;
       font-synthesis: none;
+      overflow: hidden;
     }
     button { font: inherit; }
 
-    .presentation-toolbar {
-      position: sticky;
-      top: 0;
+    .presentation-viewer {
+      position: fixed;
+      inset: 0;
       z-index: 50;
-      min-height: 60px;
+      color: var(--viewer-text);
+      pointer-events: none;
+    }
+    .presentation-progress {
+      --presentation-progress: 0%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 3px;
+      overflow: hidden;
+      background: #2c2d29;
+    }
+    .presentation-progress::after {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--presentation-progress);
+      background: var(--viewer-text);
+      transition: width 180ms ease;
+    }
+    .presentation-viewer__header {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      left: 22px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 10px 20px;
-      color: var(--page);
-      background: var(--ink);
+      justify-content: space-between;
+      gap: 20px;
     }
-    .presentation-toolbar__title {
+    .presentation-viewer__title {
       min-width: 0;
       overflow: hidden;
-      font-size: 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .presentation-viewer__hint {
+      color: var(--viewer-muted);
+      font-size: 11px;
+      letter-spacing: 0.02em;
+    }
+    .presentation-dock {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      width: min(520px, 100%);
+      flex: none;
+      padding: 5px;
+      border: 1px solid var(--viewer-border);
+      border-radius: 15px;
+      background: var(--viewer-surface);
+      box-shadow: 0 16px 42px rgb(0 0 0 / 0.3);
+      pointer-events: auto;
+    }
+    .presentation-control {
+      min-width: 44px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 12px;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      color: var(--viewer-text);
+      background: transparent;
+      cursor: pointer;
+      transition: color 140ms ease, background 140ms ease, border-color 140ms ease, transform 140ms ease;
+    }
+    .presentation-control svg {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.75;
+    }
+    .presentation-control:hover:not(:disabled) { background: var(--viewer-surface-hover); }
+    .presentation-control:active:not(:disabled) { transform: translateY(1px); }
+    .presentation-control:focus-visible {
+      outline: 3px solid var(--viewer-focus);
+      outline-offset: 2px;
+    }
+    .presentation-control:disabled {
+      cursor: not-allowed;
+      opacity: 0.34;
+    }
+    .presentation-control__label { font-size: 12px; font-weight: 700; }
+    .presentation-dock__status {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      padding: 0 8px;
+    }
+    .presentation-dock__slide-title {
+      overflow: hidden;
+      color: var(--viewer-text);
+      font-size: 12px;
       font-weight: 700;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .presentation-toolbar__count {
-      margin-left: auto;
-      color: #cbc8c2;
-      font-size: 13px;
+    .presentation-dock__count {
+      color: var(--viewer-muted);
+      font-size: 11px;
       font-variant-numeric: tabular-nums;
+      letter-spacing: 0.06em;
     }
-    .presentation-toolbar button {
-      min-height: 38px;
-      padding: 0 13px;
-      border: 1px solid #68645e;
-      border-radius: 6px;
-      color: var(--page);
-      background: transparent;
-      cursor: pointer;
+    .presentation-dock__divider {
+      width: 1px;
+      height: 24px;
+      flex: none;
+      background: var(--viewer-border);
     }
-    .presentation-toolbar button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-    .presentation-toolbar button:disabled { cursor: not-allowed; opacity: 0.45; }
-    .presentation-toolbar .presentation-toolbar__download {
-      border-color: var(--accent);
-      color: var(--ink);
-      background: var(--accent);
-      font-weight: 700;
+    .presentation-control--primary {
+      border-color: var(--viewer-text);
+      color: var(--viewer-bg);
+      background: var(--viewer-text);
+    }
+    .presentation-control--primary:hover:not(:disabled) {
+      border-color: white;
+      background: white;
     }
 
     .presentation-shell {
-      min-height: calc(100vh - 60px);
-      display: grid;
-      place-items: center;
-      padding: 28px;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 62px 28px 22px;
       overflow: hidden;
     }
-    .presentation-stage { position: relative; }
+    .presentation-stage {
+      position: relative;
+      background: transparent;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+    }
     .presentation-deck {
       position: absolute;
       inset: 0 auto auto 0;
@@ -161,19 +274,35 @@
     .slide--dark .chapter-marker { color: #d8d5cf; }
 
     @media (max-width: 760px) {
-      .presentation-toolbar { gap: 7px; padding-inline: 10px; }
-      .presentation-toolbar__title { display: none; }
-      .presentation-toolbar__count { margin-left: 0; }
-      .presentation-toolbar button { padding-inline: 9px; }
-      .presentation-shell { padding: 12px; }
+      .presentation-viewer__header { top: 14px; right: 16px; left: 16px; }
+      .presentation-viewer__hint { display: none; }
+      .presentation-dock {
+        width: min(340px, 100%);
+        border-radius: 14px;
+      }
+      .presentation-control { padding-inline: 10px; }
+      .presentation-control__label { display: none; }
+      .presentation-dock__status { gap: 10px; padding-inline: 8px; }
+      .presentation-shell { padding: 50px 12px 14px; }
+    }
+
+    @media (max-width: 440px) {
+      .presentation-dock__slide-title { display: none; }
+      .presentation-dock__status { display: flex; justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .presentation-progress::after,
+      .presentation-control { transition: none; }
     }
 
     @page { size: 13.333333in 7.5in; margin: 0; }
     @media print {
-      html, body { width: 13.333333in; margin: 0; background: white; }
-      .presentation-toolbar { display: none !important; }
+      html, body { width: 13.333333in; margin: 0; background: white; overflow: visible; }
+      .presentation-viewer { display: none !important; }
+      .presentation-dock { display: none !important; }
       .presentation-shell { display: block; min-height: 0; padding: 0; overflow: visible; }
-      .presentation-stage { width: auto !important; height: auto !important; }
+      .presentation-stage { width: auto !important; height: auto !important; box-shadow: none; }
       .presentation-deck { position: static; width: auto; height: auto; transform: none !important; }
       .slide, .slide[hidden] {
         display: flex !important;
@@ -187,15 +316,15 @@
   </style>
 </head>
 <body>
-  <header class="presentation-toolbar" aria-label="Presentation controls">
-    <div class="presentation-toolbar__title">__PRESENTATION_TITLE__</div>
-    <button id="presentation-previous" type="button">Previous</button>
-    <button id="presentation-next" type="button">Next</button>
-    <div class="presentation-toolbar__count"><span id="presentation-current">1</span> / <span id="presentation-total">2</span></div>
-    <button id="presentation-download" class="presentation-toolbar__download" type="button">Save PDF</button>
-  </header>
+  <div class="presentation-viewer" aria-label="Presentation controls">
+    <div id="presentation-progress" class="presentation-progress" role="progressbar" aria-label="Slide progress" aria-valuemin="1" aria-valuemax="2" aria-valuenow="1"></div>
+    <header class="presentation-viewer__header">
+      <div class="presentation-viewer__title">__PRESENTATION_TITLE__</div>
+      <div class="presentation-viewer__hint" aria-hidden="true">Arrow keys to navigate</div>
+    </header>
+  </div>
 
-  <main class="presentation-shell">
+  <main class="presentation-shell" id="presentation-shell">
     <div class="presentation-stage" id="presentation-stage">
       <div class="presentation-deck" id="presentation-deck">
         <!-- Replace these mechanics-only sample slides with project-authored content. -->
@@ -221,33 +350,79 @@
         </section>
       </div>
     </div>
+    <nav class="presentation-dock" aria-label="Slide navigation">
+      <button id="presentation-previous" class="presentation-control" type="button" aria-label="Previous slide" title="Previous slide">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        <span class="presentation-control__label">Previous</span>
+      </button>
+      <div class="presentation-dock__status" aria-live="polite" aria-atomic="true">
+        <span id="presentation-active-title" class="presentation-dock__slide-title">Opening</span>
+        <span class="presentation-dock__count"><span id="presentation-current">01</span> / <span id="presentation-total">02</span></span>
+      </div>
+      <button id="presentation-next" class="presentation-control" type="button" aria-label="Next slide" title="Next slide">
+        <span class="presentation-control__label">Next</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+      <span class="presentation-dock__divider" aria-hidden="true"></span>
+      <button id="presentation-download" class="presentation-control presentation-control--primary" type="button" aria-label="Save PDF" title="Save PDF">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v7H6z"/></svg>
+        <span id="presentation-download-label" class="presentation-control__label">Save PDF</span>
+      </button>
+    </nav>
   </main>
 
   <script id="presentation-pdf-payload" type="application/octet-stream">__PDF_PAYLOAD__</script>
   <script>
     const presentationSlides = Array.from(document.querySelectorAll(".slide"));
+    const presentationShell = document.querySelector("#presentation-shell");
+    const presentationDock = document.querySelector(".presentation-dock");
     const presentationStage = document.querySelector("#presentation-stage");
     const presentationDeck = document.querySelector("#presentation-deck");
+    const presentationProgress = document.querySelector("#presentation-progress");
+    const presentationActiveTitle = document.querySelector("#presentation-active-title");
     const presentationCurrent = document.querySelector("#presentation-current");
     const presentationTotal = document.querySelector("#presentation-total");
     const presentationPrevious = document.querySelector("#presentation-previous");
     const presentationNext = document.querySelector("#presentation-next");
     const presentationDownload = document.querySelector("#presentation-download");
+    const presentationDownloadLabel = document.querySelector("#presentation-download-label");
     const presentationPayload = document.querySelector("#presentation-pdf-payload");
     let presentationIndex = 0;
 
+    function presentationIndexFromHash() {
+      const requestedPresentationSlide = Number(window.location.hash.replace("#slide-", ""));
+      return Number.isInteger(requestedPresentationSlide)
+        && requestedPresentationSlide > 0
+        && requestedPresentationSlide <= presentationSlides.length
+        ? requestedPresentationSlide - 1
+        : 0;
+    }
+
     function showPresentationSlide(index) {
-      presentationIndex = Math.max(0, Math.min(presentationSlides.length - 1, index));
+      const normalizedIndex = Number.isInteger(index) ? index : 0;
+      presentationIndex = Math.max(0, Math.min(presentationSlides.length - 1, normalizedIndex));
       presentationSlides.forEach((slide, slideIndex) => { slide.hidden = slideIndex !== presentationIndex; });
-      presentationCurrent.textContent = String(presentationIndex + 1);
+      const activeSlide = presentationSlides[presentationIndex];
+      const currentSlide = presentationIndex + 1;
+      const progressPercent = presentationSlides.length ? (currentSlide / presentationSlides.length) * 100 : 0;
+      presentationCurrent.textContent = String(currentSlide).padStart(2, "0");
+      presentationTotal.textContent = String(presentationSlides.length).padStart(2, "0");
+      presentationActiveTitle.textContent = activeSlide.dataset.title || `Slide ${currentSlide}`;
+      presentationProgress.style.setProperty("--presentation-progress", `${progressPercent}%`);
+      presentationProgress.setAttribute("aria-valuenow", String(currentSlide));
+      presentationProgress.setAttribute("aria-valuemax", String(presentationSlides.length));
       presentationPrevious.disabled = presentationIndex === 0;
       presentationNext.disabled = presentationIndex === presentationSlides.length - 1;
-      window.location.hash = `slide-${presentationIndex + 1}`;
+      if (window.location.hash !== `#slide-${currentSlide}`) window.location.hash = `slide-${currentSlide}`;
     }
 
     function fitPresentationDeck() {
-      const availableWidth = Math.max(320, window.innerWidth - 56);
-      const availableHeight = Math.max(180, window.innerHeight - 112);
+      const presentationShellStyle = getComputedStyle(presentationShell);
+      const horizontalPadding = parseFloat(presentationShellStyle.paddingLeft) + parseFloat(presentationShellStyle.paddingRight);
+      const verticalPadding = parseFloat(presentationShellStyle.paddingTop) + parseFloat(presentationShellStyle.paddingBottom);
+      const shellGap = parseFloat(presentationShellStyle.rowGap) || 0;
+      const availableWidth = Math.max(240, presentationShell.clientWidth - horizontalPadding);
+      const availableHeight = Math.max(135, presentationShell.clientHeight - verticalPadding - presentationDock.offsetHeight - shellGap);
       const scale = Math.min(availableWidth / 1280, availableHeight / 720);
       presentationStage.style.width = `${1280 * scale}px`;
       presentationStage.style.height = `${720 * scale}px`;
@@ -262,11 +437,16 @@
       if (event.key === "Home") showPresentationSlide(0);
       if (event.key === "End") showPresentationSlide(presentationSlides.length - 1);
     });
+    window.addEventListener("hashchange", () => {
+      showPresentationSlide(presentationIndexFromHash());
+    });
     window.addEventListener("resize", fitPresentationDeck);
 
     const encodedPresentationPdf = presentationPayload.textContent.trim();
     if (encodedPresentationPdf.length > 100 && /^[A-Za-z0-9+/=]+$/.test(encodedPresentationPdf)) {
-      presentationDownload.textContent = "Download PDF";
+      presentationDownloadLabel.textContent = "Download PDF";
+      presentationDownload.setAttribute("aria-label", "Download PDF");
+      presentationDownload.setAttribute("title", "Download PDF");
       presentationDownload.addEventListener("click", () => {
         try {
           const binary = atob(encodedPresentationPdf);
@@ -280,7 +460,8 @@
           link.remove();
           window.setTimeout(() => URL.revokeObjectURL(url), 1500);
         } catch {
-          presentationDownload.textContent = "Download unavailable";
+          presentationDownloadLabel.textContent = "Download unavailable";
+          presentationDownload.setAttribute("aria-label", "Download unavailable");
           presentationDownload.disabled = true;
         }
       });
@@ -288,8 +469,7 @@
       presentationDownload.addEventListener("click", () => window.print());
     }
 
-    const requestedPresentationSlide = Number(window.location.hash.replace("#slide-", ""));
-    showPresentationSlide(Number.isFinite(requestedPresentationSlide) && requestedPresentationSlide > 0 ? requestedPresentationSlide - 1 : 0);
+    showPresentationSlide(presentationIndexFromHash());
     fitPresentationDeck();
     window.__presentationReady = Promise.all([
       document.fonts.ready,

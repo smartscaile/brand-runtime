@@ -48,14 +48,21 @@ Read `quality-policy.md` before changing thresholds, interpreting findings, reco
 
 ## Screen controls
 
-Place controls outside the slide canvas. Provide:
+Place the universal viewer chrome outside the slide canvas. Keep its neutral `--viewer-*` tokens separate from project and Brand Pack tokens so the viewer never becomes client identity or changes printable slides.
+
+Provide a top progress indicator and a compact dock in normal flow immediately below the stage with:
 
 - Previous;
+- active slide title;
 - page count;
 - Next;
 - Save PDF.
 
-Support Left Arrow, Right Arrow, Home, and End. Hide controls and preview chrome during print.
+Synchronize progress, title, count, disabled edge states, and `#slide-N` after every navigation. Support Left Arrow, Right Arrow, Page Up, Page Down, Home, End, and direct hash reconstruction. Keep a visible keyboard focus indicator and minimum 44 × 44 CSS-pixel targets.
+
+Keep the dock centered and content-contained rather than anchored to the viewport: cap it at 520 CSS pixels on desktop and 340 CSS pixels on mobile, with a short fixed gap below the stage. Include the dock's measured height and the shell gap when scaling the fixed canvas. Keep the stage transparent, clip the scaled deck at its exact bounds, and avoid an outline or intermediate background that can bleed around dark slides.
+
+At mobile widths, keep every action available, collapse text labels to accessible icons, and scale the fixed canvas from the shell's real available area. The default viewer does not include a fullscreen control. Hide both `.presentation-viewer` and `.presentation-dock` during print.
 
 ## HTML-first save and opt-in direct download
 

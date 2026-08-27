@@ -16,7 +16,7 @@ O comando `npm run check` também executa `scripts/validate-repository.mjs`.
 
 - Arquivos de teste: 0.
 - Runner: não identificado.
-- Scripts: check: node scripts/validate-repository.mjs && node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/hermes-plugin-integration.test.mjs tests/presentation-runtime.test.mjs; test: node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/hermes-plugin-integration.test.mjs tests/presentation-runtime.test.mjs; test:tdd: node --test tests/presentation-runtime.test.mjs; validate: node scripts/validate-repository.mjs.
+- Scripts: check: node scripts/validate-repository.mjs && node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/hermes-plugin-integration.test.mjs tests/spec-0002/hermes-managed-release.test.mjs tests/spec-0003/presentation-viewer-ui.test.mjs tests/presentation-runtime.test.mjs; test: node --test tests/brand-command-hook.test.mjs tests/brand-cli.test.mjs tests/hermes-plugin-integration.test.mjs tests/spec-0002/hermes-managed-release.test.mjs tests/spec-0003/presentation-viewer-ui.test.mjs tests/presentation-runtime.test.mjs; test:tdd: node --test tests/spec-0003/presentation-viewer-ui.test.mjs tests/presentation-runtime.test.mjs; validate: node scripts/validate-repository.mjs.
 
 | Arquivo |
 | --- |
