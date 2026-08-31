@@ -5,15 +5,15 @@ import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 
-const runtime = resolve(import.meta.dirname, "../../plugins/brand-runtime/skills/presentation/scripts/presentation-runtime.mjs");
+const runtime = resolve(import.meta.dirname, "../plugins/brand-runtime/skills/presentation/scripts/presentation-runtime.mjs");
 
 function scaffold(output, title = "Viewer Test") {
   const result = spawnSync(process.execPath, [runtime, "scaffold", "--output", output, "--title", title], { encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr || result.stdout);
 }
 
-// SPECSFY: US-001 FR-001 FR-002 NFR-001 AC-001
-test("SPECSFY: AC-001 provides synchronized viewer navigation and progress", async () => {
+
+test("provides synchronized viewer navigation and progress", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-viewer-progress-"));
   try {
     scaffold(root, "Progress Test");
@@ -31,8 +31,8 @@ test("SPECSFY: AC-001 provides synchronized viewer navigation and progress", asy
   }
 });
 
-// SPECSFY: US-001 FR-001 FR-002 NFR-001 AC-002
-test("SPECSFY: AC-002 preserves keyboard and hash navigation", async () => {
+
+test("preserves keyboard and hash navigation", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-viewer-keyboard-"));
   try {
     scaffold(root, "Keyboard Test");
@@ -53,8 +53,8 @@ test("SPECSFY: AC-002 preserves keyboard and hash navigation", async () => {
   }
 });
 
-// SPECSFY: US-001 FR-001 FR-002 NFR-001 AC-003
-test("SPECSFY: AC-003 keeps responsive chrome outside print", async () => {
+
+test("keeps responsive chrome outside print", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-viewer-responsive-"));
   try {
     scaffold(root, "Responsive Test");

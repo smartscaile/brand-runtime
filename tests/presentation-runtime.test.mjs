@@ -208,8 +208,8 @@ test("does not follow an output symlink introduced during export", { timeout: 30
   }
 });
 
-// SPECSFY: US-001 FR-001 NFR-001 NFR-002 NFR-003 AC-001
-test("SPECSFY: AC-001 scaffolds coherent presentation contracts", async () => {
+
+test("scaffolds coherent presentation contracts", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-contract-scaffold-"));
   try {
     run(["scaffold", "--output", root, "--title", "Contract Test"]);
@@ -222,6 +222,7 @@ test("SPECSFY: AC-001 scaffolds coherent presentation contracts", async () => {
     assert.deepEqual(spec.slides, [
       { id: "opening", job: "context", family: "statement" },
       { id: "evidence", job: "proof", family: "evidence" },
+      { id: "decision", job: "decision", family: "decision" },
     ]);
     for (const slide of spec.slides) {
       assert.match(html, new RegExp(`data-slide-id="${slide.id}"[^>]*data-slide-job="${slide.job}"[^>]*data-slide-family="${slide.family}"`));
@@ -235,8 +236,8 @@ test("SPECSFY: AC-001 scaffolds coherent presentation contracts", async () => {
   }
 });
 
-// SPECSFY: US-001 FR-001 FR-003 NFR-001 NFR-002 NFR-003 AC-002
-test("SPECSFY: AC-002 blocks contract metadata mismatches", async () => {
+
+test("blocks contract metadata mismatches", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-contract-mismatch-"));
   try {
     run(["scaffold", "--output", root, "--title", "Mismatch Test"]);
@@ -251,6 +252,7 @@ test("SPECSFY: AC-002 blocks contract metadata mismatches", async () => {
       slides: [
         { id: "opening", job: "context", family: "statement" },
         { id: "evidence", job: "proof", family: "evidence" },
+        { id: "decision", job: "decision", family: "decision" },
       ],
     });
 
@@ -274,8 +276,8 @@ test("SPECSFY: AC-002 blocks contract metadata mismatches", async () => {
   }
 });
 
-// SPECSFY: US-001 FR-001 FR-002 NFR-001 NFR-002 NFR-003 AC-003
-test("SPECSFY: AC-003 reports consecutive family overuse without a beauty score", async () => {
+
+test("reports consecutive family overuse without a beauty score", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-family-overuse-"));
   try {
     const slides = [
@@ -300,7 +302,7 @@ test("SPECSFY: AC-003 reports consecutive family overuse without a beauty score"
   }
 });
 
-// SPECSFY: US-001 FR-001 NFR-001 NFR-002 NFR-003
+
 test("rejects quality thresholds outside the public schema", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-policy-limit-"));
   try {
@@ -320,7 +322,7 @@ test("rejects quality thresholds outside the public schema", async () => {
   }
 });
 
-// SPECSFY: US-001 FR-001 NFR-001 NFR-002 NFR-003
+
 test("rejects unsupported narrative jobs", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-job-enum-"));
   try {
@@ -339,7 +341,7 @@ test("rejects unsupported narrative jobs", async () => {
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("rejects approval dates outside ISO-8601", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-approval-date-"));
   try {
@@ -371,7 +373,7 @@ test("rejects approval dates outside ISO-8601", async () => {
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("defers frozen hash validation until technical QA has artifacts", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-freeze-deferral-"));
   try {
@@ -413,7 +415,7 @@ test("defers frozen hash validation until technical QA has artifacts", async () 
   }
 });
 
-// SPECSFY: US-001 FR-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("does not ignore an explicit missing approvals file in legacy mode", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-explicit-approvals-"));
   try {
@@ -439,8 +441,8 @@ test("does not ignore an explicit missing approvals file in legacy mode", async 
   }
 });
 
-// SPECSFY: US-001 FR-002 NFR-001 NFR-002 NFR-003 AC-004
-test("SPECSFY: AC-004 reports eyebrow saturation with numeric evidence", async () => {
+
+test("reports eyebrow saturation with numeric evidence", async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-eyebrow-saturation-"));
   try {
     const slides = [
@@ -470,7 +472,7 @@ test("SPECSFY: AC-004 reports eyebrow saturation with numeric evidence", async (
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("reports technical browser QA failures before creating delivery artifacts", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-technical-failure-"));
   try {
@@ -511,7 +513,6 @@ test("reports technical browser QA failures before creating delivery artifacts",
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003 AC-006
 test("blocks a legacy deck when technical browser QA fails", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-legacy-technical-failure-"));
   try {
@@ -542,7 +543,7 @@ test("blocks a legacy deck when technical browser QA fails", { timeout: 30000 },
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("reports PDF inspection failures as technical QA failures", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-pdf-failure-"));
   try {
@@ -573,7 +574,7 @@ test("reports PDF inspection failures as technical QA failures", { timeout: 3000
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("rejects local assets outside the deck directory", { timeout: 30000 }, async () => {
   const outer = await mkdtemp(resolve(tmpdir(), "presentation-runtime-asset-boundary-"));
   const root = resolve(outer, "deck");
@@ -608,7 +609,7 @@ test("rejects local assets outside the deck directory", { timeout: 30000 }, asyn
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("rejects executable asset schemes in the shareable HTML", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-asset-scheme-"));
   try {
@@ -640,7 +641,7 @@ test("rejects executable asset schemes in the shareable HTML", { timeout: 30000 
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("blocks network access before evaluating deck JavaScript", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-network-block-"));
   const counter = await startRequestCounter(root);
@@ -666,7 +667,7 @@ test("blocks network access before evaluating deck JavaScript", { timeout: 30000
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("blocks WebSocket access before evaluating deck JavaScript", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-websocket-block-"));
   const counter = await startRequestCounter(root);
@@ -692,7 +693,7 @@ test("blocks WebSocket access before evaluating deck JavaScript", { timeout: 300
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("reports packaging failures and removes partial delivery artifacts", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-packaging-failure-"));
   try {
@@ -773,7 +774,7 @@ test("preserves previous delivery artifacts when forced replacement fails", { ti
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-003 AC-007
+
 test("preserves previous delivery when QA report publication is rejected", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-report-rollback-"));
   try {
@@ -823,7 +824,7 @@ test("preserves previous delivery when QA report publication is rejected", { tim
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-003 AC-007
+
 test("rejects a non-file QA report destination before publishing delivery", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-report-type-"));
   try {
@@ -872,7 +873,7 @@ test("rejects a non-file QA report destination before publishing delivery", { ti
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-003 AC-007
+
 test("rolls back a non-file QA report destination introduced after preflight", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-report-type-race-"));
   try {
@@ -933,7 +934,7 @@ test("rolls back a non-file QA report destination introduced after preflight", {
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003
+
 test("times out unresolved presentation readiness and cleans up Chrome", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-readiness-timeout-"));
   try {
@@ -973,7 +974,7 @@ test("times out unresolved presentation readiness and cleans up Chrome", { timeo
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-003 AC-007
+
 test("forces bounded cleanup when the Chrome launcher ignores SIGTERM", {
   timeout: 30000,
   skip: process.platform === "win32",
@@ -1035,7 +1036,7 @@ while :; do sleep 1; done
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-003 AC-007
+
 test("times out a stalled DevTools handshake and cleans up startup resources", {
   timeout: 30000,
   skip: process.platform === "win32",
@@ -1125,7 +1126,7 @@ setInterval(() => {}, 1000);
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-003 AC-007
+
 test("reports aggregate Chrome cleanup failures as structured technical evidence", {
   timeout: 30000,
   skip: process.platform === "win32" || process.getuid?.() === 0,
@@ -1197,8 +1198,8 @@ test("reports aggregate Chrome cleanup failures as structured technical evidence
   }
 });
 
-// SPECSFY: US-001 FR-002 FR-003 NFR-001 NFR-002 NFR-003 AC-005
-test("SPECSFY: AC-005 keeps approved review artifacts awaiting freeze", { timeout: 30000 }, async () => {
+
+test("keeps approved review artifacts awaiting freeze", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-awaiting-freeze-"));
   try {
     run(["scaffold", "--output", root, "--title", "Awaiting Freeze"]);
@@ -1211,6 +1212,7 @@ test("SPECSFY: AC-005 keeps approved review artifacts awaiting freeze", { timeou
       slides: [
         { id: "opening", job: "context", family: "statement" },
         { id: "evidence", job: "proof", family: "evidence" },
+        { id: "decision", job: "decision", family: "decision" },
       ],
     });
     const approved = {
@@ -1285,8 +1287,7 @@ test("SPECSFY: AC-005 keeps approved review artifacts awaiting freeze", { timeou
   }
 });
 
-// SPECSFY: US-001 FR-001 FR-003 NFR-001 NFR-002 NFR-003 AC-006
-test("SPECSFY: AC-006 preserves legacy export as unverified", { timeout: 30000 }, async () => {
+test("preserves legacy export as unverified", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-legacy-export-"));
   try {
     run(["scaffold", "--output", root, "--title", "Legacy Export"]);
@@ -1319,8 +1320,7 @@ test("SPECSFY: AC-006 preserves legacy export as unverified", { timeout: 30000 }
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-002 NFR-003 AC-007
-test("SPECSFY: AC-007 exports standalone HTML without generating PDF by default", { timeout: 30000 }, async () => {
+test("exports standalone HTML without generating PDF by default", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-html-first-"));
   try {
     run(["scaffold", "--output", root, "--title", "HTML First"]);
@@ -1384,9 +1384,9 @@ test("exports and validates a standalone HTML and exact PDF payload", { timeout:
     assert.equal(report.technicalQa, "passed");
     assert.equal(report.systemDiagnostics, "passed");
     assert.equal(report.deliveryState, "awaiting-content-approval");
-    assert.equal(report.inspection.slideCount, 2);
-    assert.equal(report.pdfInspection.pages, 2);
-    assert.equal(report.pdfInspection.renderedPages, 2);
+    assert.equal(report.inspection.slideCount, 3);
+    assert.equal(report.pdfInspection.pages, 3);
+    assert.equal(report.pdfInspection.renderedPages, 3);
     assert.equal(report.pdfInspection.hasType3, false);
     assert.equal(report.pdfSha256, report.embeddedPdfSha256);
     const shareable = await readFile(html, "utf8");
@@ -1396,7 +1396,7 @@ test("exports and validates a standalone HTML and exact PDF payload", { timeout:
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-003
+
 test("exports byte-identical PDF and HTML for identical inputs", { timeout: 45000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-deterministic-export-"));
   try {
@@ -1428,7 +1428,7 @@ test("exports byte-identical PDF and HTML for identical inputs", { timeout: 4500
   }
 });
 
-// SPECSFY: US-001 FR-003 NFR-001 NFR-003
+
 test("removes stale managed render captures before export QA", { timeout: 30000 }, async () => {
   const root = await mkdtemp(resolve(tmpdir(), "presentation-runtime-clean-captures-"));
   try {

@@ -60,14 +60,29 @@ Read `references/quality-policy.md` before creating contracts, changing threshol
 
 ## Create or restructure
 
+Apply this progressive build gate before implementation:
+
+- Before building any slides, present and obtain explicit approval of the brief, output folder, narrative, visual thesis, and evidence plan.
+- Approval of an isolated checkpoint does not approve the others or authorize the complete deck.
+- For the first implementation, build exactly three slides, slides 1–3 by default.
+- Do not create later slides in the authoring HTML or DOM, in `presentation.spec.json`, or as placeholders.
+- Build the remaining slides only after explicit human approval of the first batch.
+
+The approved visual thesis must explain the first batch's composition profile and intended rhythm without preselecting a rigid template.
+
 1. Resolve the audience, decision, presentation moment, delivery environment, and non-negotiable content.
 2. Build an answer-first narrative. Give each slide one job, one governing idea, and one dominant visual relationship.
-3. Define a small project-local slide grammar rather than a rigid template catalog.
-4. Establish consistent page geometry before styling individual slides.
-5. Select visual forms from meaning: comparison, sequence, hierarchy, evidence, transition, or decision.
-6. Use authored SVG or HTML geometry for diagrams and charts when exact organization matters. Use generated or sourced raster imagery only when imagery materially advances the message.
-7. Record presentation-specific decisions in the project design direction without converting them into brand rules.
-8. Implement, render, and refine representative slides before scaling the full deck.
+3. Map content before selecting a composition family. Record each slide's claim, evidence, dominant relationship, density, and constraints.
+4. Set a project-local composition profile for the first batch from the content and approved direction, not from a universal numeric dial.
+5. When a material layout choice remains ambiguous, outline at least two structurally distinct candidates before writing full HTML.
+6. Choose by narrative fit, evidence, approved direction, and neighboring rhythm; never by randomization or preset rotation.
+7. Define a small project-local slide grammar rather than a rigid template catalog.
+8. Establish consistent page geometry before styling individual slides.
+9. Select visual forms from meaning: comparison, sequence, hierarchy, evidence, transition, or decision.
+10. Use authored SVG or HTML geometry for diagrams and charts when exact organization matters. Use generated or sourced raster imagery only when imagery materially advances the message.
+11. Record presentation-specific decisions in the project design direction without converting them into brand rules.
+12. Implement, render, and refine the approved first batch before scaling the full deck.
+13. Review the first batch at thumbnail, full-slide, and detail scales. Recompose when the sequence repeats anatomy without a semantic reason or hides the intended relationship.
 
 Read `references/visual-system.md` before substantial creation or redesign. For fixed-page HTML, start from `assets/html-starter/presentation.html` or run the bundled scaffold command described in `references/html-delivery.md`.
 

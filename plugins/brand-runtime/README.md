@@ -13,6 +13,8 @@ hermes plugins doctor brand-runtime --ci
 
 Use `--force` only with this approved Smartscaile source. Hermes installs the package as a profile-scoped regular directory. Run the same install command to replace an earlier managed version, then start a new session.
 
+Without `--ref`, the command installs the current official source. Add `--ref <SHA-40>` only for an explicitly immutable audited installation.
+
 ## Runtime entry points
 
 - Shared command: `>>brand <slug>`

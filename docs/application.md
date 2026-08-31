@@ -1,6 +1,6 @@
 # Aplicação e implementações
 
-## Componentes observados fora do inventário automático
+## Componentes principais
 
 | Componente | Caminho | Responsabilidade |
 | --- | --- | --- |
@@ -11,14 +11,6 @@
 | Skill de direção | `plugins/brand-runtime/skills/brand/SKILL.md` | Orquestrar identidade, projeto, direção e revisão |
 | Skill de apresentação | `plugins/brand-runtime/skills/presentation/SKILL.md` | Orquestrar criação, refinamento e entrega de decks |
 
-<!-- specsfy:documentator:start -->
-## Superfícies
-
-Categorias: Serviços, Rotas e APIs, Páginas, Componentes, Testes e Outras fontes.
-
-Relação: relaciona cada arquivo observado à sua superfície.
-
-| Categoria | Arquivo | Símbolos |
-| --- | --- | --- |
-| Outras fontes | plugins/brand-runtime/skills/brand/scripts/brand.ts | CLIENT_RULES_FILE, CLIENT_RULES_SCHEMA_VERSION, SURFACES, RULE_SURFACES, RULE_SEVERITIES, RULE_STATUSES, LEARN_SCOPES, PROJECT_KNOWLEDGE_KINDS |
-<!-- specsfy:documentator:end -->
+O plugin não oferece servidor, banco ou API própria. Ele é carregado pelos
+runtimes suportados e atua somente sobre arquivos do projeto consumidor e
+Brand Packs externos aprovados.

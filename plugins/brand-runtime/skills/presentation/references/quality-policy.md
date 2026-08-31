@@ -184,10 +184,31 @@ The v1 policy does not:
 - turn a generated reference image into brand authority;
 - replace rendered human review.
 
-## Research provenance
+## External method adaptation
 
-The preflight and anti-repetition approach was informed by an audit of `taste-skill` at commit `ccbc15639c97057cbfcf32ecebc38ef716e4bb37`:
+The presentation layout workflow was adapted after a read-only audit of:
 
-https://github.com/Leonxlnx/taste-skill/tree/ccbc15639c97057cbfcf32ecebc38ef716e4bb37
+- source: https://github.com/Leonxlnx/taste-skill/tree/ccbc15639c97057cbfcf32ecebc38ef716e4bb37
+- immutable revision: `ccbc15639c97057cbfcf32ecebc38ef716e4bb37`;
+- reviewed on: `2026-08-31`;
+- declared license: MIT;
+- primary skill blob: `b72132fcd466da605623ffe96e370b3991fc5285`;
+- stricter GPT variant blob: `03ed209b8fdc0a3cd6bccf8a5b3bfffe56aa4558`.
 
-That project is MIT-licensed. Brand Runtime re-expresses selected process ideas for presentation contracts and does not import its skills, presets, code, or aesthetic authority.
+The frozen source describes its v2 skill as experimental, and its proposed block library is a schema rather than a populated implementation in the audited tree. Brand Runtime therefore treats it as an external method donor, not as a layout engine or aesthetic authority.
+
+| Source concept | Disposition | Brand Runtime treatment | Canonical destination |
+| --- | --- | --- | --- |
+| Read the brief before generating | `adapt` | Resolve audience, decision, constraints, evidence, and approved visual thesis before layout selection. | `SKILL.md`; `visual-system.md` |
+| Composition concerns surfaced by the dials | `adapt` | Express density, distribution, symmetry, and continuity as reasoned project-local fields without a numeric scale. | `visual-system.md` |
+| Numeric dials and fixed aesthetic baselines | `reject` | Do not turn composition, motion, density, or taste into a universal score or inherited default. | Authority boundary |
+| Anti-default discipline and exhaustive preflight | `adapt` | Keep a concise, explainable critique at thumbnail, full-slide, and detail scales; convert aesthetic bans into contextual diagnostics. | `refinement.md`; this policy |
+| Audit-first redesign | `adapt` | Preserve approved content and system decisions, diagnose the dominant cause, then recompose only when structure is the cause. | `SKILL.md`; `refinement.md` |
+| Named layout vocabulary and proposed block library | `adapt` | Translate patterns into relationship-led, project-local families; do not vendor the catalog or block recipes. | `visual-system.md` |
+| Randomized layout or component selection | `reject` | Choose between structural candidates using narrative fit, evidence, direction, and neighboring rhythm. | `SKILL.md`; `visual-system.md` |
+| Fixed fonts, palettes, AIDA, motion stacks, frameworks, and style presets | `reject` | Brand Pack and approved local direction remain the only identity and aesthetic authorities. | Authority boundary |
+| Optional generated reference imagery | `defer` | Keep generation project-local, explicit, and subordinate to approved assets and human review. | `visual-system.md` |
+| Mandatory imagery and remote placeholder services | `reject` | Do not require image generation or import unapproved remote assets; standalone delivery remains offline. | Remote-resource gate |
+| Anti-laziness empirical claims and prompt stimuli | `reference-only` | Do not promote percentages or causal claims because the audited research index names studies without direct source URLs. Keep only explicit steps, bounded batches, artifact verification, and no-placeholder discipline already justified by this project. | Provenance only |
+
+No external code, preset, asset, font, palette, or component recipe is distributed. The adaptation changes how the Runtime reasons about composition; it does not create an aggregate taste score, bypass a Brand Pack, or replace human visual approval.

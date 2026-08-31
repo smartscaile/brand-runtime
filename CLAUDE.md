@@ -1,3 +1,3 @@
-<!-- specsfy:framework:start -->
-@.specsfy/Spec.md
-<!-- specsfy:framework:end -->
+# Brand Runtime
+
+Leia e siga `AGENTS.md`.

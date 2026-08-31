@@ -30,6 +30,13 @@ correto não comprova qualidade visual.
 ## Princípios de qualidade
 
 - Começar por intenção, audiência, decisão esperada e hierarquia de conteúdo.
+- Criar um mapa de conteúdo por superfície antes de escolher composição:
+  afirmação, evidência, relação dominante, densidade e restrições.
+- Declarar um perfil de composição local para densidade, distribuição, simetria
+  e continuidade; esses campos orientam decisões, mas não formam score de gosto.
+- Quando houver ambiguidade material, comparar estruturas distintas e escolher
+  pela narrativa, evidência, direção aprovada e ritmo vizinho, nunca por
+  randomização ou rotação de presets.
 - Derivar direção visual das evidências da marca e do contexto da entrega.
 - Tratar presets estéticos fortes apenas como referências ou adapters
   opcionais; nunca como gosto universal do core.
@@ -68,8 +75,12 @@ só existe quando as aprovações requeridas e a evidência exportada concordam.
 
 - Cada slide declara papel narrativo e família de composição.
 - O deck acompanha a distribuição de famílias para detectar monotonia e abuso.
-- Três slides representativos devem provar o sistema antes da expansão do deck:
-  abertura ou tese, evidência complexa e decisão ou fechamento.
+- A primeira implementação contém exatamente três slides, por padrão os slides
+  1–3; esse lote inicial deve provar o sistema em sequência narrativa real.
+- Não criar slides posteriores nem placeholders antes da aprovação humana
+  explícita do primeiro lote e da autorização para expandir o deck.
+- Revisar os slides 1–3 como sequência de miniaturas, páginas completas e
+  detalhes; repetição e contraste precisam de função narrativa demonstrável.
 - Screenshots são material editorial: precisam de recorte, escala, foco,
   anotação ou integração coerente com a narrativa.
 - QA deve verificar overflow, fontes, assets, contraste e exportação, além de
@@ -91,4 +102,4 @@ conversão; documentos acrescentam paginação, navegação e legibilidade longa
 
 | Versão | Data | Alteração | Origem |
 | --- | --- | --- | --- |
-| 0.1.0 | 2026-08-24 | Baseline inicial para estruturar a evolução da qualidade visual | Preparação do Specsfy |
+| 0.1.0 | 2026-08-24 | Baseline inicial para estruturar a evolução da qualidade visual | Preparação do sistema visual |

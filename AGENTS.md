@@ -2,7 +2,7 @@
 
 ## Escopo
 
-Plugin universal para aplicar Brand Packs privados em Codex e Claude Code sem incorporar identidade, regras ou assets de clientes.
+Plugin universal para aplicar Brand Packs privados em Codex, Claude Code e Hermes sem incorporar identidade, regras ou assets de clientes.
 
 ## Fontes de Verdade
 
@@ -10,6 +10,7 @@ Plugin universal para aplicar Brand Packs privados em Codex e Claude Code sem in
 - Skill canônica: `plugins/brand-runtime/skills/brand/`
 - Manifest Codex: `plugins/brand-runtime/.codex-plugin/plugin.json`
 - Manifest Claude Code: `plugins/brand-runtime/.claude-plugin/plugin.json`
+- Manifest Hermes: `plugins/brand-runtime/plugin.json`
 - Validação do repositório: `scripts/validate-repository.mjs`
 
 ## Regras
@@ -17,50 +18,31 @@ Plugin universal para aplicar Brand Packs privados em Codex e Claude Code sem in
 - Responder e escrever em pt-BR.
 - Manter o runtime universal; identidade e regras de empresas pertencem exclusivamente aos Brand Packs externos.
 - Editar a fonte em `plugins/brand-runtime/`, nunca o cache instalado do plugin.
-- Preservar compatibilidade entre Codex e Claude Code.
+- Preservar compatibilidade entre Codex, Claude Code e Hermes.
 - Atualizar versões e manifests de forma consistente quando houver release.
 - Validar mudanças com `npm run check`.
 
-<!-- specsfy:framework:start -->
-## Framework Specsfy
+## Fluxo de mudança
 
-Leia e siga integralmente `.specsfy/Spec.md` antes de trabalhar com
-backlogs, refinamentos do backlog, especificações, tarefas, testes ou implementação. Esse
-arquivo contém o fluxo, os caminhos canônicos e os gates do framework.
+- Antes de alterar comportamento, leia `PROJECT.md`, `DESIGNSYSTEM.MD`,
+  `INTERFACE.md` e a documentação específica da superfície afetada.
+- Trate código, contratos, testes e documentação viva como fontes normativas;
+  não crie uma árvore paralela de specs, planos ou tarefas no repositório.
+- Para bug, feature ou mudança de contrato, escreva primeiro um teste que falhe
+  pela causa esperada, implemente a correção mínima e mantenha a suíte verde.
+- Execute `npm run test`, `npm run check` e `git diff --check` antes de concluir.
+- Registre decisões arquiteturais duráveis em `docs/decisions.md`; trabalho
+  futuro pertence ao tracker, não a arquivos de backlog locais.
 
-- Preserve as instruções próprias deste projeto.
-- O diretório do projeto é o caminho informado durante `$specsfy-setup`. Use-o
-  em toda leitura e escrita posterior. Se ele estiver dentro de um Hub, não
-  promova o trabalho para a raiz Git nem crie contexto, specs ou código fora
-  desse caminho.
-- Leia `PROJECT.md`, `DESIGNSYSTEM.MD`, `.specsfy/STACK.md`,
-  `.specsfy/RULES.md`, `.specsfy/DATABASE.md`, `.specsfy/PACKAGES.md` e
-  `.specsfy/USER-PROFILE.md` como contexto persistente antes de planejar
-  mudanças.
-- Antes de perguntar, consulte `.specsfy/USER-PROFILE.md`, a conversa atual e
-  as fontes do projeto. Não repita uma pergunta cuja resposta já esteja
-  confirmada; registre respostas novas no perfil com a fonte e o alcance.
-- Quando `.specsfy/SPECKIT.md` existir, leia
-  `.specify/memory/constitution.md` e cada fonte do GitHub Spec Kit listada na
-  projeção. Preserve `.specify/` e os artefatos já existentes em `specs/`; o
-  Specsfy não os migra nem os substitui.
-- Antes de iniciar qualquer skill do framework, execute obrigatoriamente
-  `$specsfy-setup` para verificar e reconciliar o contexto e os blocos
-  reservados. A própria `$specsfy-setup` não se chama recursivamente. Em uma
-  transição automática, execute-a de novo com a mesma raiz já confirmada antes
-  de carregar a skill de destino. Execute `$specsfy-documentator` quando
-  `PACKAGES.md` estiver ausente ou desatualizado.
-- Execute o monitor de contexto no início, após cada tarefa e antes de concluir
-  a entrega; resolva todo resultado `PENDING`.
-- Use as skills `specsfy-aux-*` para manter stack, regras e banco sem apagar
-  conteúdo humano.
-- Execute `$specsfy-documentator` depois de cada implementação para reconstruir
-  a documentação técnica completa em `docs/` e o registro de dependências em
-  `.specsfy/PACKAGES.md`.
-- Use `specs/inbox/` para capturas imediatas ainda não refinadas.
-- Use `specs/backlog/` para itens refináveis ainda não promovidos.
-- Use `specs/<estado>/<NNNN>-<slug>/spec.md` como fonte normativa de cada
-  fatia, em uma única pasta de estado.
-- Não crie `plan.md`, `tasks.md`, `research.md` ou outra fonte normativa
-  paralela.
-<!-- specsfy:framework:end -->
+## Apresentações
+
+- HTML standalone é a entrega padrão; PDF automatizado só existe com `--pdf`.
+- Não adicionar fullscreen ao Viewer; `Save PDF` continua usando
+  `window.print()` quando não há payload PDF explícito.
+- Antes de construir um deck, apresentar e obter aprovação explícita do brief,
+  pasta de saída, narrativa, tese visual e plano de evidências.
+- A primeira implementação contém exatamente três slides, por padrão os slides
+  1–3. Não criar os demais slides, nem como placeholders, até aprovação humana
+  explícita para escalar o deck.
+- Aprovar pasta, brief ou outro checkpoint isolado não aprova os checkpoints
+  restantes nem autoriza o deck completo.

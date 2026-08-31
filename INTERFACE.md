@@ -7,7 +7,7 @@ um Brand Pack validado, a direção local de uma entrega ou `DESIGNSYSTEM.MD`.
 ## Base observada
 
 - Stack detectada: Node.js ESM e Chrome DevTools Protocol; Poppler é usado somente no modo PDF explícito.
-- Produto: plugin universal para Codex e Claude Code.
+- Produto: plugin universal para Codex, Claude Code e Hermes.
 - Superfícies: sites, produtos, apresentações e documentos.
 - Entrega de apresentações: HTML determinístico por padrão; PDF e QA PDF são opt-in.
 
@@ -65,17 +65,21 @@ O viewer não possui menu global, formulário nem controle fullscreen. A navega�
 1. Identidade, direção de arte, sistema de composição e conteúdo são camadas
    distintas e devem ter autoridade explícita.
 2. Nenhum preset estético genérico entra no core como identidade implícita.
-3. Antes de escalar uma apresentação inteira, validar um conjunto pequeno de
-   slides representativos que prove narrativa, direção de arte e sistema.
-4. Reuso significa preservar intenção e qualidade, não repetir o mesmo arranjo
+3. Antes de escalar uma apresentação inteira, aprovar brief, pasta, narrativa,
+   tese visual e evidências; depois implementar exatamente três slides, por
+   padrão os slides 1–3, sem criar os demais nem como placeholders.
+4. O deck completo só pode ser construído após aprovação humana explícita do
+   primeiro lote; a aprovação isolada de uma pasta ou de outro checkpoint não
+   substitui essa autorização.
+5. Reuso significa preservar intenção e qualidade, não repetir o mesmo arranjo
    de headline, cards, screenshots ou divisores.
-5. Toda família nova ou alterada registra consumidores, estados, limites,
+6. Toda família nova ou alterada registra consumidores, estados, limites,
    acessibilidade e evidência visual no mesmo trabalho.
-6. QA técnico é obrigatório, mas não equivale a aprovação de direção visual.
+7. QA técnico é obrigatório, mas não equivale a aprovação de direção visual.
 
 ## Dívidas e lacunas observadas
 
 | Lacuna | Evidência | Próxima decisão |
 | --- | --- | --- |
 | Diagnósticos v1 cobrem apenas paridade, repetição consecutiva e eyebrow | Contrato v1 | Calibrar novos findings com decks avaliados por pessoas, sem score de gosto |
-| Golden decks ainda não possuem conjunto governado | Runtime atual | Definir proveniência, autorização e uso de regressão em spec posterior |
+| Golden decks ainda não possuem conjunto governado | Runtime atual | Definir proveniência, autorização e uso de regressão em trabalho posterior |

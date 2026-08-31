@@ -45,12 +45,14 @@ e entrega verificável.
 O runtime usa Node.js em ES modules, skills Markdown, contratos JSON, hooks dos
 runtimes compatíveis e um manifest portátil Agent Plugins v1 para Hermes, além
 de uma cadeia determinística HTML-first com PDF opt-in. Detalhes verificáveis
-ficam em `.specsfy/STACK.md`, `.specsfy/DATABASE.md`, `INTERFACE.md` e
+ficam em `docs/architecture.md`, `docs/database.md`, `INTERFACE.md` e
 `DESIGNSYSTEM.MD`.
 
 ## Estado atual e oportunidade
 
-A versão canônica é `0.6.1`. Esta patch release incorpora o Viewer UI refinado
-ao fluxo de apresentações HTML-first e ao pacote portátil para Hermes. No Hermes,
-a distribuição é gerenciada por perfil e atualizada por reinstalação verificada
-da fonte oficial, sem apontar o diretório instalado para o checkout do runtime.
+A versão canônica é `0.7.0`. Esta minor release adapta mecanismos auditados de
+raciocínio visual para o fluxo de apresentações, torna executável o gate inicial
+de exatamente três slides, remove o lifecycle legado do caminho crítico e
+endurece sua verificação fail-closed. No Hermes, a distribuição é gerenciada por
+perfil e atualizada por reinstalação verificada da fonte oficial, sem apontar o
+diretório instalado para o checkout do runtime.

@@ -8,14 +8,6 @@ reutilizável observada é o starter HTML/CSS de apresentações em
 direção universal e o inventário de famílias ficam em `DESIGNSYSTEM.MD` e
 `INTERFACE.md`; identidade e tokens continuam externos.
 
-<!-- specsfy:documentator:start -->
-## Superfícies observadas
-
-- Componentes, páginas ou views: 0.
-- Tailwind: não identificado.
-- Tokens CSS: não identificados.
-
-| Arquivo |
-| --- |
-| Nenhuma superfície frontend identificada |
-<!-- specsfy:documentator:end -->
+O Viewer usa HTML, CSS e JavaScript nativos, sem dependência de framework. Seus
+tokens `--viewer-*` governam apenas o chrome; os tokens do Brand Pack governam o
+canvas. A impressão exclui o Viewer e preserva somente os slides.

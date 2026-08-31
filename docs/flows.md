@@ -16,18 +16,19 @@ sequenceDiagram
   Runtime-->>Pessoa: cria, revisa ou entrega artefato com evidências
 ```
 
-<!-- specsfy:documentator:start -->
-## Fluxo principal
-
-```mermaid
-flowchart LR
-  Entrada --> Aplicação --> Saída
-```
+## Construção progressiva de apresentações
 
 ```mermaid
 sequenceDiagram
-  participant Cliente
-  participant Aplicação
-  Cliente->>Aplicação: requisição
+  participant Pessoa
+  participant Skill as Skill Presentation
+  Skill-->>Pessoa: brief, pasta, narrativa, tese visual e evidências
+  Pessoa->>Skill: aprova o plano completo
+  Skill-->>Pessoa: HTML com exatamente três slides, slides 1–3 por padrão
+  Pessoa->>Skill: aprova explicitamente o primeiro lote
+  Skill-->>Pessoa: expande o deck restante
 ```
-<!-- specsfy:documentator:end -->
+
+A aprovação de uma pasta ou de outro checkpoint isolado nunca autoriza a
+expansão. Antes da aprovação do primeiro lote, slides futuros não entram no DOM,
+no `presentation.spec.json` nem como placeholders.

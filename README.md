@@ -29,6 +29,8 @@ Hermes loads the portable `brand` and `presentation` skills under a deterministi
 
 `--force` acknowledges the reviewed scanner findings for this approved Smartscaile repository and also supports managed replacement during updates. Do not use it with an untrusted source. Hermes installs the plugin as a profile-scoped regular directory.
 
+Without `--ref`, the managed command installs the current official source. Use `--ref <SHA-40>` only when an explicitly immutable audited installation is required; Hermes accepts a full 40-character commit SHA.
+
 Start a new session after installation and invoke:
 
 ```text

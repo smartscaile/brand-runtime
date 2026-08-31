@@ -16,6 +16,11 @@
       "id": "evidence",
       "job": "proof",
       "family": "evidence"
+    },
+    {
+      "id": "decision",
+      "job": "decision",
+      "family": "decision"
     }
   ]
 }

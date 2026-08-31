@@ -1,22 +1,17 @@
 # Documentação técnica
 
-> Nota de precisão: o documentador do Specsfy `0.8.1` não inclui `.mjs` no
-> inventário automático de código. Por isso, as contagens geradas abaixo são
-> incompletas. Use `PROJECT.md`, `.specsfy/STACK.md` e as correções humanas dos
-> documentos deste portal antes de tirar conclusões sobre a arquitetura.
+`PROJECT.md` descreve o produto e `project.json` registra seu estado canônico.
+As fontes abaixo documentam a implementação observável; código, contratos e
+testes prevalecem quando houver divergência.
 
-<!-- specsfy:documentator:start -->
-## Visão geral
-
-- Frameworks detectados: não identificados.
-- Arquivos de código: 1.
-- Arquivos de teste: 0.
-
-## Roteiro
+## Índice
 
 - [Arquitetura](architecture.md)
 - [Aplicação](application.md)
-- [Banco de dados](database.md)
+- [Frontend e design system](frontend.md)
+- [Fluxos](flows.md)
+- [Integrações](integrations.md)
+- [Persistência](database.md)
 - [Testes](testing.md)
-- [Pacotes](packages.md)
-<!-- specsfy:documentator:end -->
+- [Pacotes e ferramentas](packages.md)
+- [Decisões técnicas](decisions.md)

@@ -60,6 +60,7 @@
     "Never add the marketplace again during an update when it is already configured.",
     "Never edit a runtime plugin cache manually.",
     "Hermes installations are managed per profile; never point the installed plugin directory at a source checkout.",
+    "The standard Hermes managed command installs the current official source; use --ref <SHA-40> only when an immutable published revision is explicitly required.",
     "Never modify, replace, merge, regenerate, or delete Brand Packs during a Brand Runtime update.",
     "Never modify the saved brand folder path, brand.rules.json, references/feedback/, or project-owned design knowledge during a Brand Runtime update.",
     "Never claim the running session loaded the new version before its reload boundary."
