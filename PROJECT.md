@@ -50,9 +50,8 @@ ficam em `docs/architecture.md`, `docs/database.md`, `INTERFACE.md` e
 
 ## Estado atual e oportunidade
 
-A versão canônica é `0.7.0`. Esta minor release adapta mecanismos auditados de
-raciocínio visual para o fluxo de apresentações, torna executável o gate inicial
-de exatamente três slides, remove o lifecycle legado do caminho crítico e
-endurece sua verificação fail-closed. No Hermes, a distribuição é gerenciada por
-perfil e atualizada por reinstalação verificada da fonte oficial, sem apontar o
-diretório instalado para o checkout do runtime.
+A versão canônica é `0.7.1`. Esta patch release preserva o método visual, o gate
+de três slides e o hardening lançados em `0.7.0`, normalizando a versão pública
+para SemVer limpo e idêntico em Codex, Claude Code e Hermes. No Hermes, a
+distribuição é gerenciada por perfil e atualizada por reinstalação verificada da
+fonte oficial, sem apontar o diretório instalado para o checkout do runtime.

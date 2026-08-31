@@ -1,6 +1,6 @@
 {
   "name": "brand-runtime",
-  "version": "0.7.0+codex.20260831180103",
+  "version": "0.7.1",
   "description": "Direct official Brand Packs or provisional brand-pending work, with a specialized presentation workflow for creation, refinement, export, and rendered QA.",
   "author": {
     "name": "smartscaile.",
