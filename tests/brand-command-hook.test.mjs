@@ -16,7 +16,12 @@ function run(input, environment = {}) {
     cwd: String(input.cwd || process.cwd()),
     input: JSON.stringify(input),
     encoding: "utf8",
-    env: { ...process.env, ...environment },
+    env: {
+      ...process.env,
+      BRAND_RUNTIME_CONFIG: resolve(String(input.cwd || process.cwd()), "isolated-hook-config.json"),
+      BRAND_RUNTIME_BRAND_ROOT: "",
+      ...environment,
+    },
   });
   assert.equal(result.status, 0, result.stderr || `Hook exited with ${result.status}`);
   return result.stdout.trim();
@@ -183,6 +188,63 @@ test("configures one global brand folder and discovers multiple Brand Packs", as
     await rm(libraryRoot, { recursive: true, force: true });
     await rm(consumerRoot, { recursive: true, force: true });
   }
+});
+
+async function multiRootFixture(t, slugs = ["alpha", "beta"]) {
+  const cwd = await mkdtemp(resolve(tmpdir(), "brand-hook-multiple-roots-"));
+  t.after(() => rm(cwd, { recursive: true, force: true }));
+  const roots = [];
+  for (const [index, slug] of slugs.entries()) {
+    const root = resolve(cwd, `library-${index}`, "brand");
+    await mkdir(resolve(root, slug), { recursive: true });
+    await writeFile(resolve(root, slug, "brand.source.json"), JSON.stringify({ slug, brandVersion: "1.0.0" }));
+    roots.push(root);
+  }
+  const configFile = resolve(cwd, "config.json");
+  await writeFile(configFile, JSON.stringify({ schemaVersion: "1.0.0", brandRoot: roots[0], additionalBrandRoots: roots.slice(1) }));
+  return { cwd, roots, env: { BRAND_RUNTIME_CONFIG: configFile, BRAND_RUNTIME_BRAND_ROOT: "" } };
+}
+
+test("hook uses the requested slug's global root instead of pinning the primary root", async (t) => {
+  const { cwd, roots: [first, second], env } = await multiRootFixture(t);
+  for (const prompt of [">>brand beta", ">>brand --brand beta", ">>brand start --brand beta", ">>presentation --brand beta"]) {
+    const text = context(run({ cwd, prompt }, env));
+    assert.ok(text.includes(`${second}/beta`), text);
+    assert.ok(text.includes(`validate --brand beta --brand-root "${second}"`), text);
+    assert.ok(!text.includes(`--brand-root "${first}"`), text);
+  }
+  const firstText = context(run({ cwd, prompt: ">>brand alpha" }, env));
+  assert.ok(firstText.includes(`validate --brand alpha --brand-root "${first}"`));
+  const noSelection = context(run({ cwd, prompt: ">>brand start" }, env));
+  assert.match(noSelection, /Installed Brand Packs visible from this workspace: alpha, beta/);
+  assert.doesNotMatch(noSelection, /Use the Brand Pack at|validate --brand/);
+  await mkdir(resolve(cwd, "brand/alpha"), { recursive: true });
+  await writeFile(resolve(cwd, "brand/alpha/brand.source.json"), "{}");
+  const fallback = context(run({ cwd, prompt: ">>brand beta" }, env));
+  assert.ok(fallback.includes(`validate --brand beta --brand-root "${second}"`));
+  assert.match(fallback, /user-config/);
+});
+
+test("hook exposes duplicate slugs without auto-selection or replacement configuration", async (t) => {
+  const { cwd, roots, env } = await multiRootFixture(t, ["shared", "shared"]);
+  for (const prompt of [">>brand", ">>brand shared", ">>brand start", ">>brand start --brand shared", ">>presentation --brand shared"]) {
+    const text = context(run({ cwd, prompt }, env));
+    assert.match(text, /Ambiguous Brand Packs/);
+    for (const root of roots) assert.ok(text.includes(root), text);
+    assert.doesNotMatch(text, /Use the Brand Pack at|validate --brand|config set --brand-root/);
+  }
+});
+
+test("hook reports a missing global slug without proposing replacement of the configured library", async (t) => {
+  const { cwd, env } = await multiRootFixture(t);
+  const brand = context(run({ cwd, prompt: ">>brand missing" }, env));
+  assert.match(brand, /could not be resolved/);
+  assert.match(brand, /alpha, beta/);
+  assert.match(brand, /Never synthesize a pack/);
+  assert.doesNotMatch(brand, /config set --brand-root|validate --brand/);
+  const presentation = context(run({ cwd, prompt: ">>presentation --brand missing" }, env));
+  assert.match(presentation, /explicitly requested Brand Pack is not installed/);
+  assert.doesNotMatch(presentation, /config set --brand-root|validate --brand/);
 });
 
 test("asks for the brand folder when configuration is missing or stale", async () => {

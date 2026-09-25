@@ -4,6 +4,7 @@ Leia a seção da superfície após aplicar o método comum de `design-foundatio
 
 ## Site
 
+- Antes de criar uma seção, compare componentes ativos do próprio site e suas aprovações por escopo. Herde tipografia, controles, tratamento de superfícies e linguagem dos diagramas onde a função coincidir; não importe toda a anatomia de um diagrama só porque ele existe.
 - Mapeie a relação dominante de cada seção e o percurso completo antes de desenhar componentes. Compare silhuetas e massas da sequência; alternar lados não resolve a repetição da mesma anatomia.
 - Prove a hierarquia com uma seção coerente e seus vizinhos nos breakpoints relevantes antes de propagar uma estrutura nova. Preserve o escopo completo autorizado e os controles já aprovados.
 
@@ -16,6 +17,7 @@ Leia a seção da superfície após aplicar o método comum de `design-foundatio
 
 ## Product
 
+- Trace a tela até os componentes, estilos e estados existentes antes de introduzir uma alternativa. Evolua a biblioteca local onde ela resolve a tarefa; não a substitua por uma linguagem genérica derivada apenas dos tokens.
 - Use tarefa, dados e estados como mapa de conteúdo. Compare estruturas para o percurso operacional, não variações de uma hero de campanha.
 - Preserve repetição útil de tabelas, formulários e navegação. A crítica comum não exige assimetria, rarefação de dados nem diversidade artificial.
 - Valide o mesmo fluxo em estado normal, vazio, carregando, erro e sucesso quando aplicáveis, com dados extremos autorizados ou fixtures sintéticas identificadas.

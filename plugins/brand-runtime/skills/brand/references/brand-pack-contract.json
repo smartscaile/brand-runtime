@@ -1,6 +1,6 @@
 {
-  "version": "2.1.0",
-  "updated": "2026-07-22",
+  "version": "2.2.0",
+  "updated": "2026-09-25",
   "container": {
     "requiredName": "brand",
     "shape": "brand/{slug}",
@@ -37,6 +37,9 @@
     ]
   },
   "invariants": [
+    "official identity and explicit constraints are mandatory; foundational scales and layout defaults remain recommended unless explicitly constrained",
+    "component anatomy, composition, responsive application and scoped approvals belong to the consumer project; examples are not a closed UI catalogue",
+    "configured brand folders form one user library without copying Packs; duplicate slugs require explicit root selection",
     "slug and brandVersion match across source, tokens, and manifest",
     "sourceHash matches between tokens and manifest",
     "every pack-managed artifact and asset declares a valid SHA-256 hash",

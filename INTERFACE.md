@@ -22,6 +22,18 @@ Confirme os manifests e as fronteiras principais antes de completar o modelo gen
 | Sistema universal | `plugins/brand-runtime/skills/*` | Workflow, contratos, gates, renderização e QA neutros |
 | Aprendizado | `docs/design/` no projeto consumidor | Evidências e decisões reutilizáveis sem contaminar o core |
 
+Projetos com um registro próprio preservam esse dono e formato, inclusive JSON.
+`context.projectKnowledge.existingSources` descobre entradas convencionais
+existentes sem ler seus conteúdos, varrer toda a UI ou inferir aprovação.
+`discoveryScope: entrypoints-only` exige seguir os manifests e imports locais;
+listas vazias na árvore Markdown padrão não significam ausência de componentes.
+
+`context.designAuthority` declara quem possui identidade e UI, quais grupos são
+defaults adaptáveis e que exemplos não são obrigatórios. `rules` e `brandRules`
+continuam restrições explícitas, não passam a sugestões por heurística. A
+precedência da direção local sobre defaults não autoriza alterar identidade,
+assets, evidência, acessibilidade ou uma regra de marca ainda ativa.
+
 ## Superfícies e famílias
 
 | Superfície | Família ou bloco | Fonte atual | Contrato e estados | Consumidores | Status |

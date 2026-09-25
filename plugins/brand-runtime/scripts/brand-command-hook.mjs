@@ -116,6 +116,15 @@ function packLabel(brandRoot) {
   return `Brand Pack v${brandVersion}; brand rules r${rulesRevision}`;
 }
 
+function ambiguousBrandContext(brandResolution) {
+  return [
+    "BRAND PACK ROOT SELECTION REQUIRED",
+    brandResolution.reason,
+    "Ask the user to choose the intended absolute brand folder and pass it explicitly with --brand-root for this task.",
+    "Do not replace the saved library or substitute another pack. Stop official branded work until the ambiguity is resolved.",
+  ].join("\n");
+}
+
 function projectStartActivation({ cwd, pluginRoot, runtimeVersion, requested, projectHint, brandResolution }) {
   const skillRoot = resolve(pluginRoot, "skills", "brand");
   const cli = resolve(skillRoot, "scripts", "brand.ts");
@@ -127,6 +136,7 @@ function projectStartActivation({ cwd, pluginRoot, runtimeVersion, requested, pr
     "",
     projectStartContext({ cwd, projectHint }),
     "",
+    ...(brandResolution.status === "ambiguous" ? [ambiguousBrandContext(brandResolution), ""] : []),
   ];
 
   if (!requested) {
@@ -179,7 +189,16 @@ function activationContext({ cwd, pluginRoot, runtimeVersion, action, requested,
   const availableLine = available.length > 0 ? available.join(", ") : "none";
   const configuredPath = brandResolution.brandRoot || brandResolution.configuredBrandRoot || "not configured";
 
-  if (!brandResolution.ok) {
+  if (brandResolution.status === "ambiguous") {
+    return [
+      "BRAND RUNTIME ACTIVE (>>brand detected)",
+      `Brand Runtime: v${runtimeVersion}`,
+      "",
+      ambiguousBrandContext(brandResolution),
+      `Universal skill: ${skillRoot}/SKILL.md`,
+    ].join("\n");
+  }
+  if (!brandResolution.ok && brandResolution.status !== "brand-not-found") {
     return [
       "BRAND RUNTIME ACTIVE (>>brand detected)",
       `Brand Runtime: v${runtimeVersion}`,
@@ -273,7 +292,10 @@ function directPresentationActivation({ cwd, pluginRoot, runtimeVersion, request
     ].join("\n");
   }
 
-  if (!brandResolution.ok) {
+  if (brandResolution.status === "ambiguous") {
+    return [...lines, "", ambiguousBrandContext(brandResolution)].join("\n");
+  }
+  if (!brandResolution.ok && brandResolution.status !== "brand-not-found") {
     return [
       ...lines,
       "",
@@ -316,7 +338,7 @@ function main() {
     ? input.cwd
     : process.env.CLAUDE_PROJECT_DIR || process.env.CODEX_PROJECT_DIR || process.cwd();
   const request = parseRuntimeRequest(prompt);
-  const brandResolution = resolveBrandRoot({ cwd });
+  const brandResolution = resolveBrandRoot({ cwd, brand: request.requested || undefined });
   const pluginRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
   const additionalContext = request.entry === "presentation"

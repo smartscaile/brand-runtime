@@ -1,8 +1,9 @@
 import { createHash, randomUUID } from "node:crypto";
-import { access, mkdir, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
+import { access, lstat, mkdir, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import { basename, dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  addBrandRootConfig,
   readBrandRootConfig,
   resolveBrandRoot,
   writeBrandRootConfig,
@@ -176,10 +177,38 @@ async function markdownFiles(root: string, relativeDirectory: string): Promise<s
   }
 }
 
+async function existingProjectSources(root: string): Promise<string[]> {
+  // Bounded entrypoints, not a recursive inventory or an approval inference.
+  const candidates = ["AGENTS.md", "project.json", "DESIGNSYSTEM.MD", "INTERFACE.md", "design/patterns.json", "design/tokens.json", "spine.json"];
+  const present: string[] = [];
+  for (const candidate of candidates) {
+    const parts = candidate.split("/");
+    let current = root;
+    let safe = true;
+    try {
+      for (const [index, part] of parts.entries()) {
+        current = resolve(current, part);
+        const entry = await lstat(current);
+        if (entry.isSymbolicLink() || (index === parts.length - 1 ? !entry.isFile() : !entry.isDirectory())) {
+          safe = false;
+          break;
+        }
+      }
+    } catch (error) {
+      if (!["ENOENT", "ENOTDIR"].includes((error as NodeJS.ErrnoException).code ?? "")) throw error;
+      safe = false;
+    }
+    if (safe) present.push(candidate);
+  }
+  return present;
+}
+
 async function inspectProjectKnowledge(root: string) {
   const designDirection = "docs/design/design-direction.md";
   return {
     root,
+    discoveryScope: "entrypoints-only",
+    existingSources: await existingProjectSources(root),
     designDirection: {
       path: designDirection,
       present: await exists(projectPath(root, designDirection)),
@@ -194,15 +223,17 @@ async function inspectProjectKnowledge(root: string) {
 function resolveBrandsRoot() {
   const resolution = resolveBrandRoot({
     cwd: process.cwd(),
+    brand: option("brand") ?? positionalBrand(),
     explicitBrandRoot: option("brand-root"),
     explicitProjectRoot: option("project-root"),
   });
   if (!resolution.ok) {
     const configuredPath = resolution.brandRoot || resolution.configuredBrandRoot;
     const pathDetail = configuredPath ? ` Path: ${configuredPath}.` : "";
-    throw new Error(
-      `${resolution.reason}${pathDetail} Use config set --brand-root <absolute-path-to-brand-folder>.`,
-    );
+    const guidance = resolution.status === "ambiguous"
+      ? "Select --brand-root explicitly or resolve the duplicate Pack; do not replace the library."
+      : "Use config add --brand-root <absolute-path-to-brand-folder> to preserve the existing library.";
+    throw new Error(`${resolution.reason}${pathDetail} ${guidance}`);
   }
   return resolution;
 }
@@ -494,6 +525,18 @@ async function designMethodContext() {
   return { status: "instructions-only", requiredBeforeImplementation: true, foundation, surfaceGuidelines };
 }
 
+function designAuthorityContext(mode: DirectionMode) {
+  return {
+    identityOwner: mode === "brand-pack" ? "brand-pack" : "project-provisional",
+    uiOwner: "project",
+    foundationDefaults: ["typography.scale", "layout", "motion.durations", "motion.easings"],
+    themeSelection: "project-from-declared-palette",
+    examples: "reference-only",
+    explicitConstraints: "binding",
+    localExtensions: "allowed-without-changing-identity",
+  };
+}
+
 async function context() {
   const surface = option("surface") as Surface | undefined;
   if (!surface || !SURFACES.includes(surface)) {
@@ -518,12 +561,13 @@ async function context() {
       surface,
       precedence: [
         "explicit user and project constraints",
-        "universal design foundation",
         "compatible project-owned provisional direction and rules",
+        "universal design foundation",
       ],
       projectDesignDirection: "docs/design/design-direction.md",
       projectKnowledge: await inspectProjectKnowledge(projectRoot),
       designMethod: await designMethodContext(),
+      designAuthority: designAuthorityContext(mode),
       rules: [],
       brandRules: [],
       clientRules: [],
@@ -563,13 +607,15 @@ async function context() {
     surface,
     precedence: [
       "active brand rules",
-      "immutable Brand Pack",
-      "universal design foundation",
+      "official Brand Pack identity and explicit constraints",
       "compatible project direction and rules",
+      "Brand Pack foundation defaults",
+      "universal design foundation",
     ],
     projectDesignDirection: "docs/design/design-direction.md",
     projectKnowledge: await inspectProjectKnowledge(projectRoot),
     designMethod: await designMethodContext(),
+    designAuthority: designAuthorityContext("brand-pack"),
     rules: surfaces?.[surface] ?? [],
     brandRules: clientRules,
     clientRules,
@@ -963,15 +1009,15 @@ async function configure() {
       ...readBrandRootConfig(),
     };
   }
-  if (action === "set") {
+  if (action === "set" || action === "add") {
     const brandRoot = requiredOption("brand-root");
     if (!isAbsolute(brandRoot)) throw new Error("Use an absolute path for --brand-root.");
     return {
       runtimeVersion: await runtimeVersion(),
-      ...writeBrandRootConfig(brandRoot),
+      ...(action === "add" ? addBrandRootConfig(brandRoot) : writeBrandRootConfig(brandRoot)),
     };
   }
-  throw new Error("Unknown config action. Use config show or config set --brand-root <absolute-path-to-brand-folder>.");
+  throw new Error("Unknown config action. Use config show, config add --brand-root <absolute-path-to-brand-folder>, or config set to replace the library.");
 }
 
 async function main() {

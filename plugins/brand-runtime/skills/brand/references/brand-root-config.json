@@ -1,13 +1,14 @@
 {
   "version": "1.0.0",
-  "updated": "2026-07-22",
-  "purpose": "Resolve one stable client-owned folder named brand while allowing any number of sibling Brand Packs.",
+  "updated": "2026-09-25",
+  "purpose": "Resolver uma ou mais pastas globais brand, preservando a raiz principal e a seleção explícita de identidade sem mover, copiar ou criar links de packs.",
   "folderContract": {
     "configuredPath": "Absolute path to the folder named brand",
     "example": "/absolute/client-library/brand",
     "packExample": "/absolute/client-library/brand/example-brand/brand.source.json",
     "directChildren": "Lowercase kebab-case Brand Pack slugs",
     "minimumValidPackMarker": "brand.source.json",
+    "markerScope": "O marcador serve somente à descoberta. ready/ok confirmam a estrutura da pasta, não a validade de um pack. A validação completa de arquivos, hashes, identidade e regras continua obrigatória antes de usar o pack.",
     "multiplePacksAllowed": true,
     "dynamicDiscovery": true
   },
@@ -16,8 +17,13 @@
     "document": {
       "schemaVersion": "1.0.0",
       "brandRoot": "Absolute path to the folder named brand",
+      "additionalBrandRoots": ["Caminho absoluto opcional para outra pasta brand"],
       "updatedAt": "ISO-8601 timestamp"
     },
+    "optionalFields": ["additionalBrandRoots"],
+    "backwardCompatibility": "O schema 1.0.0 continua aceitando documentos com apenas brandRoot e updatedAt. A ausência de additionalBrandRoots equivale a [].",
+    "additionalRootsValidation": "Quando presente, additionalBrandRoots deve ser string[]. Cada valor é inspecionado antes da normalização: caminho absoluto, pasta existente chamada brand e pelo menos um filho descoberto pelo marcador. null, tipos incorretos, caminhos relativos, pasta vazia, arquivo ou pack individual são rejeitados explicitamente. Uma raiz inválida bloqueia a biblioteca inteira, sem usar outra raiz como fallback.",
+    "deduplication": "A lista efetiva preserva a ordem e elimina repetições após normalização lexical de caminhos absolutos. Não move packs nem resolve aliases físicos via realpath. A leitura nunca regrava o documento para normalizar caminhos.",
     "defaultLocation": {
       "macOSAndLinux": "$XDG_CONFIG_HOME/brand-runtime/config.json or ~/.config/brand-runtime/config.json",
       "windows": "%APPDATA%/brand-runtime/config.json"
@@ -35,22 +41,41 @@
   },
   "resolutionPrecedence": [
     "explicit --brand-root",
-    "valid explicit --project-root/brand, otherwise continue discovery from that project",
+    "existing explicit --project-root/brand, otherwise continue discovery from that project",
     "BRAND_RUNTIME_BRAND_ROOT",
-    "nearest project-local brand folder",
-    "saved user configuration"
+    "nearest implicit project-local brand folder, unless the requested slug has no entry there",
+    "saved user configuration, selecting the unique root containing the requested slug"
+  ],
+  "api": {
+    "readBrandRootConfig({ env } = {})": "Retorna brandRoot principal, brandRoots efetivas, brands como união ordenada da descoberta atual e duplicateBrands: [{ slug, brandRoots }]. source é user-config. Nenhum inventário de slugs é persistido. Sem configuração ou com documento inválido, retorna ok: false e o diagnóstico existente.",
+    "writeBrandRootConfig(brandRoot, { env } = {})": "Setter existente: substitui a seleção por uma única raiz e remove additionalBrandRoots. Persiste schemaVersion, brandRoot e updatedAt atomicamente e retorna a leitura da configuração resultante.",
+    "addBrandRootConfig(brandRoot, { env } = {})": "Adiciona uma raiz válida sem perder a principal nem as adicionais. Retorna a leitura resultante com changed: true. Se unconfigured, usa o setter. Se a raiz normalizada já está configurada, retorna changed: false, sem regravar arquivo nem timestamp, mantendo a descoberta dinâmica. Não repara nem sobrescreve configuração inválida. Uma adição com colisão de slug pode persistir a pasta e retornar changed: true com ok: false/status: ambiguous; a identidade permanece bloqueada até seleção explícita de raiz.",
+    "resolveBrandRoot({ cwd, brand, explicitBrandRoot, explicitProjectRoot, env } = {})": "brand é opcional e, quando fornecido, deve ser um slug lowercase kebab-case válido, sem normalização de identidade. Na biblioteca global, brandRoot passa a ser a única raiz que contém o slug; configuredBrandRoot continua indicando a principal e source informa a origem efetiva. Sem brand, retorna descoberta, não uma identidade selecionada. Caminhos explícitos e ambiente são autoritativos: preservam a inspeção da pasta escolhida, mesmo sem o slug; o consumidor verifica a presença do slug e valida o pack nessa raiz. Nunca usa outra identidade para corrigir esse erro."
+  },
+  "selectionSafety": [
+    "Um slug presente em duas raízes globais é ambíguo, mesmo que uma cópia esteja incompleta. Retorne ok: false/status: ambiguous e os caminhos envolvidos; nunca selecione a primeira cópia. A descoberta sem slug também sinaliza colisões dos slugs descobertos em duplicateBrands.",
+    "Uma colisão de outro slug não impede resolver o slug explicitamente solicitado quando ele é único. duplicateBrands continua disponível para diagnóstico da biblioteca.",
+    "A pasta implícita de projeto mantém precedência se houver uma entrada com o slug solicitado, inclusive sem marcador, com metadados inválidos ou link quebrado. Seus erros não são mascarados pela biblioteca global.",
+    "Sem entrada local para o slug solicitado, consulte somente as raízes globais configuradas. Se não houver configuração global, preserve a descoberta e os diagnósticos locais anteriores. Não varra bibliotecas arbitrárias nem transforme --project de onboarding em projeto confirmado.",
+    "O hook passa o slug solicitado ao resolver antes de emitir --brand-root. Ambiguidade ou slug global ausente não são motivo para substituir a configuração com config set. O onboarding start continua sem auto-seleção de marca."
   ],
   "states": {
-    "ready": "The folder exists and contains at least one discovered Brand Pack.",
+    "ready": "A pasta existe e contém pelo menos um candidato descoberto; não comprova validação de pack nem seleciona identidade por si só.",
     "unconfigured": "No saved configuration exists.",
     "stale": "The configured path no longer exists.",
-    "empty": "The folder exists but contains no valid Brand Pack child.",
-    "invalid": "The path is relative, is not a directory, or the config document is invalid."
+    "empty": "A pasta existe mas não contém filho descoberto com o marcador brand.source.json.",
+    "missing": "Nenhum caminho utilizável foi informado.",
+    "invalid": "O caminho é relativo, não é diretório ou não aponta para uma pasta chamada brand.",
+    "invalid-config": "JSON inválido, schema incompatível ou tipo de campo inválido, incluindo additionalBrandRoots.",
+    "invalid-brand": "O slug solicitado ao resolver não segue o formato aceito.",
+    "brand-not-found": "O slug solicitado não tem entrada nas raízes globais configuradas.",
+    "ambiguous": "O mesmo slug existe em múltiplas raízes globais; duplicateBrands e reason identificam a colisão."
   },
   "onboarding": [
     "On the first Brand invocation, use an existing project-local brand folder when available; otherwise inspect the saved user configuration.",
     "When configuration is missing, stale, empty, or invalid, ask for the absolute path to the downloaded folder named brand.",
     "Persist it with config set --brand-root and validate that the resulting state is ready.",
+    "Para acrescentar outra biblioteca sem substituir a anterior, use addBrandRootConfig; o CLI integrador pode expor config add --brand-root.",
     "Never ask the user to copy each Brand Pack into every project.",
     "Never synthesize a missing slug; ask the user to obtain its Brand Pack from the authorized Brand Portal/Vox workflow.",
     "When multiple packs are discovered, require one explicit slug for the current task.",

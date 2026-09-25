@@ -20,7 +20,7 @@ function markdownSection(markdown, heading) {
   return markdown.slice(start, next === -1 ? undefined : next);
 }
 
-test("requires Brand Runtime v0.8.0 across release metadata", async () => {
+test("requires Brand Runtime v0.9.0 across release metadata", async () => {
   const packageManifest = await readJson("package.json");
   const packageLock = await readJson("package-lock.json");
   const project = await readJson("project.json");
@@ -28,13 +28,13 @@ test("requires Brand Runtime v0.8.0 across release metadata", async () => {
   const claude = await readJson("plugins/brand-runtime/.claude-plugin/plugin.json");
   const codex = await readJson("plugins/brand-runtime/.codex-plugin/plugin.json");
 
-  assert.equal(packageManifest.version, "0.8.0");
-  assert.equal(packageLock.version, "0.8.0");
-  assert.equal(packageLock.packages[""].version, "0.8.0");
-  assert.equal(project.version.current, "0.8.0");
-  assert.equal(portable.version, "0.8.0");
-  assert.equal(claude.version, "0.8.0");
-  assert.equal(codex.version, "0.8.0");
+  assert.equal(packageManifest.version, "0.9.0");
+  assert.equal(packageLock.version, "0.9.0");
+  assert.equal(packageLock.packages[""].version, "0.9.0");
+  assert.equal(project.version.current, "0.9.0");
+  assert.equal(portable.version, "0.9.0");
+  assert.equal(claude.version, "0.9.0");
+  assert.equal(codex.version, "0.9.0");
 });
 
 test("documents canonical distribution paths across supported hosts", async () => {

@@ -26,12 +26,17 @@ flowchart LR
 O plugin distribuído permanece identidade-neutro. Brand Packs e conhecimento
 mutável pertencem respectivamente ao cliente e ao projeto consumidor.
 
-## Distribuição Hermes na v0.8.0
+## Distribuição Hermes na v0.9.0
 
 O Hermes instala o pacote portátil como diretório regular gerenciado em cada
 perfil. Instalação e atualização usam o instalador nativo contra a fonte
 Smartscaile aprovada, seguidas por Plugin Doctor e uma nova sessão; o diretório
 instalado não aponta para o checkout de desenvolvimento.
+
+A biblioteca de packs é uma configuração do usuário, independente do perfil.
+`brandRoot` mantém compatibilidade com a raiz principal e `additionalBrandRoots`
+acrescenta pastas sem copiar packs. A seleção por slug falha quando existem
+cópias ambíguas. Cada perfil continua com sua instalação gerenciada do plugin.
 
 ## Autoridade
 

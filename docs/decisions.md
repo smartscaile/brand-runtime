@@ -51,6 +51,35 @@ Versão, distribuição gerenciada e autorização de publicação permanecem
 fronteiras separadas. Alterações preexistentes de projeção de Brand Packs
 não fazem parte desta mudança de método.
 
+## Continuidade da UI sem congelar a composição
+
+A base universal orienta o método, não substitui a aplicação local aprovada.
+O contexto prioriza regras de marca, Pack e direção local compatível, antes
+das heurísticas universais. Identidade, integridade, conteúdo e acessibilidade
+continuam protegidos; exemplos e dimensões de tentativas não viram obrigações
+gerais. Reutilizar, evoluir ou compor depende da função do conteúdo e da UI
+realmente renderizada, distinguindo aprovação parcial, estado atual e rejeição.
+
+`projectKnowledge.existingSources` lista somente entradas convencionais locais
+que existam como arquivos, sem seguir symlinks. É descoberta limitada, não leitura
+do conteúdo, registro de aprovação ou inventário exaustivo. O agente segue as
+fontes declaradas pelo projeto. Não se exige migrar registros existentes para
+`docs/design/`, e nenhum conhecimento do cliente é armazenado no core.
+
+## Fundação de marca, UI local e biblioteca compartilhada
+
+`context.designAuthority` explicita identidade e restrições obrigatórias,
+defaults fundacionais recomendados e composição de autoria do projeto.
+Escalas e exemplos não são um catálogo fechado de componentes. Extensões
+semânticas locais preservam identidade, integridade e regras explícitas.
+
+O schema de configuração permanece `1.0.0`, com `additionalBrandRoots`
+opcional. `config add` preserva a biblioteca e é idempotente; `config set`
+substitui a seleção. Slugs são descobertos dinamicamente. Colisões bloqueiam
+seleção implícita, e uma entrada local inválida não é mascarada pela global.
+Não há cópia, movimentação ou symlink de packs. Instalar em todos os perfis é
+uma operação de distribuição separada, não herança automática do plugin.
+
 ## Política
 
 `PROJECT.md`, `project.json`, `AGENTS.md`, contratos, código e testes são as

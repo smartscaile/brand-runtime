@@ -67,7 +67,7 @@ On first use, if the plugin cannot find a project-local `brand/` folder or a sav
 └── another-brand/
 ```
 
-The plugin stores only that absolute folder path in the user's standard configuration directory. It rescans direct children on every invocation, so adding another Brand Pack later requires no reconfiguration. With one installed pack, `>>brand` may resolve it automatically; with multiple packs, use `>>brand <slug>`.
+The plugin stores canonical folder paths in the user's standard configuration directory, not Pack copies or a fixed slug inventory. Use `config add --brand-root <absolute-brand-folder>` to extend the shared library; `config set` explicitly replaces it. Direct children are discovered dynamically. Select `>>brand <slug>` when multiple packs exist; duplicate slugs require an explicit root. Profiles share this user library by default but each needs its own managed plugin installation.
 
 Activation reports three independent compatibility signals: the installed Brand Runtime version, the immutable Brand Pack version, and the client-owned brand-rules revision.
 
@@ -137,7 +137,7 @@ The activation context must reference the skill inside the installed plugin cach
 
 The plugin never contains client identity or mutable project knowledge. Brand-specific tokens, assets, guidelines, and references live only in the separate `<brand-folder>/<slug>` Brand Pack. The plugin contributes an identity-neutral design foundation, a director workflow, and optional stack guidance that translate the selected pack into a project-local `docs/design/design-direction.md`.
 
-Explicit learning is project-first. Rules, learnings, patterns, and their evidence live under `docs/design/` in the target project as structured Markdown. The `context` command reports the available project knowledge without loading unrelated entries. Only a normative rule explicitly confirmed for future projects of the selected brand is promoted to `<brand-folder>/<slug>/brand.rules.json`.
+Explicit learning is project-first. Preserve the project's existing design registry and format; use structured Markdown under `docs/design/` only when no owner exists. The `context` command reports conventional design entrypoints and available Markdown knowledge without loading project contents or inferring approval. Follow the project's own sources and rendered components rather than treating empty default folders as a blank UI. Official identity and active brand rules remain authoritative; compatible local direction precedes generic composition guidance. Only a normative rule explicitly confirmed for future projects of the selected brand is promoted to `<brand-folder>/<slug>/brand.rules.json`.
 
 ## Internal release check
 

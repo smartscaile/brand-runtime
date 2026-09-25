@@ -4,16 +4,42 @@ This foundation defines a quality floor for interface and artifact direction. It
 
 ## Boundaries
 
-- In `brand-pack`, never introduce a color, font, logo, icon family, radius style, shadow style, voice, or visual motif that the selected Brand Pack does not authorize.
+- In `brand-pack`, preserve official identity, semantic tokens, assets, voice, and explicit brand constraints. Do not treat examples or a component inventory as an exhaustive catalogue of permitted compositions.
 - In `brand-pending`, keep identity-like choices project-local, provisional, and replaceable. Never add an official logo or claim that these choices represent the client's brand.
 - Never treat this foundation as a fallback Brand Pack.
 - Never call a particular aesthetic universally premium, modern, elegant, technical, editorial, or beautiful.
 - Prefer relationships and semantic roles over isolated values.
 - Let content, user intent, medium, and brand determine composition.
 
+## Identidade, fundação e UI do projeto
+
+O Brand Pack define identidade, posicionamento, voz, logos, paleta, famílias tipográficas, linguagem de ícones e restrições explícitas. A UI pertence ao projeto: componentes, anatomia, estados, composição, densidade, responsividade, dimensões e uso das superfícies. O runtime fornece método e verificações, não uma estética ou catálogo obrigatório.
+
+`context.designAuthority` distingue essas responsabilidades. Escalas tipográficas, spacing, grade, raios, sombras e timings são uma base recomendada, não uma receita completa de interface. Use os valores adequados; quando não servirem ao conteúdo ou viewport, derive uma aplicação ou extensão semântica no dono local de estilos. Não altere o Pack nem crie uma nova família ou paleta para acomodar o componente. A seleção de tema e a proporção das cores pertencem ao projeto dentro da identidade declarada, com contraste verificado.
+
+Uma restrição explícita continua obrigatória, inclusive quando limita um valor que normalmente seria default. As listas `rules` e `brandRules` não são rebaixadas automaticamente a sugestões: primeiro resolva ou deprecie a regra com autorização. Integridade de conteúdo, acessibilidade e limites de evidência permanecem protegidos. Imutabilidade dos arquivos da pack não transforma cada valor de exemplo em obrigação de uso.
+
+Exemplos e aplicações do Brand Book são referências, não uma whitelist de componentes permitidos. É possível criar uma UI de site distinta de um produto ou documento sem pedir um novo Brand Pack. Registre as decisões no projeto existente; promova à marca apenas o que o usuário explicitamente quiser tornar regra para outras entregas.
+
+## Base existente e liberdade de composição
+
+Em um projeto existente, comece pela interface que realmente está em uso, não por um novo layout inferido só dos tokens. Siga a rota até seus imports, estilos, copy e estados; compare o alvo com os componentes locais pertinentes e as referências fornecidas. Um arquivo parecido ou um print antigo não prova que essa é a versão atual.
+
+Distinga três coisas antes de decidir: identidade e limites explícitos, aplicações aprovadas no contexto de uso e escolhas provisórias do agente. Código existente não é aprovação automática. Um protótipo rejeitado não vira base aprovada porque foi restaurado, documentado ou passou nos testes. Preserve os elementos aprovados sem congelar o arranjo rejeitado ao redor deles.
+
+Escolha o menor caminho que resolve o problema visual:
+
+- **Reutilizar** o componente real quando função, anatomia e estados coincidem. Use suas primitivas e seu dono de estilos, não uma cópia quase igual.
+- **Evoluir** uma variante ou a composição ao redor dele quando o mecanismo é válido, mas proporção, hierarquia, densidade ou proximidade não servem ao novo contexto. Preserve o consumidor original.
+- **Compor** uma estrutura nova com a linguagem local quando os componentes existentes não explicam a relação. A ausência de um componente no Brand Pack não proíbe essa composição; isso não autoriza violar uma regra explícita da marca nem inventar identidade. Se uma regra realmente bloquear o pedido, nomeie somente o conflito e peça sua resolução.
+
+Reutilizar não significa forçar um fluxograma, card ou interface de fornecedor em outra função. Identifique o que herdar da referência: proporções, hierarquia, materialidade, densidade ou comportamento. Uma tela real e uma ilustração conceitual não são intercambiáveis. Não transforme dimensões de uma tentativa em limites universais nem em testes permanentes de uma aparência ainda não aprovada.
+
+Dentro do escopo autorizado, resolva acabamento, alinhamento e relações de leitura sem pedir refinamentos básicos ao usuário. Use o histórico para não repetir rejeições. Quando o usuário rejeitar a estrutura, substitua a decisão local afetada e suas exigências de teste, preservando as invariantes funcionais; não continue polindo o mesmo esqueleto. Se o pedido for somente diagnóstico ou rollback, não implemente outro desenho.
+
 ## Método comum de composição
 
-Este método é obrigatório para site, produto, apresentação e documento, em `brand-pack` e `brand-pending`. Execute-o antes de implementar uma composição nova ou uma mudança estrutural. Em um ajuste localizado, reaproveite a direção aprovada e registre somente a decisão afetada. Não transforme um refinamento em um novo questionário ou redesign completo.
+Este método se aplica a site, produto, apresentação e documento, em `brand-pack` e `brand-pending`. Resolva intenção, base a preservar e relação visual antes de implementar. Em um ajuste localizado, faça isso a partir da interface existente, sem criar um novo formulário, mapa completo ou ciclo de aprovação. A profundidade do raciocínio e do registro acompanha o risco da mudança, não a quantidade de seções deste documento.
 
 ### Mapa de conteúdo
 
@@ -29,7 +55,7 @@ Escolha a forma pela relação: tabela para correspondências exatas, sequência
 
 ### Perfil de composição
 
-Defina quatro decisões locais, sempre com uma justificativa ligada ao conteúdo:
+Use estas perguntas apenas quando ajudarem a resolver a composição, sem preencher campos por obrigação:
 
 - **densidade:** esparsa, equilibrada ou densa;
 - **distribuição:** concentrada em um foco ou distribuída entre grupos relacionados;
@@ -50,7 +76,7 @@ Antes de propagar uma estrutura nova, renderize um recorte coerente que exponha 
 
 Use conteúdo autorizado e estados relevantes, não placeholders decorativos para simular um resultado pronto. Exemplos sintéticos devem estar identificados como exemplos, nunca como dados observados. Primeiro resolva a composição estática; depois acrescente motion que explique uma relação. Esse recorte de validação não reduz o escopo de entrega já autorizado.
 
-Registre mapa, perfil, decisão e evidência no documento de direção existente para criações substanciais. Em ajustes pequenos, mantenha apenas o delta necessário no contexto de trabalho. Não crie uma árvore paralela de planos ou catálogos de layouts.
+Para criações substanciais, registre a base herdada, a decisão estrutural e a evidência no documento de direção existente. Mapa e perfil podem ser uma explicação breve, não novos artefatos obrigatórios. Em ajustes pequenos, mantenha apenas o delta necessário. Não crie uma árvore paralela de planos ou catálogos de layouts.
 
 ## Information and hierarchy
 
@@ -62,7 +88,7 @@ Registre mapa, perfil, decisão e evidência no documento de direção existente
 
 ## Layout relationships
 
-Before implementation, map four spacing roles to declared Brand Pack tokens or provisional project-local roles:
+For a new composition, map these spacing roles to suitable foundation defaults or project-local semantic extensions. In an existing interface, inspect and evolve only the affected relationships. A local extension does not change official brand identity or override an explicit constraint:
 
 1. page or canvas margin;
 2. section gap;
@@ -82,7 +108,7 @@ Reuse a role consistently. Change it deliberately by breakpoint or composition, 
 
 ## Typography
 
-- In `brand-pack`, use only declared families, roles, styles, and weights. In `brand-pending`, select accessible, licensed project-local typography and mark it provisional.
+- In `brand-pack`, preserve declared families, available styles and weights, and explicitly constrained roles. Adapt size, line height and responsive scale in the project when needed, without hiding content or changing identity. In `brand-pending`, select accessible, licensed project-local typography and mark it provisional.
 - Establish clear display, heading, body, label, data, and annotation roles only when the content needs them.
 - Preserve readable line height and measure at every breakpoint.
 - Avoid arbitrary scale changes used only to force content into a fixed box.

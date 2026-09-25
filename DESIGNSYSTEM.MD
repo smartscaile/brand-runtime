@@ -27,6 +27,20 @@ Nenhuma camada pode compensar silenciosamente a ausência de outra. Em especial,
 um Brand Pack não escolhe sozinho a direção de arte, e um export tecnicamente
 correto não comprova qualidade visual.
 
+A direção local compatível com a identidade tem precedência sobre heurísticas
+universais de composição. No projeto existente, a base é a UI efetivamente
+renderizada e suas aprovações por escopo. Reutilizar, evoluir uma variante ou
+compor uma nova estrutura são caminhos possíveis, não um catálogo fechado.
+Rejeições substituem a tentativa local afetada, não os elementos aprovados nem
+as invariantes funcionais. O tamanho do registro acompanha a mudança;
+refinamentos não exigem preencher novamente o método inteiro.
+
+O contrato `context.designAuthority` separa identidade obrigatória, fundação
+recomendada e UI de autoria do projeto. Escalas, spacing, grade, raios, sombras
+e timings são defaults adaptáveis, salvo uma restrição explícita aplicável.
+Componentes, anatomia, estados, densidade, tema e responsividade são decisões
+locais. Exemplos não são whitelist; extensões locais não reescrevem a marca.
+
 ## Princípios de qualidade
 
 - Começar por intenção, audiência, decisão esperada e hierarquia de conteúdo.

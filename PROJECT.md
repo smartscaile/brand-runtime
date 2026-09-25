@@ -50,14 +50,15 @@ ficam em `docs/architecture.md`, `docs/database.md`, `INTERFACE.md` e
 
 ## Estado atual e oportunidade
 
-A fonte está preparada para `0.8.0`, a partir da release publicada `0.7.1`.
-O método comum de composição e crítica passa a atender site, produto,
-apresentação e documento. O CLI entrega `designMethod` nos modos `brand-pack`
-e `brand-pending`, com conteúdo, paths e hashes, sem alterar identidade ou
-regras de clientes. Brand e Presentation consomem a mesma base.
+A fonte está preparada para `0.9.0`, a partir da release publicada `0.8.0`.
+O contrato `designAuthority` distingue identidade obrigatória, defaults
+fundacionais e UI do projeto. O contexto descobre entradas locais existentes
+sem inferir aprovação, e a direção compatível do projeto precede heurísticas
+genéricas. `designMethod` continua compartilhado por todas as superfícies.
 
-O escopo inclui somente esse método e a metadata coerente de release em Codex,
-Claude Code e Hermes. Não inclui a projeção de Brand Packs em desenvolvimento.
+O escopo inclui biblioteca global com múltiplas pastas `brand`, sem copiar
+packs nem selecionar slugs ambíguos, e metadata coerente em Codex, Claude Code
+e Hermes. Não inclui a projeção de Brand Packs em desenvolvimento.
 O gate de três slides, contratos, aprovações e exportação de apresentações
 permanecem intactos. `instructions-only` não equivale à execução do método ou
 à aprovação visual.

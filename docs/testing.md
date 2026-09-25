@@ -27,7 +27,7 @@ ao autoteste são aceitas, por comparação exata dos hashes das linhas autoriza
 
 `brand-cli.test.mjs` verifica o conteúdo e os hashes de `context.designMethod`
 nas quatro superfícies, nos modos `brand-pack` e `brand-pending`, preservando
-identidade, regras e precedência. `hermes-managed-release.test.mjs` verifica
+identidade e regras, com direção local compatível antes da orientação universal. `hermes-managed-release.test.mjs` verifica
 a base comum, os consumidores Brand e Presentation, a direção local e a
 proveniência imutável. O gate de três slides continua específico de Presentation.
 
@@ -38,3 +38,18 @@ produzidas e a validação do resultado. Separe site, produto, apresentação e
 documento; verifique que UI operacional preserva estados e repetição útil,
 sem herdar formato de deck. Essa prova confirma aplicação das instruções,
 não qualidade estética de um artefato ainda não renderizado nem aprovação humana.
+
+O CLI também verifica descoberta read-only de entradas de design existentes,
+sem impor a árvore Markdown, sem inferir aprovação e sem seguir symlinks ou
+aceitar diretórios como arquivos. Os testes do conteúdo distribuído conferem
+reúso da UI real, liberdade de composição e preservação das regras explícitas.
+Essas verificações não demonstram que uma interface ficou visualmente melhor.
+
+## Fundação e biblioteca global
+
+Os testes exercitam `designAuthority` nas quatro superfícies e nos dois modos,
+preservam regras explícitas e verificam a precedência dos defaults. Biblioteca:
+schema legado, união dinâmica, adição idempotente, substituição explícita,
+raízes inválidas, colisões e precedência local. CLI e hook precisam selecionar
+o mesmo slug, incluindo a forma posicional do CLI. A instalação deve ser
+conferida por perfil contra o payload publicado e os packs canônicos.

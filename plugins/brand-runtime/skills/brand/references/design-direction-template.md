@@ -1,6 +1,6 @@
 # Project design direction template
 
-Use this structure for `docs/design/design-direction.md`. Keep the document concise, specific, and actionable. Remove prompts and sections that do not apply.
+Use this structure only when a direction needs to be created or substantially revised. Preserve the project's existing owner and format. Keep the document concise, specific, and actionable; omit unaffected sections rather than filling a template for each refinement.
 
 ```markdown
 ---
@@ -34,11 +34,15 @@ updated_at: <ISO-8601>
 - Identity and voice authority:
 - Declared assets and tokens:
 - Active brand rules:
+- Foundation defaults used and project-local semantic extensions, without redefining identity:
 - Provisional boundary when brand-pending:
 
 ### Project decisions
 
+- Base existente: componentes ativos, estilos e estados pertinentes, com o escopo de aprovação ou rejeição conhecido:
+- Decisão de reúso: reutilizar, evoluir ou compor, e o que permanece intacto:
 - Decisions introduced for this surface:
+- Component anatomy, responsive sizing, density and theme selection owned by this project:
 - Explicit exceptions and approvals:
 - Open questions:
 

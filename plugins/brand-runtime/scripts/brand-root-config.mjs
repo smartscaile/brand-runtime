@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   readFileSync,
   readdirSync,
@@ -24,6 +25,16 @@ function isDirectory(path) {
     return statSync(path).isDirectory();
   } catch {
     return false;
+  }
+}
+
+function hasPathEntry(path) {
+  try {
+    lstatSync(path);
+    return true;
+  } catch (error) {
+    if (error.code === "ENOENT" || error.code === "ENOTDIR") return false;
+    throw error;
   }
 }
 
@@ -124,14 +135,49 @@ export function readBrandRootConfig({ env = process.env } = {}) {
     };
   }
 
-  const inspected = inspectBrandRoot(config.brandRoot);
+  if (config.additionalBrandRoots !== undefined && (
+    !Array.isArray(config.additionalBrandRoots)
+    || config.additionalBrandRoots.some((path) => typeof path !== "string")
+  )) {
+    return {
+      ok: false,
+      status: "invalid-config",
+      reason: "additionalBrandRoots must be an array of absolute brand folder path strings.",
+      configFile,
+      configuredBrandRoot: config.brandRoot,
+      brandRoots: [],
+      brands: [],
+    };
+  }
+
+  const paths = [config.brandRoot, ...(config.additionalBrandRoots || [])];
+  // Inspect the original strings before normalization; a relative path is not a valid config value.
+  const inspections = paths.map(inspectBrandRoot);
+  const failedIndex = inspections.findIndex((root) => !root.ok);
+  const inspected = inspections[failedIndex] || inspections[0];
+  const brandRoots = [...new Set(inspections.map((root, index) => root.brandRoot ?? paths[index]))];
+  const brands = [...new Set(inspections.flatMap((root) => root.brands))].sort();
+  const duplicateBrands = (failedIndex < 0 ? brands : []).map((slug) => ({
+    slug,
+    brandRoots: brandRoots.filter((root) => hasPathEntry(resolve(root, slug))),
+  })).filter((entry) => entry.brandRoots.length > 1);
   return {
     ...inspected,
+    ...(failedIndex > 0 ? { reason: `additionalBrandRoots[${failedIndex - 1}]: ${inspected.reason} Path: ${paths[failedIndex]}` } : {}),
+    ...(failedIndex < 0 && duplicateBrands.length ? { ok: false, status: "ambiguous", reason: duplicateBrandReason(duplicateBrands) } : {}),
+    brandRoot: brandRoots[0],
+    brandRoots,
+    brands,
+    duplicateBrands,
     source: "user-config",
     configFile,
     configuredBrandRoot: config.brandRoot,
     updatedAt: config.updatedAt,
   };
+}
+
+function duplicateBrandReason(duplicates) {
+  return `Ambiguous Brand Packs found in multiple configured brand folders: ${duplicates.map(({ slug, brandRoots }) => `"${slug}" (${brandRoots.join(", ")})`).join("; ")}. Select an explicit brand root; never use the first copy implicitly.`;
 }
 
 export function findProjectBrandRoot(start) {
@@ -155,10 +201,14 @@ function inspectResolvedRoot(path, source, extra = {}) {
 
 export function resolveBrandRoot({
   cwd = process.cwd(),
+  brand,
   explicitBrandRoot,
   explicitProjectRoot,
   env = process.env,
 } = {}) {
+  if (brand !== undefined && (typeof brand !== "string" || !BRAND_SLUG.test(brand))) {
+    return { ok: false, status: "invalid-brand", reason: "The requested brand slug must be lowercase kebab-case.", brandRoots: [], brands: [] };
+  }
   if (explicitBrandRoot) {
     return inspectResolvedRoot(resolve(cwd, explicitBrandRoot), "explicit");
   }
@@ -177,9 +227,28 @@ export function resolveBrandRoot({
   }
 
   const projectBrandRoot = findProjectBrandRoot(projectSearchRoot);
-  if (projectBrandRoot) return inspectResolvedRoot(projectBrandRoot, "project");
+  // Presence, not pack validity, owns local precedence. Invalid local packs must not be masked.
+  if (projectBrandRoot && (!brand || hasPathEntry(resolve(projectBrandRoot, brand)))) {
+    return inspectResolvedRoot(projectBrandRoot, "project");
+  }
 
-  return readBrandRootConfig({ env });
+  const config = readBrandRootConfig({ env });
+  // With no global library, retain the existing local discovery/diagnostics, not another identity.
+  if (config.status === "unconfigured" && projectBrandRoot) return inspectResolvedRoot(projectBrandRoot, "project");
+  if (!brand || !config.ok && config.status !== "ambiguous") return config;
+  const matchingRoots = config.brandRoots.filter((root) => hasPathEntry(resolve(root, brand)));
+  if (matchingRoots.length > 1) {
+    return { ...config, ok: false, status: "ambiguous", reason: duplicateBrandReason([{ slug: brand, brandRoots: matchingRoots }]) };
+  }
+  if (matchingRoots.length === 0) {
+    return {
+      ...config,
+      ok: false,
+      status: "brand-not-found",
+      reason: `Brand Pack "${brand}" is not installed in the configured brand folders.`,
+    };
+  }
+  return { ...config, ok: true, status: "ready", reason: undefined, brandRoot: matchingRoots[0] };
 }
 
 export function writeBrandRootConfig(brandRoot, { env = process.env } = {}) {
@@ -188,12 +257,34 @@ export function writeBrandRootConfig(brandRoot, { env = process.env } = {}) {
   const inspected = inspectBrandRoot(absoluteRoot);
   if (!inspected.ok) throw new Error(`${inspected.reason} Path: ${absoluteRoot}`);
 
-  const configFile = brandRuntimeConfigPath({ env });
   const document = {
     schemaVersion: BRAND_ROOT_CONFIG_SCHEMA_VERSION,
     brandRoot: inspected.brandRoot,
     updatedAt: new Date().toISOString(),
   };
+  return persistBrandRootConfig(document, { env });
+}
+
+export function addBrandRootConfig(brandRoot, { env = process.env } = {}) {
+  const inspected = inspectBrandRoot(brandRoot);
+  if (!inspected.ok) throw new Error(`${inspected.reason} Path: ${brandRoot}`);
+  const current = readBrandRootConfig({ env });
+  if (current.status === "unconfigured") {
+    return { ...writeBrandRootConfig(brandRoot, { env }), changed: true };
+  }
+  if (!current.ok && current.status !== "ambiguous") throw new Error(current.reason);
+  if (current.brandRoots.includes(inspected.brandRoot)) return { ...current, changed: false };
+  const document = {
+    schemaVersion: BRAND_ROOT_CONFIG_SCHEMA_VERSION,
+    brandRoot: current.brandRoot,
+    additionalBrandRoots: [...current.brandRoots.slice(1), inspected.brandRoot],
+    updatedAt: new Date().toISOString(),
+  };
+  return { ...persistBrandRootConfig(document, { env }), changed: true };
+}
+
+function persistBrandRootConfig(document, { env }) {
+  const configFile = brandRuntimeConfigPath({ env });
   mkdirSync(dirname(configFile), { recursive: true });
   const temporary = resolve(dirname(configFile), `.config.${randomUUID()}.tmp`);
   try {
@@ -203,13 +294,5 @@ export function writeBrandRootConfig(brandRoot, { env = process.env } = {}) {
     rmSync(temporary, { force: true });
   }
 
-  return {
-    ok: true,
-    status: "ready",
-    source: "user-config",
-    configFile,
-    brandRoot: inspected.brandRoot,
-    brands: inspected.brands,
-    updatedAt: document.updatedAt,
-  };
+  return readBrandRootConfig({ env });
 }

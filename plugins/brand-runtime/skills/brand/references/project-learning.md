@@ -4,7 +4,9 @@ Use project learning to retain explicit rules, contextual conclusions, and reusa
 
 ## Storage model
 
-Create only the directories required by accepted knowledge:
+Preserve o registro canônico existente, inclusive quando padrões e decisões vivem em JSON ou junto dos componentes. Não migre, duplique ou reclassifique esse conteúdo só para caber no layout do runtime. As entradas descobertas por `context` são pontos de partida; leia as instruções e os links do próprio projeto para localizar outras fontes.
+
+Use o layout abaixo apenas quando o projeto ainda não tiver um dono para esse conhecimento e a criação estiver autorizada. Create only the directories required by accepted knowledge:
 
 ```text
 docs/design/
@@ -25,7 +27,7 @@ docs/design/
 - Store screenshots, recordings, code samples, or other evidence in `references/`.
 - Do not create empty folders or placeholder files.
 
-Markdown is the source of truth for project knowledge because context, reasoning, examples, and evidence matter. Keep JSON for Brand Pack contracts, tokens, manifests, configuration, and brand rules that deterministic scripts must validate.
+For new knowledge without an established owner, prefer Markdown for context, reasoning and evidence. Existing project registries keep their format and authority; do not create a parallel Markdown source over an existing JSON pattern registry. The `learn --scope project` CLI writes only its documented Markdown layout; when another canonical owner already exists, update that owner directly under its project workflow instead of invoking the CLI to create a duplicate.
 
 ## Authority
 
@@ -37,7 +39,7 @@ Markdown is the source of truth for project knowledge because context, reasoning
 
 ## Entry contract
 
-Use one Markdown file per stable id. Preserve `created_at`, update `updated_at`, and deprecate obsolete knowledge instead of deleting history.
+For the runtime's Markdown fallback, use one file per stable id. Preserve `created_at`, update `updated_at`, and deprecate obsolete knowledge instead of deleting history. An existing registry keeps its own entry contract.
 
 ```markdown
 ---
@@ -104,7 +106,7 @@ A reference to another project is provenance, not inheritance. The target projec
 3. Resolve the narrowest applicable surfaces.
 4. Review existing project files for overlap.
 5. Update an existing semantic id rather than creating a duplicate.
-6. Preserve evidence under `docs/design/references/` and use project-relative paths.
+6. Preserve evidence with its existing owner and use project-relative paths. Use `docs/design/references/` only for the Markdown fallback.
 7. Re-read the resulting file and reconcile the design direction when the new knowledge changes an active decision.
 
 When the intended scope is unclear, ask whether it is deliverable-only, project-level, or a lasting rule for the brand.

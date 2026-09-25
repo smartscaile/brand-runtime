@@ -80,7 +80,7 @@ expect(claudePlugin.author?.name === "smartscaile.", "Claude author must be smar
 expect(baseVersion(codexPlugin.version) === packageManifest.version, "Codex plugin base version must match package.json.");
 expect(baseVersion(claudePlugin.version) === packageManifest.version, "Claude plugin base version must match package.json.");
 expect(baseVersion(portablePlugin.version) === packageManifest.version, "Portable plugin version must match package.json.");
-expect(packageManifest.version === "0.8.0", "Hermes managed release must use Brand Runtime v0.8.0.");
+expect(packageManifest.version === "0.9.0", "Hermes managed release must use Brand Runtime v0.9.0.");
 
 expect(skill.split("\n").length < 500, "Brand SKILL.md must stay below 500 lines.");
 expect(skill.startsWith("---\nname: brand\ndescription:"), "Brand SKILL.md must declare canonical frontmatter.");
@@ -168,7 +168,9 @@ expect(directionTemplate.includes("provisional: <true|false>"), "Design directio
 expect(directionTemplate.includes("brand_version:"), "Design direction must record Brand Pack version provenance.");
 expect(directionTemplate.includes("brand_rules_revision:"), "Design direction must record brand-rules provenance.");
 expect(directionTemplate.includes("## Stack and implementation"), "Design direction must record the selected stack and fallbacks.");
-expect(projectLearning.includes("Markdown is the source of truth for project knowledge"), "Project learning must use Markdown as the contextual source of truth.");
+expect(projectLearning.includes("Existing project registries keep their format and authority"), "Project learning must preserve the project's existing canonical owner.");
+expect(projectLearning.includes("For new knowledge without an established owner, prefer Markdown"), "Project learning must retain Markdown as the fallback for new knowledge.");
+expect(projectLearning.includes("CLI writes only its documented Markdown layout"), "Project learning must disclose the CLI's bounded write capability.");
 expect(projectLearning.includes("A reference to another project is provenance, not inheritance"), "Cross-project reuse must not create implicit inheritance.");
 expect(projectLearning.includes('mode: "brand-pending"'), "Project learning must support brand-pending provenance.");
 expect(stackSelection.includes("Treat the catalog as curated options, never as universal defaults"), "Stack guidance must remain consultative.");

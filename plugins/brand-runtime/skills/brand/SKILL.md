@@ -11,7 +11,7 @@ Act as a universal brand and interface director. Use a validated, client-owned B
 
 - Require a validated Brand Pack before applying or claiming an official brand identity. Never infer, clone, synthesize, or replace one with the universal foundation.
 - Allow `brand-pending` for project start and explicitly provisional direction. Keep every visual choice project-local, label it non-official, and never present it as a Brand Pack or brand compliance.
-- Keep Brand Packs outside runtime-specific directories as direct children of one configured folder named `brand`.
+- Keep Brand Packs outside runtime-specific directories as direct children of configured folders named `brand`. One canonical Pack per slug may be shared by hosts and profiles without copying it.
 - Treat `brand.source.json`, `tokens.json`, `brand-guidelines.md`, `build-manifest.json`, declared assets, and pack-managed references as immutable.
 - Keep project decisions, rules, learnings, patterns, and evidence in the target project by default.
 - Promote a rule to `brand.rules.json` only after the user explicitly confirms that it must apply to future projects of the selected brand.
@@ -75,7 +75,7 @@ node --experimental-strip-types <skill-dir>/scripts/brand.ts validate --brand <s
 
 Confirm that the selected pack represents the brand of the requested deliverable. A technically valid pack is still unusable when the project or user identifies a different client, product, or brand owner. Stop and request the correct authorized pack instead of borrowing identity from another brand.
 
-Stop when the pack is missing, ambiguous, incomplete, invalid, or semantically mismatched. If configuration is missing or stale, ask for the absolute path to the downloaded folder named `brand`, run `config set`, and stop branded work until it reports `ready`. Never ask the user to copy or recreate a pack.
+Stop when the pack is missing, ambiguous, incomplete, invalid, or semantically mismatched. For an authorized new folder, use `config add` to preserve the existing library; `config set` replaces all configured roots and requires that intent. Resolve stale paths or duplicate slugs explicitly instead of silently replacing the library or selecting its first copy. `ready` proves discovery only; validate the selected pack before applying identity. Never ask the user to copy or recreate a pack.
 
 In `brand-pending`, skip Brand Pack discovery and validation. Record that no official identity is selected, do not borrow another installed pack, and treat all visual roles as provisional project decisions. Existing foreign identity in a project is migration evidence, not authorization to remove or reuse it silently.
 
@@ -107,12 +107,19 @@ node --experimental-strip-types <skill-dir>/scripts/brand.ts context --mode bran
 
 In `brand-pack`, use the returned surface rules, active brand rules, identity, voice, semantic tokens, assets, iconography, and project knowledge paths. Read a full pack source or guideline only when the returned context is insufficient or a conflict must be resolved. In `brand-pending`, use the returned project knowledge paths, the universal foundation, explicit project constraints, content, and authorized references without inventing official identity. In both modes, read only project knowledge relevant to the requested surface or decision.
 
+`projectKnowledge.existingSources` aponta para entradas locais encontradas, como instruções, manifesto e registros de padrões. Elas não são um inventário completo nem uma lista de aprovações. Siga as fontes que o projeto declara e trace os componentes realmente renderizados; arrays vazios em `rules`, `learnings` ou `patterns` não significam ausência de UI reutilizável. Não crie outra árvore documental para tornar o projeto compatível com o runtime.
+
 Resolve instructions in this order:
 
 1. active brand rules returned by `context`;
-2. immutable Brand Pack source, surface rules, tokens, guidelines, and declared assets;
-3. universal design foundation;
-4. project-owned direction, rules, and approved applications that remain compatible with the preceding sources.
+2. official Brand Pack identity and explicit constraints, including surface rules;
+3. project-owned direction, rules, and approved applications compatible with official identity and active brand rules;
+4. Brand Pack foundation defaults for unresolved application choices;
+5. universal design foundation as method and guidance where the project has not already resolved the decision.
+
+Use `context.designAuthority` para distinguir identidade, defaults e UI. Tamanhos, spacing, grade, raios, sombras e timings não congelam a geometria do projeto por existirem na pack. Componentes novos e extensões semânticas locais são permitidos sem alterar identidade ou restrições explícitas; exemplos são referências. Em `brand-pending`, a identidade continua provisória e local.
+
+A ordem resolve conflitos do mesmo escopo. Uma referência de componente não congela toda composição, e uma heurística universal não substitui uma aplicação local aprovada. Feedback mais recente pode substituir uma tentativa local, mas não altera silenciosamente identidade ou limites de outras superfícies. Preserve conteúdo, acessibilidade, funcionamento e verificações de integridade; uma decisão local não os dispensa.
 
 When an active brand rule overrides an immutable pack value but leaves semantic roles, assets, states, or required mappings unresolved, stop and request clarification instead of inventing the missing identity.
 
@@ -121,8 +128,8 @@ Treat project learnings and patterns as advisory evidence, not automatic rules. 
 For `brand-pending`, resolve instructions in this order:
 
 1. explicit user and project constraints;
-2. universal design foundation;
-3. compatible project-owned provisional direction, rules, learnings, and patterns.
+2. compatible project-owned provisional direction, rules, learnings, and patterns;
+3. universal design foundation as method and guidance for unresolved decisions.
 
 ### Step 4 — Select the stack only when needed
 
@@ -134,7 +141,7 @@ Record the selected stack, reasons, rejected alternatives, motion ownership, dep
 
 ### Step 5 — Create the project design direction
 
-For a project-based creation or substantial redesign, create or update `docs/design/design-direction.md` before implementation. Use `references/design-direction-template.md`.
+For a project-based creation or substantial redesign, update the existing design-direction owner before implementation. When none exists, use `docs/design/design-direction.md` and `references/design-direction-template.md`. A localized refinement needs only its affected decision, not a new document or approval cycle.
 
 Make the design direction:
 
@@ -151,16 +158,16 @@ Read an existing direction before updating it. Change only decisions affected by
 
 ### Step 6 — Compose and implement
 
-Execute o método comum em `references/design-foundation.md`: mapa de conteúdo, perfil justificado, candidatos estruturais quando houver ambiguidade e prova renderizada antes de propagar uma estrutura nova. Aplique-o também a UI de produto e componentes, não apenas a páginas editoriais. Reutilize a direção existente em ajustes localizados e preserve os gates específicos da superfície.
+Comece pela base existente e escolha reutilizar, evoluir ou compor conforme `references/design-foundation.md`. Aplique o raciocínio comum também a UI de produto e componentes, com documentação proporcional. Uma aplicação aprovada é referência concreta, não apenas inspiração cromática; uma tentativa rejeitada não é um template obrigatório. Preserve os gates específicos da superfície.
 
-Build a relationship map before implementation:
+Inspect the relevant relationships before implementation; for a new composition, map:
 
 - page or canvas margin;
 - section gap;
 - component inset;
 - internal stack gap.
 
-Map each relationship to declared pack tokens in `brand-pack` or provisional project-local semantic roles in `brand-pending`. Use content, user intent, and the project thesis to decide hierarchy, density, imagery, and emphasis. Do not turn a Brand Pack into a template catalog or repeat one component anatomy across every section.
+Use the existing project's spacing relationships first, choosing suitable pack defaults or deliberate project-owned semantic extensions without changing identity or explicit constraints. In localized refinements, inspect only the affected relationships instead of rebuilding the whole map. Use content and user intent to choose hierarchy, density, imagery, and emphasis. Do not turn a Brand Pack into a template catalog or repeat one component anatomy across every section.
 
 Inventory declared iconography before drawing or importing icons. Use an icon only for a real action, capability, status, category, or relationship. Create an output-local extension only with explicit authorization and enough declared construction guidance to preserve the family.
 
@@ -177,7 +184,7 @@ In `brand-pack`, re-run pack validation. In both modes, run target-project check
 - identity, assets, copy, or active brand rules diverge from the selected pack;
 - `brand-pending` output claims official identity, borrows another client's pack, or omits its provisional provenance;
 - project direction or project rules contradict sourced brand truth without an approved resolution;
-- layout relationships use arbitrary one-off values instead of the mapped spacing system;
+- layout relationships are inconsistent with the project's semantic spacing system or violate an explicit constraint; a deliberate local extension is not itself brand drift;
 - authored content is clipped, masked, hidden, or unintentionally truncated;
 - text or child bounds overflow a container, or wrapping consumes its bottom or trailing inset;
 - hierarchy, contrast, focus, or interaction states are unclear at a required breakpoint;
@@ -222,6 +229,7 @@ When the user asks to update or upgrade Brand Runtime, read `references/runtime-
 
 ```bash
 node --experimental-strip-types <skill-dir>/scripts/brand.ts config show
+node --experimental-strip-types <skill-dir>/scripts/brand.ts config add --brand-root <absolute-brand-folder>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts config set --brand-root <absolute-brand-folder>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts status --brand <slug>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts validate --brand <slug>
