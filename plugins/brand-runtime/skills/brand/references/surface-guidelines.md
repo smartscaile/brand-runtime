@@ -1,8 +1,11 @@
 # Surface guidelines
 
-Read the section for the requested surface after loading the universal foundation and the selected Brand Pack context.
+Leia a seção da superfície após aplicar o método comum de `design-foundation.md` e resolver `brand-pack` ou `brand-pending`. Estas orientações especializam o método, não o substituem. Não carregue regras de exportação ou gates de outra superfície apenas para obter orientação de composição.
 
 ## Site
+
+- Mapeie a relação dominante de cada seção e o percurso completo antes de desenhar componentes. Compare silhuetas e massas da sequência; alternar lados não resolve a repetição da mesma anatomia.
+- Prove a hierarquia com uma seção coerente e seus vizinhos nos breakpoints relevantes antes de propagar uma estrutura nova. Preserve o escopo completo autorizado e os controles já aprovados.
 
 - Build a narrative sequence, not a uniform stack of interchangeable sections.
 - Give each section a thesis, its strongest supporting content or evidence, and an intentional transition to the next section.
@@ -13,12 +16,19 @@ Read the section for the requested surface after loading the universal foundatio
 
 ## Product
 
+- Use tarefa, dados e estados como mapa de conteúdo. Compare estruturas para o percurso operacional, não variações de uma hero de campanha.
+- Preserve repetição útil de tabelas, formulários e navegação. A crítica comum não exige assimetria, rarefação de dados nem diversidade artificial.
+- Valide o mesmo fluxo em estado normal, vazio, carregando, erro e sucesso quando aplicáveis, com dados extremos autorizados ou fixtures sintéticas identificadas.
+
 - Prioritize task completion, state clarity, and information density over campaign-style decoration.
 - Make navigation, hierarchy, primary action, system status, errors, empty states, loading, and confirmation explicit.
 - Keep repeated components behaviorally consistent while allowing content-driven composition in overview and education surfaces.
 - Validate keyboard, focus, touch targets, zoom, destructive actions, and realistic data extremes.
 
 ## Document
+
+- Mapeie argumento, evidência, ordem e navegação; escolha fluxo contínuo ou página pela entrega, não por um preset de deck.
+- Revise conjunto, unidade de leitura e detalhe. Prove uma passagem densa e sua continuidade sem importar o gate de três slides de Presentation.
 
 - Preserve complete content and global order unless editing is requested.
 - Choose continuous flow for natural screen reading and a page canvas only when physical preview or fixed-page export matters.
@@ -29,6 +39,8 @@ Read the section for the requested surface after loading the universal foundatio
 - Verify exported page count, geometry, overflow, edge insets, widows, orphans, and reading continuity.
 
 ## Presentation
+
+- Consuma a mesma base de composição e siga `../../presentation/SKILL.md` para narrativa, exatamente três slides no lote inicial, aprovações e entrega. O gate de lote não se aplica às outras superfícies.
 
 - Preserve content and global order unless editing is requested, then paginate by meaning.
 - Give each slide one dominant message and enough evidence to support it.

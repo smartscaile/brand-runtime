@@ -11,6 +11,47 @@ This foundation defines a quality floor for interface and artifact direction. It
 - Prefer relationships and semantic roles over isolated values.
 - Let content, user intent, medium, and brand determine composition.
 
+## Método comum de composição
+
+Este método é obrigatório para site, produto, apresentação e documento, em `brand-pack` e `brand-pending`. Execute-o antes de implementar uma composição nova ou uma mudança estrutural. Em um ajuste localizado, reaproveite a direção aprovada e registre somente a decisão afetada. Não transforme um refinamento em um novo questionário ou redesign completo.
+
+### Mapa de conteúdo
+
+Para cada unidade relevante, como seção, tela, slide, página ou componente, identifique:
+
+- **Intenção ou afirmação:** o que a pessoa precisa compreender ou concluir. Em UI operacional, use a tarefa, não uma headline comercial.
+- **Evidência ou conteúdo:** dados, texto, interface ou mecanismo que sustentam essa intenção. Preserve fonte, qualificadores e copy aprovada.
+- **Relação dominante:** comparação, sequência, hierarquia, causa, decisão, correspondência ou estado que o desenho precisa revelar.
+- **Densidade:** conteúdo e controles necessários à tarefa, distância de leitura e meio. Não reduza informação útil para imitar uma landing page.
+- **Restrições:** identidade, conteúdo, componentes aprovados, tecnologia, estados, acessibilidade e limites do pedido.
+
+Escolha a forma pela relação: tabela para correspondências exatas, sequência para etapas, gráfico com escala e unidade para quantidades, diagrama para mecanismo, campos e controles para tarefas. Não use cards como resposta automática. Reutilizar tokens ou um componente não prova que sua anatomia serve ao novo contexto.
+
+### Perfil de composição
+
+Defina quatro decisões locais, sempre com uma justificativa ligada ao conteúdo:
+
+- **densidade:** esparsa, equilibrada ou densa;
+- **distribuição:** concentrada em um foco ou distribuída entre grupos relacionados;
+- **simetria:** estável, deslocada ou assimétrica;
+- **continuidade:** repetição, contraste ou ruptura em relação às unidades vizinhas e aos estados da tarefa.
+
+Não use esses campos como score, preset fixo, identidade ou aprovação automática. Consistência operacional pode exigir repetição; não alterne layouts apenas para produzir variedade. Assimetria e espaço vazio não são objetivos por si sós.
+
+### Candidatos estruturais
+
+Quando uma escolha material estiver ambígua, compare pelo menos duas estruturas em baixa fidelidade antes de produzir o layout completo. Descreva entrada dominante, percurso de leitura ou ação, tratamento da evidência, espaço negativo e relação com os vizinhos. Variantes que mudam só cor, borda ou ícone não são alternativas estruturais.
+
+Escolha pela tarefa, conteúdo, evidência e direção aprovada, nunca por randomização ou rotação de presets. Se o caminho estiver claro, aplique-o sem pedir ao usuário que resolva detalhes de implementação. Peça decisão apenas quando mudar intenção, identidade, conteúdo aprovado ou escopo. Não reabra alternativas já rejeitadas.
+
+### Prova antes de escalar
+
+Antes de propagar uma estrutura nova, renderize um recorte coerente que exponha seus maiores riscos. O tamanho e a autorização do lote pertencem ao projeto e ao fluxo da superfície, não a uma quantidade universal. Preserve os gates específicos de Presentation; não imponha canvas de slides ou controles de deck a sites, produtos ou documentos.
+
+Use conteúdo autorizado e estados relevantes, não placeholders decorativos para simular um resultado pronto. Exemplos sintéticos devem estar identificados como exemplos, nunca como dados observados. Primeiro resolva a composição estática; depois acrescente motion que explique uma relação. Esse recorte de validação não reduz o escopo de entrega já autorizado.
+
+Registre mapa, perfil, decisão e evidência no documento de direção existente para criações substanciais. Em ajustes pequenos, mantenha apenas o delta necessário no contexto de trabalho. Não crie uma árvore paralela de planos ou catálogos de layouts.
+
 ## Information and hierarchy
 
 - Give each composition one dominant idea, one primary evidence or content block, and one clear next action when an action exists.
@@ -92,3 +133,41 @@ Render the required breakpoints and exports after final assets and fonts load. I
 - consistency with the project design direction and the selected direction mode.
 
 Structural correctness is necessary but not sufficient. Refine until the composition communicates the intended perception without generic decorative shortcuts.
+
+## Crítica em três escalas
+
+Execute a crítica após renderizar e antes de apresentar a revisão ao usuário, não somente depois de uma rejeição. Se não houver acesso ao render, informe essa limitação; leitura de código não substitui inspeção visual.
+
+1. **Conjunto:** observe miniaturas, seções vizinhas ou etapas da tarefa sem depender da leitura do texto. Compare massas, foco, densidade, silhuetas e espaço negativo. Repetição deve servir à continuidade, não denunciar um template.
+2. **Superfície:** percorra a página, tela, slide ou unidade de documento no tamanho real de uso. Verifique a entrada principal, ordem de leitura ou ação, relação entre informação e evidência, estados e saída. Inspecione o scroll real e as transições quando fizerem parte da experiência.
+3. **Detalhe:** confira tipografia, alinhamento, proporção, insets, ícones, anotações, foco, alvos de interação e conteúdo extremo. Corrija detalhes depois de resolver a estrutura.
+
+Em web e produto, examine breakpoints e estados relevantes; em apresentação, distância de leitura e sequência; em documento, fluxo e paginação quando aplicável. Não use uma captura desktop como prova de toda a experiência.
+
+## Refinamento pela causa
+
+Classifique o problema dominante como conteúdo, hierarquia, composição, sistema, evidência, interação, imagem ou entrega. Diga o que deve permanecer intacto. Corrija a causa antes de acrescentar bordas, sombras, ícones ou animação.
+
+- **Conservador:** preserve estrutura e corrija acabamento quando a relação já estiver clara.
+- **Editorial:** reorganize hierarquia, escala, proximidade e ritmo preservando conteúdo e mecanismo.
+- **Estrutural:** mude a forma de informação apenas quando ela for a causa e o escopo permitir.
+
+Recomende uma direção com motivo concreto. Implemente uma passagem coerente, renderize novamente e repita a crítica em três escalas. Verifique vizinhos, variantes e estados aprovados. Não apresente um build verde como resposta a uma rejeição estética nem repita microajustes que preservam a causa.
+
+## Diagnósticos de composição genérica
+
+Trate os sinais abaixo como hipóteses contextuais, não proibições estéticas universais:
+
+- mesma anatomia de ícone, título, texto e card para conteúdos com relações diferentes;
+- todos os grupos com peso igual, sem ponto de entrada ou ação dominante;
+- headlines, eyebrows, badges, divisórias, efeitos e superfícies sem função;
+- barrinhas que parecem carregamento, gráficos sem unidade ou dados decorativos apresentados como informação;
+- componente pequeno e isolado em um vazio que rompe sua ligação com a explicação;
+- elementos independentes aparentando conexão por proximidade acidental;
+- motion que encobre uma composição fraca, compete com leitura ou apaga conteúdo;
+- remoção indiscriminada de caixas que destrói agrupamentos necessários;
+- variação cosmética ou troca de nomes de famílias usada para alegar diversidade.
+
+Para cada achado, identifique o elemento, a evidência renderizada, a consequência e a correção ou exceção aprovada. Separe verificação técnica, crítica de composição e aprovação humana. Referências carregadas e `designMethod.status: instructions-only` provam disponibilidade do método, não sua execução, maturidade visual ou aceite. Não invente uma nota de beleza.
+
+Consulte `design-method-provenance.md` ao auditar ou modificar a adaptação externa. Ele registra a origem e os limites do método, não uma dependência online nem uma autoridade de identidade.

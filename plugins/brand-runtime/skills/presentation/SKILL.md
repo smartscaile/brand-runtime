@@ -9,6 +9,8 @@ Direct presentation work as a specialized surface of Brand Runtime. Own narrativ
 
 ## Authority boundary
 
+- Aplique `../brand/references/design-foundation.md` em toda criação, refinamento ou revisão visual, inclusive em `brand-pending` e na invocação direta de Presentation. Composição e crítica são base comum; esta skill especializa narrativa, geometria, lote e entrega de slides.
+
 - Read `../brand/SKILL.md` before applying official identity, interpreting a Brand Pack, creating project design direction, learning a project pattern, or promoting a brand rule.
 - Use `brand-pack` only after the Brand skill validates an explicitly selected, semantically matching Brand Pack.
 - Use `brand-pending` when no official pack is selected. Keep identity-like choices provisional and project-local.

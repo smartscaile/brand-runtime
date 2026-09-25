@@ -478,6 +478,22 @@ async function validatePack() {
   };
 }
 
+async function designMethodContext() {
+  const reference = async (name: string) => {
+    const content = await readFile(new URL(`../references/${name}`, import.meta.url), "utf8");
+    return {
+      path: `skills/brand/references/${name}`,
+      sha256: createHash("sha256").update(content).digest("hex"),
+      content,
+    };
+  };
+  const [foundation, surfaceGuidelines] = await Promise.all([
+    reference("design-foundation.md"),
+    reference("surface-guidelines.md"),
+  ]);
+  return { status: "instructions-only", requiredBeforeImplementation: true, foundation, surfaceGuidelines };
+}
+
 async function context() {
   const surface = option("surface") as Surface | undefined;
   if (!surface || !SURFACES.includes(surface)) {
@@ -507,6 +523,7 @@ async function context() {
       ],
       projectDesignDirection: "docs/design/design-direction.md",
       projectKnowledge: await inspectProjectKnowledge(projectRoot),
+      designMethod: await designMethodContext(),
       rules: [],
       brandRules: [],
       clientRules: [],
@@ -552,6 +569,7 @@ async function context() {
     ],
     projectDesignDirection: "docs/design/design-direction.md",
     projectKnowledge: await inspectProjectKnowledge(projectRoot),
+    designMethod: await designMethodContext(),
     rules: surfaces?.[surface] ?? [],
     brandRules: clientRules,
     clientRules,

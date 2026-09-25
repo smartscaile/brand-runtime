@@ -18,36 +18,19 @@ If a slide performs several jobs, split it or make one job dominant and subordin
 
 ## Layout reasoning workflow
 
-Complete this reasoning before naming a composition family or writing full HTML. The result is a project-local worksheet, not a global template catalog or a second source of identity.
+Aplique primeiro `../../brand/references/design-foundation.md`. Ela é a fonte única do mapa de conteúdo, perfil, candidatos e crítica compartilhados. Abaixo ficam as aplicações específicas ao deck, não uma segunda definição do método.
 
 ### Content map
 
-For every slide, state its claim, evidence, relationship, density, and constraints:
-
-- **Claim:** the one sentence the audience should retain.
-- **Evidence:** the facts, source copy, image, data, or mechanism that earns the claim.
-- **Relationship:** the comparison, sequence, hierarchy, causality, tension, or decision the composition must reveal.
-- **Density:** `sparse`, `balanced`, or `dense`, based on the slide's job and presentation distance.
-- **Constraints:** approved copy, Brand Pack rules, local direction, canvas, accessibility, and source fidelity.
-
-If the content exceeds the chosen density, edit, group, sequence, or split it. Do not solve overload by shrinking type, multiplying containers, or hiding evidence.
+Mapeie os campos da base comum para cada slide: tese, prova, relação narrativa, densidade e restrições do canvas e da distância de apresentação. Se o conteúdo exceder a capacidade, reagrupe ou divida por significado sem esconder evidência nem reduzir arbitrariamente o texto.
 
 ### Composition profile
 
-Describe the first batch with four project-local fields:
-
-- **Density:** `sparse`, `balanced`, or `dense`.
-- **Distribution:** `concentrated` around one field or `distributed` across several related fields.
-- **Symmetry:** `stable`, `offset`, or `asymmetric`.
-- **Continuity:** `repeat`, `contrast`, or `break` relative to neighboring slides.
-
-Every field needs a reason grounded in content, the approved visual thesis, or the intended narrative turn. Do not use these fields as a score, fixed preset, aesthetic identity, or automatic approval.
+Justifique o perfil comum para os slides 1 a 3 e sua tese visual aprovada. Avalie continuidade como sequência narrativa, não como alternância mecânica de famílias. Os campos da base não se tornam score nem aprovação do deck.
 
 ### Structural candidates
 
-When a material layout choice remains unresolved, outline at least two structurally distinct candidates in low fidelity. Compare their dominant entry point, reading path, evidence treatment, negative space, and relationship to neighboring slides. Choose the candidate that reveals the governing relationship with the least distortion.
-
-Candidates must differ in information structure, not only color, alignment, decoration, or image crop. Do not choose by randomization, preset rotation, or a universal family ranking. Do not implement several full HTML variants when a diagram, wireframe, or written anatomy can resolve the decision first.
+Aplique os critérios da base comum às relações narrativas e aos slides vizinhos. Use esquemas ou anatomias escritas para resolver a escolha antes do HTML completo. Preserve a aprovação explícita do brief, pasta, narrativa, tese e evidências exigida por esta superfície.
 
 ### Batch rhythm
 

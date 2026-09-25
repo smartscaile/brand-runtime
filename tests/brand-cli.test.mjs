@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { access, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { access, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
@@ -432,3 +432,61 @@ test("persists the brand folder once and discovers sibling Brand Packs dynamical
     await rm(consumerRoot, { recursive: true, force: true });
   }
 });
+
+test("bundle portátil resolve a base fora do cwd e bloqueia referência ausente", async () => {
+  const sandbox = await realpath(await mkdtemp(resolve(tmpdir(), "brand-method-bundle-")));
+  try {
+    const bundle = resolve(sandbox, "bundle");
+    const consumer = resolve(sandbox, "consumer");
+    await mkdir(consumer);
+    await cp(resolve(import.meta.dirname, "../plugins/brand-runtime"), bundle, { recursive: true });
+    const args = ["--experimental-strip-types", resolve(bundle, "skills/brand/scripts/brand.ts"), "context", "--mode", "brand-pending", "--surface", "product", "--project-root", consumer];
+    const execute = () => spawnSync(process.execPath, args, { cwd: consumer, encoding: "utf8" });
+    const data = output(execute());
+    assert.ok(data.designMethod, "context deve entregar o método, não apenas citar a base");
+    assert.ok(data.designMethod.foundation.content.includes("## Método comum de composição"));
+    assert.equal(data.identity, null);
+    await rm(resolve(bundle, data.designMethod.foundation.path));
+    const missing = execute();
+    assert.notEqual(missing.status, 0);
+    assert.match(missing.stderr, /design-foundation\.md/);
+    assert.equal(missing.stdout.trim(), "");
+  } finally {
+    await rm(sandbox, { recursive: true, force: true });
+  }
+});
+
+for (const mode of ["brand-pending", "brand-pack"]) {
+  for (const surface of ["site", "product", "presentation", "document"]) {
+    test(`entrega a base de composição em ${surface}, modo ${mode}`, async () => {
+      const fixture = await createBrandFixture();
+      try {
+        const args = ["--mode", mode, "--surface", surface];
+        if (mode === "brand-pack") args.push("--brand", "checkgrow");
+        const data = output(run(fixture.projectRoot, "context", args));
+        assert.ok(data.designMethod, "context deve entregar o método, não apenas citar a base");
+        assert.equal(data.designMethod.status, "instructions-only");
+        assert.equal(data.designMethod.requiredBeforeImplementation, true);
+        assert.equal(data.surface, surface);
+        for (const [key, name] of [["foundation", "design-foundation.md"], ["surfaceGuidelines", "surface-guidelines.md"]]) {
+          const reference = data.designMethod[key];
+          const expected = await readFile(resolve(import.meta.dirname, `../plugins/brand-runtime/skills/brand/references/${name}`), "utf8");
+          assert.equal(reference.path, `skills/brand/references/${name}`);
+          assert.equal(reference.content, expected);
+          assert.equal(reference.sha256, hash(expected));
+        }
+        assert.equal(data.identityClaim, mode === "brand-pack" ? "official" : "none");
+        assert.deepEqual(data.brandRules, []);
+        if (mode === "brand-pending") {
+          assert.equal(data.identity, null);
+          assert.deepEqual(data.rules, []);
+        } else {
+          assert.deepEqual(data.identity, { name: "Checkgrow" });
+          assert.deepEqual(data.rules, surface === "site" ? ["Use the declared site system."] : surface === "document" ? ["Use the declared editorial system."] : []);
+        }
+      } finally {
+        await rm(fixture.projectRoot, { recursive: true, force: true });
+      }
+    });
+  }
+}

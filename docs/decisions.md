@@ -30,6 +30,27 @@
   remanescente está preservado em [Dívidas e lacunas observadas](../INTERFACE.md#dívidas-e-lacunas-observadas)
   até receber uma referência externa confirmada.
 
+## Composição como base de todas as superfícies
+
+O raciocínio antes concentrado em Presentation passa a ter autoridade única em
+`plugins/brand-runtime/skills/brand/references/design-foundation.md`.
+Mapa de conteúdo, perfil de composição, candidatos estruturais quando
+necessários, prova antes de escalar e crítica renderizada em três escalas
+integram a base de site, produto, apresentação e documento. A revisão deve
+acontecer antes da entrega, sem depender de rejeições sucessivas do usuário.
+
+O CLI entrega os textos e hashes em `designMethod` para ambos os modos de
+identidade. A seção é aditiva e separada das regras do cliente; o estado
+`instructions-only` impede confundir disponibilidade com execução ou aceite.
+Presentation consome a base e mantém seus gates específicos. A proveniência
+externa e a matriz de adoção ficam em `design-method-provenance.md`, sem
+presets estéticos, estilos de clientes, dependências novas ou score de beleza.
+
+Essa alteração de fonte não instala o checkout nem publica uma release.
+Versão, distribuição gerenciada e autorização de publicação permanecem
+fronteiras separadas. Alterações preexistentes de projeção de Brand Packs
+não fazem parte desta mudança de método.
+
 ## Política
 
 `PROJECT.md`, `project.json`, `AGENTS.md`, contratos, código e testes são as

@@ -27,8 +27,8 @@ Confirme os manifests e as fronteiras principais antes de completar o modelo gen
 | Superfície | Família ou bloco | Fonte atual | Contrato e estados | Consumidores | Status |
 | --- | --- | --- | --- | --- | --- |
 | Apresentação | Família semântica project-local | `skills/presentation/` + `presentation.spec.json` | `id`, `job`, `family`, thresholds, aprovações, freeze e QA | Decks HTML; PDF opt-in | Contrato v1 ativo |
-| Site ou produto | A mapear | `skills/brand/references/` | Hierarquia, interação, responsividade, estados e acessibilidade | Projetos consumidores | A mapear |
-| Documento | A mapear | `skills/brand/references/document-export.md` | Estrutura, identidade, paginação e exportação | Documentos finais | A mapear |
+| Site ou produto | Relação semântica definida no projeto | `skills/brand/references/design-foundation.md` + `surface-guidelines.md` | Mapa, perfil, decisão estrutural, crítica renderizada, interação, estados e responsividade | Projetos consumidores via Brand e `context.designMethod` | Método comum na fonte canônica |
+| Documento | Argumento e unidade de leitura | Base comum + `skills/brand/references/document-export.md` | Mapa, perfil, composição, crítica, paginação e exportação quando solicitada | Documentos via Brand e `context.designMethod` | Método comum na fonte canônica |
 
 ## Inventário de apresentação
 

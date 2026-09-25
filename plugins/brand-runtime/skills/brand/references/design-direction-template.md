@@ -53,7 +53,19 @@ updated_at: <ISO-8601>
 
 Describe in one or two sentences how this project should feel and the compositional idea that will create that perception. Use concrete visual language, not abstract adjectives alone.
 
-## Composition system
+## Mapa de conteúdo
+
+Para cada unidade relevante: intenção ou afirmação, evidência ou conteúdo, relação dominante, densidade e restrições. Em UI, explicite tarefa, dados e estados; não transforme a tela em uma campanha.
+
+## Perfil e decisão de composição
+
+- Densidade, distribuição, simetria e continuidade, cada uma com motivo:
+- Estruturas distintas consideradas, somente quando houver ambiguidade material:
+- Entrada dominante, percurso de leitura ou ação e relação com vizinhos:
+- Estrutura escolhida e justificativa:
+- Recorte de validação, riscos e limites de autorização:
+
+## Geometria e relações
 
 - Content hierarchy:
 - Grid and alignment:
@@ -117,6 +129,14 @@ List concrete treatments that would contradict this direction, including repetit
 - Content and localization cases:
 - Accessibility checks:
 - Visual review criteria:
+
+## Evidência de revisão
+
+- Versão ou hash do artefato renderizado e capturas consultadas:
+- Conjunto, superfície em tamanho real e detalhe:
+- Breakpoints, estados e variantes observados:
+- Achados de composição, correções e exceções:
+- Verificação técnica, aprovação humana e limitações, separadamente:
 ```
 
 ## Authorship rules

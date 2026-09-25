@@ -20,7 +20,7 @@ function markdownSection(markdown, heading) {
   return markdown.slice(start, next === -1 ? undefined : next);
 }
 
-test("requires Brand Runtime v0.7.1 across release metadata", async () => {
+test("requires Brand Runtime v0.8.0 across release metadata", async () => {
   const packageManifest = await readJson("package.json");
   const packageLock = await readJson("package-lock.json");
   const project = await readJson("project.json");
@@ -28,13 +28,13 @@ test("requires Brand Runtime v0.7.1 across release metadata", async () => {
   const claude = await readJson("plugins/brand-runtime/.claude-plugin/plugin.json");
   const codex = await readJson("plugins/brand-runtime/.codex-plugin/plugin.json");
 
-  assert.equal(packageManifest.version, "0.7.1");
-  assert.equal(packageLock.version, "0.7.1");
-  assert.equal(packageLock.packages[""].version, "0.7.1");
-  assert.equal(project.version.current, "0.7.1");
-  assert.equal(portable.version, "0.7.1");
-  assert.equal(claude.version, "0.7.1");
-  assert.equal(codex.version, "0.7.1");
+  assert.equal(packageManifest.version, "0.8.0");
+  assert.equal(packageLock.version, "0.8.0");
+  assert.equal(packageLock.packages[""].version, "0.8.0");
+  assert.equal(project.version.current, "0.8.0");
+  assert.equal(portable.version, "0.8.0");
+  assert.equal(claude.version, "0.8.0");
+  assert.equal(codex.version, "0.8.0");
 });
 
 test("documents canonical distribution paths across supported hosts", async () => {
@@ -140,26 +140,24 @@ test("distributes identity-neutral layout reasoning instead of Taste presets", a
     assert.ok(visual.includes(heading), `Missing visual-system section: ${heading}`);
   }
 
-  for (const concept of [
-    "claim, evidence, relationship, density, and constraints",
-    "at least two structurally distinct candidates",
-    "dominant entry point, reading path, evidence treatment, negative space, and relationship to neighboring slides",
-    "Review slides 1–3 as a thumbnail sequence",
-    "Do not use these fields as a score",
-  ]) {
-    assert.ok(visual.includes(concept), `Missing visual-system concept: ${concept}`);
-  }
+  assert.match(visual, /\.\.\/\.\.\/brand\/references\/design-foundation\.md/);
+  assert.match(visual, /Review slides 1–3 as a thumbnail sequence/);
+  assert.match(refinement, /\.\.\/\.\.\/brand\/references\/design-foundation\.md/);
 
   for (const scale of ["### Thumbnail scale", "### Full-slide scale", "### Detail scale"]) {
     assert.ok(refinement.includes(scale), `Missing refinement scale: ${scale}`);
   }
 
   assert.match(quality, /## External method adaptation/);
-  assert.match(quality, /ccbc15639c97057cbfcf32ecebc38ef716e4bb37/);
+  assert.match(quality, /\.\.\/\.\.\/brand\/references\/design-method-provenance\.md/);
+  const provenance = await readText("plugins/brand-runtime/skills/brand/references/design-method-provenance.md");
+  for (const pin of ["ccbc15639c97057cbfcf32ecebc38ef716e4bb37", "b72132fcd466da605623ffe96e370b3991fc5285", "03ed209b8fdc0a3cd6bccf8a5b3bfffe56aa4558"])
+    assert.ok(provenance.includes(pin), `Proveniência ausente: ${pin}`);
+  assert.match(provenance, /MIT/);
   for (const disposition of ["adapt", "reject", "defer", "reference-only"]) {
-    assert.ok(quality.includes("| `" + disposition + "` |"), `Missing adoption disposition: ${disposition}`);
+    assert.ok(provenance.includes("| `" + disposition + "` |"), `Missing adoption disposition: ${disposition}`);
   }
-  assert.match(quality, /No external code, preset, asset, font, palette, or component recipe is distributed/);
+  assert.match(provenance, /Não distribui código, presets, assets, fontes, paletas ou receitas de componentes/);
 
   assert.match(designSystem, /mapa de conteúdo/i);
   assert.match(designSystem, /perfil de composição/i);
@@ -169,6 +167,29 @@ test("distributes identity-neutral layout reasoning instead of Taste presets", a
     [creation, visual, refinement].join("\n"),
     /DESIGN_VARIANCE|MOTION_INTENSITY|VISUAL_DENSITY|random\.choice|AIDA|Awwwards|Satoshi|Cabinet Grotesk/i,
   );
+});
+
+test("distribui composição e crítica como base comum antes da implementação", async () => {
+  const brand = await readText("plugins/brand-runtime/skills/brand/SKILL.md");
+  const presentation = await readText("plugins/brand-runtime/skills/presentation/SKILL.md");
+  const foundation = await readText("plugins/brand-runtime/skills/brand/references/design-foundation.md");
+  const template = await readText("plugins/brand-runtime/skills/brand/references/design-direction-template.md");
+  for (const heading of [
+    "## Método comum de composição", "### Mapa de conteúdo", "### Perfil de composição",
+    "### Candidatos estruturais", "### Prova antes de escalar", "## Crítica em três escalas",
+    "## Refinamento pela causa", "## Diagnósticos de composição genérica",
+  ]) assert.ok(foundation.includes(heading), `Base comum sem ${heading}`);
+  for (const term of ["afirmação", "evidência", "relação", "densidade", "restrições", "distribuição", "simetria", "continuidade"])
+    assert.ok(foundation.toLowerCase().includes(term), `Conceito ausente: ${term}`);
+  assert.match(foundation, /pelo menos duas estruturas/);
+  assert.match(foundation, /aprovação humana/);
+  assert.match(foundation, /antes de implementar/);
+  assert.match(foundation, /Não use.*score/);
+  assert.match(brand, /designMethod/);
+  assert.match(presentation, /\.\.\/brand\/references\/design-foundation\.md/);
+  for (const heading of ["## Mapa de conteúdo", "## Perfil e decisão de composição", "## Evidência de revisão"])
+    assert.ok(template.includes(heading), `Direção local sem ${heading}`);
+  assert.doesNotMatch(foundation, /DESIGN_VARIANCE|MOTION_INTENSITY|VISUAL_DENSITY|random\.choice|AIDA|Awwwards|Satoshi|Cabinet Grotesk/i);
 });
 
 test("requires the executable managed Hermes install and update command", async () => {

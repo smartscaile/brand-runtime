@@ -80,7 +80,7 @@ expect(claudePlugin.author?.name === "smartscaile.", "Claude author must be smar
 expect(baseVersion(codexPlugin.version) === packageManifest.version, "Codex plugin base version must match package.json.");
 expect(baseVersion(claudePlugin.version) === packageManifest.version, "Claude plugin base version must match package.json.");
 expect(baseVersion(portablePlugin.version) === packageManifest.version, "Portable plugin version must match package.json.");
-expect(packageManifest.version === "0.7.1", "Hermes managed release must use Brand Runtime v0.7.1.");
+expect(packageManifest.version === "0.8.0", "Hermes managed release must use Brand Runtime v0.8.0.");
 
 expect(skill.split("\n").length < 500, "Brand SKILL.md must stay below 500 lines.");
 expect(skill.startsWith("---\nname: brand\ndescription:"), "Brand SKILL.md must declare canonical frontmatter.");
@@ -154,6 +154,9 @@ expect(!/boont|checkgrow|wascen/i.test([
 ].join("\n")), "Presentation skill must remain client-neutral.");
 
 expect(foundation.includes("identity-neutral"), "Design foundation must declare its identity-neutral boundary.");
+expect(foundation.includes("## Método comum de composição"), "Todas as superfícies devem receber o método comum de composição.");
+expect(skill.includes("designMethod"), "Brand deve consumir o método entregue por context.");
+expect(presentationSkill.includes("../brand/references/design-foundation.md"), "Presentation deve consumir a base comum.");
 expect(foundation.includes("Never treat this foundation as a fallback Brand Pack"), "Design foundation must not replace a Brand Pack.");
 expect(!/#[0-9a-f]{3,8}\b/i.test(foundation), "Design foundation must not embed brand color values.");
 expect(!/smartscaile|checkgrow|wascen/i.test(foundation), "Design foundation must not contain client or publisher identity rules.");
@@ -214,6 +217,7 @@ for (const path of [
   "plugins/brand-runtime/skills/brand/references/brand-root-config.json",
   "plugins/brand-runtime/skills/brand/references/client-rules-contract.json",
   "plugins/brand-runtime/skills/brand/references/design-foundation.md",
+  "plugins/brand-runtime/skills/brand/references/design-method-provenance.md",
   "plugins/brand-runtime/skills/brand/references/design-direction-template.md",
   "plugins/brand-runtime/skills/brand/references/document-export.md",
   "plugins/brand-runtime/skills/brand/references/project-learning.md",

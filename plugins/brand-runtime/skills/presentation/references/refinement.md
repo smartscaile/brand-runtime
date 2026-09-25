@@ -2,18 +2,7 @@
 
 ## Diagnose before styling
 
-Review the rendered slide at full canvas and detail scale. Classify the dominant issue:
-
-- **Narrative:** the point is missing, delayed, or contradicted.
-- **Copy:** wording is vague, unsupported, repetitive, or too dense.
-- **Hierarchy:** the reading order is unclear.
-- **Composition:** relationships, alignment, balance, or negative space are weak.
-- **System:** repeated UI, marker, typography, or spacing is inconsistent.
-- **Evidence:** a number, comparison, or source is unclear.
-- **Imagery:** the image lacks meaning, crop discipline, or brand relevance.
-- **Export:** the browser and PDF disagree.
-
-Fix the dominant cause before polishing symptoms.
+Aplique o diagnóstico e o refinamento pela causa de `../../brand/references/design-foundation.md`. Em slides, acrescente a relação com a narrativa vizinha, a distância de leitura e a paridade entre HTML e PDF quando PDF for solicitado. As escalas abaixo especializam a crítica comum, sem criar uma autoridade concorrente.
 
 ## Three-scale critique
 
@@ -64,19 +53,7 @@ Make every direction meaningfully different. Recommend one. Do not ask the user 
 
 ## Signs of artificial or template-like output
 
-- every section uses the same card grid;
-- excessive gradients, glows, shadows, pills, badges, or decorative lines;
-- all content has equal weight;
-- generic icon plus heading plus paragraph repetition;
-- large headlines without precise editorial intent;
-- arbitrary futuristic imagery;
-- decorative charts with unclear units;
-- too many labels describing obvious UI;
-- cramped metrics placed as a dashboard rather than a presentation;
-- repeated dividers used to manufacture structure;
-- local exceptions that break global alignment.
-
-Replace these habits with stronger editing, fewer elements, authored relationships, and intentional negative space.
+Use os diagnósticos da base comum. No deck, observe também métricas comprimidas como dashboard quando a audiência precisa acompanhar uma tese à distância, marcadores de capítulo inconsistentes e screenshots ilegíveis. Corrija edição e relações antes de decorar. Um nome diferente de família não corrige silhuetas equivalentes.
 
 ## Acceptance
 

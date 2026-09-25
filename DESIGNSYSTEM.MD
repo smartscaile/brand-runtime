@@ -92,6 +92,20 @@ Os mesmos gates se aplicam, ajustados à superfície. Produtos acrescentam
 interação, estados e acessibilidade; sites acrescentam fluxo de leitura e
 conversão; documentos acrescentam paginação, navegação e legibilidade longa.
 
+O método operativo comum está em
+`plugins/brand-runtime/skills/brand/references/design-foundation.md`.
+Brand e Presentation devem consumi-lo antes da implementação e na revisão.
+Mapa de conteúdo, perfil justificado, escolha estrutural, prova renderizada e
+crítica em três escalas não dependem de invocar Presentation.
+`surface-guidelines.md` especializa a aplicação sem impor formato ou lote de
+slides às demais superfícies. A proveniência externa é centralizada em
+`design-method-provenance.md`, na mesma pasta da base.
+
+O CLI `context` entrega `designMethod` em `brand-pack` e `brand-pending`, com
+conteúdo, paths relativos ao plugin e hashes dos documentos consumidos.
+`status: instructions-only` comprova apenas quais instruções foram entregues.
+Não comprova que o agente as executou nem que o artefato foi aprovado.
+
 ## Exceções da entrega
 
 | Data | Entrega | Regra substituída | Nova direção | Alcance | Evidência e aprovação |

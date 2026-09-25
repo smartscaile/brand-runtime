@@ -50,8 +50,18 @@ ficam em `docs/architecture.md`, `docs/database.md`, `INTERFACE.md` e
 
 ## Estado atual e oportunidade
 
-A versão canônica é `0.7.1`. Esta patch release preserva o método visual, o gate
-de três slides e o hardening lançados em `0.7.0`, normalizando a versão pública
-para SemVer limpo e idêntico em Codex, Claude Code e Hermes. No Hermes, a
-distribuição é gerenciada por perfil e atualizada por reinstalação verificada da
-fonte oficial, sem apontar o diretório instalado para o checkout do runtime.
+A fonte está preparada para `0.8.0`, a partir da release publicada `0.7.1`.
+O método comum de composição e crítica passa a atender site, produto,
+apresentação e documento. O CLI entrega `designMethod` nos modos `brand-pack`
+e `brand-pending`, com conteúdo, paths e hashes, sem alterar identidade ou
+regras de clientes. Brand e Presentation consomem a mesma base.
+
+O escopo inclui somente esse método e a metadata coerente de release em Codex,
+Claude Code e Hermes. Não inclui a projeção de Brand Packs em desenvolvimento.
+O gate de três slides, contratos, aprovações e exportação de apresentações
+permanecem intactos. `instructions-only` não equivale à execução do método ou
+à aprovação visual.
+
+Esta preparação local não publica, instala nem ativa a versão. A distribuição
+gerenciada e sua verificação permanecem etapas separadas; no Hermes, seguem por
+perfil e pela fonte oficial, sem apontar a instalação para o checkout.

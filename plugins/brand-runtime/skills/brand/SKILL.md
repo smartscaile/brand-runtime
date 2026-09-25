@@ -98,6 +98,8 @@ Ask concise questions only when the answer cannot be discovered and a reasonable
 
 Read `references/design-foundation.md`, then run the matching context command:
 
+A base de composição é obrigatória para todas as superfícies, não exclusiva de Presentation. A saída `designMethod` de `context` entrega o conteúdo dessa base e das orientações por superfície com hashes. Leia e aplique esse conteúdo antes de implementar, mesmo quando o pedido não invocar uma skill especializada. O estado `instructions-only` não comprova execução nem aprovação visual.
+
 ```bash
 node --experimental-strip-types <skill-dir>/scripts/brand.ts context --mode brand-pack --brand <slug> --surface <site|product|presentation|document> --project-root <project>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts context --mode brand-pending --surface <site|product|presentation|document> --project-root <project>
@@ -149,6 +151,8 @@ Read an existing direction before updating it. Change only decisions affected by
 
 ### Step 6 — Compose and implement
 
+Execute o método comum em `references/design-foundation.md`: mapa de conteúdo, perfil justificado, candidatos estruturais quando houver ambiguidade e prova renderizada antes de propagar uma estrutura nova. Aplique-o também a UI de produto e componentes, não apenas a páginas editoriais. Reutilize a direção existente em ajustes localizados e preserve os gates específicos da superfície.
+
 Build a relationship map before implementation:
 
 - page or canvas margin;
@@ -165,6 +169,8 @@ For surface-specific composition and QA, read `references/surface-guidelines.md`
 For a document that requires a fixed-page HTML preview, browser-delivered PDF, or direct download action, also read `references/document-export.md`. Treat its preview, download, typography, and export checks as universal delivery mechanics, then style them only through the selected identity authority.
 
 ### Step 7 — Validate and refine
+
+Antes de entregar, aplique a crítica comum em três escalas e o refinamento pela causa de `references/design-foundation.md`. Inspecione conjunto, superfície no tamanho de uso e detalhe; corrija composição genérica antes de polir motion. Separe evidência técnica, diagnósticos visuais e aceite humano. Não espere o usuário rejeitar o resultado para fazer essa revisão.
 
 In `brand-pack`, re-run pack validation. In both modes, run target-project checks and rendered visual QA after fonts and final assets load. Block delivery when any applicable condition fails:
 
@@ -231,6 +237,7 @@ node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --scope brand
 - Read `references/brand-root-config.json` for configuration, discovery, or onboarding problems.
 - Read `references/client-rules-contract.json` before promoting, updating, deprecating, or reviewing lasting brand rules.
 - Read `references/design-foundation.md` for every branded creation or visual review.
+- Consulte `references/design-method-provenance.md` ao auditar ou alterar a adaptação metodológica compartilhada.
 - Read `references/design-direction-template.md` when creating or updating a project design direction.
 - Read `references/project-learning.md` before recording or reusing project rules, learnings, patterns, or cross-project references.
 - Read `references/stack-selection.md` only when selecting or recommending implementation libraries or stack.
