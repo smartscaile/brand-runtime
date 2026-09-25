@@ -80,6 +80,15 @@ seleção implícita, e uma entrada local inválida não é mascarada pela globa
 Não há cópia, movimentação ou symlink de packs. Instalar em todos os perfis é
 uma operação de distribuição separada, não herança automática do plugin.
 
+## Seleção explícita de origem por marca
+
+Uma pasta histórica ou incompleta com o mesmo slug continua sendo uma colisão,
+não uma autorização para usar a primeira origem. O usuário pode escolher uma
+raiz já cadastrada por `config bind`. O mapa opcional `brandRootsBySlug` mantém
+o schema `1.0.0` e só governa a resolução global. Bindings inválidos ou obsoletos
+falham sem fallback; `config add` os preserva e `config set` substitui toda a
+seleção. O binding não movimenta dados nem concede aprovação da marca.
+
 ## Política
 
 `PROJECT.md`, `project.json`, `AGENTS.md`, contratos, código e testes são as

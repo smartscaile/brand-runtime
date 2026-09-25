@@ -26,7 +26,7 @@ flowchart LR
 O plugin distribuído permanece identidade-neutro. Brand Packs e conhecimento
 mutável pertencem respectivamente ao cliente e ao projeto consumidor.
 
-## Distribuição Hermes na v0.9.0
+## Distribuição Hermes na v0.9.1
 
 O Hermes instala o pacote portátil como diretório regular gerenciado em cada
 perfil. Instalação e atualização usam o instalador nativo contra a fonte
@@ -37,6 +37,10 @@ A biblioteca de packs é uma configuração do usuário, independente do perfil.
 `brandRoot` mantém compatibilidade com a raiz principal e `additionalBrandRoots`
 acrescenta pastas sem copiar packs. A seleção por slug falha quando existem
 cópias ambíguas. Cada perfil continua com sua instalação gerenciada do plugin.
+
+Uma seleção explícita em `brandRootsBySlug` resolve apenas o slug autorizado
+na biblioteca global. Não altera a precedência de roots explícitas, ambiente
+ou entradas locais, nem move ou modifica os diretórios referenciados.
 
 ## Autoridade
 

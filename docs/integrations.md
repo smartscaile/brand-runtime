@@ -12,15 +12,19 @@
 Credenciais, tokens e configurações específicas de clientes não pertencem a
 este repositório.
 
-## Escopo da fonte v0.9.0
+## Escopo da fonte v0.9.1
 
-Os três manifests e a metadata raiz usam `0.9.0`. O bundle mantém os caminhos
+Os três manifests e a metadata raiz usam `0.9.1`. O bundle mantém os caminhos
 de distribuição e o método compartilhado em `context.designMethod`.
 `context.designAuthority` separa identidade, defaults e UI local. A biblioteca
 global pode registrar múltiplas pastas `brand` via `config add`, preservando
 as anteriores; `config set` continua sendo substituição explícita.
 
-Esta preparação parte de `0.8.0` e não inclui projeção de Brand Packs nem muda
+`config bind --brand <slug> --brand-root <absolute-brand-folder>` registra a
+origem escolhida explicitamente pelo usuário entre as raízes já cadastradas.
+O binding não aprova identidade nem dispensa validação da pack.
+
+Esta preparação parte de `0.9.0` e não inclui projeção de Brand Packs nem muda
 os contratos ou gates de apresentação. A versão na fonte não comprova
 publicação, instalação ou ativação em qualquer host. Após uma publicação
 autorizada, a instalação gerenciada deve ser verificada separadamente em cada

@@ -99,6 +99,30 @@ export function inspectBrandRoot(path) {
   return { ok: true, status: "ready", brandRoot, brands };
 }
 
+function inspectBrandRootBindings(bindings = {}, brandRoots) {
+  const invalid = (reason) => ({ ok: false, status: "invalid-config", reason: `brandRootsBySlug: ${reason}` });
+  if (bindings === null || typeof bindings !== "object" || Array.isArray(bindings)) {
+    return invalid("must be an object mapping brand slugs to absolute registered brand folders.");
+  }
+  const entries = [];
+  for (const [slug, path] of Object.entries(bindings)) {
+    if (!BRAND_SLUG.test(slug)) return invalid(`Invalid brand slug "${slug}"; use lowercase kebab-case.`);
+    if (typeof path !== "string" || !isAbsolute(path)) return invalid(`"${slug}" must name an absolute brand folder.`);
+    const brandRoot = resolve(path);
+    if (!brandRoots.includes(brandRoot)) return invalid(`"${slug}" points to an unregistered brand folder: ${path}`);
+    const pack = resolve(brandRoot, slug);
+    if (!isDirectory(pack) || !existsSync(resolve(pack, PACK_MARKER))) {
+      return {
+        ok: false,
+        status: "stale-binding",
+        reason: `brandRootsBySlug: "${slug}" requires a Pack directory with ${PACK_MARKER} at ${pack}. No other copy will be selected.`,
+      };
+    }
+    entries.push([slug, brandRoot]);
+  }
+  return { ok: true, brandRootsBySlug: Object.fromEntries(entries) };
+}
+
 export function readBrandRootConfig({ env = process.env } = {}) {
   const configFile = brandRuntimeConfigPath({ env });
   if (!existsSync(configFile)) {
@@ -161,14 +185,23 @@ export function readBrandRootConfig({ env = process.env } = {}) {
     slug,
     brandRoots: brandRoots.filter((root) => hasPathEntry(resolve(root, slug))),
   })).filter((entry) => entry.brandRoots.length > 1);
+  const bindings = inspectBrandRootBindings(config.brandRootsBySlug, brandRoots);
+  const brandRootsBySlug = bindings.brandRootsBySlug || {};
+  const unresolvedDuplicates = duplicateBrands.filter(({ slug }) => !Object.hasOwn(brandRootsBySlug, slug));
+  const resolvedDuplicateBrands = duplicateBrands
+    .filter(({ slug }) => Object.hasOwn(brandRootsBySlug, slug))
+    .map((entry) => ({ ...entry, brandRoot: brandRootsBySlug[entry.slug] }));
   return {
     ...inspected,
     ...(failedIndex > 0 ? { reason: `additionalBrandRoots[${failedIndex - 1}]: ${inspected.reason} Path: ${paths[failedIndex]}` } : {}),
-    ...(failedIndex < 0 && duplicateBrands.length ? { ok: false, status: "ambiguous", reason: duplicateBrandReason(duplicateBrands) } : {}),
+    ...(failedIndex < 0 && unresolvedDuplicates.length ? { ok: false, status: "ambiguous", reason: duplicateBrandReason(unresolvedDuplicates) } : {}),
+    ...(failedIndex < 0 && !bindings.ok ? bindings : {}),
     brandRoot: brandRoots[0],
     brandRoots,
     brands,
+    brandRootsBySlug,
     duplicateBrands,
+    resolvedDuplicateBrands,
     source: "user-config",
     configFile,
     configuredBrandRoot: config.brandRoot,
@@ -236,6 +269,9 @@ export function resolveBrandRoot({
   // With no global library, retain the existing local discovery/diagnostics, not another identity.
   if (config.status === "unconfigured" && projectBrandRoot) return inspectResolvedRoot(projectBrandRoot, "project");
   if (!brand || !config.ok && config.status !== "ambiguous") return config;
+  if (Object.hasOwn(config.brandRootsBySlug, brand)) {
+    return { ...config, ok: true, status: "ready", reason: undefined, brandRoot: config.brandRootsBySlug[brand] };
+  }
   const matchingRoots = config.brandRoots.filter((root) => hasPathEntry(resolve(root, brand)));
   if (matchingRoots.length > 1) {
     return { ...config, ok: false, status: "ambiguous", reason: duplicateBrandReason([{ slug: brand, brandRoots: matchingRoots }]) };
@@ -278,6 +314,27 @@ export function addBrandRootConfig(brandRoot, { env = process.env } = {}) {
     schemaVersion: BRAND_ROOT_CONFIG_SCHEMA_VERSION,
     brandRoot: current.brandRoot,
     additionalBrandRoots: [...current.brandRoots.slice(1), inspected.brandRoot],
+    ...(Object.keys(current.brandRootsBySlug).length ? { brandRootsBySlug: current.brandRootsBySlug } : {}),
+    updatedAt: new Date().toISOString(),
+  };
+  return { ...persistBrandRootConfig(document, { env }), changed: true };
+}
+
+export function bindBrandRootConfig(brand, brandRoot, { env = process.env } = {}) {
+  if (typeof brand !== "string" || !BRAND_SLUG.test(brand)) {
+    throw new Error("The requested brand slug must be lowercase kebab-case.");
+  }
+  const current = readBrandRootConfig({ env });
+  if (!current.ok && current.status !== "ambiguous") throw new Error(current.reason);
+  const binding = inspectBrandRootBindings({ [brand]: brandRoot }, current.brandRoots);
+  if (!binding.ok) throw new Error(binding.reason);
+  const selectedRoot = binding.brandRootsBySlug[brand];
+  if (current.brandRootsBySlug[brand] === selectedRoot) return { ...current, changed: false };
+  const document = {
+    schemaVersion: BRAND_ROOT_CONFIG_SCHEMA_VERSION,
+    brandRoot: current.brandRoot,
+    ...(current.brandRoots.length > 1 ? { additionalBrandRoots: current.brandRoots.slice(1) } : {}),
+    brandRootsBySlug: { ...current.brandRootsBySlug, ...binding.brandRootsBySlug },
     updatedAt: new Date().toISOString(),
   };
   return { ...persistBrandRootConfig(document, { env }), changed: true };

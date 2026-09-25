@@ -125,6 +125,16 @@ function ambiguousBrandContext(brandResolution) {
   ].join("\n");
 }
 
+function bindingReviewContext(brandResolution) {
+  if (brandResolution.ok || !brandResolution.reason?.startsWith("brandRootsBySlug:")) return "";
+  return [
+    "BRAND BINDING REQUIRES REVIEW",
+    brandResolution.reason,
+    "Inspect config show and ask the user to confirm the official registered folder before changing a binding.",
+    "Do not replace the saved library, move historical folders, or select another copy as fallback. Stop official branded work until the binding is valid.",
+  ].join("\n");
+}
+
 function projectStartActivation({ cwd, pluginRoot, runtimeVersion, requested, projectHint, brandResolution }) {
   const skillRoot = resolve(pluginRoot, "skills", "brand");
   const cli = resolve(skillRoot, "scripts", "brand.ts");
@@ -137,6 +147,7 @@ function projectStartActivation({ cwd, pluginRoot, runtimeVersion, requested, pr
     projectStartContext({ cwd, projectHint }),
     "",
     ...(brandResolution.status === "ambiguous" ? [ambiguousBrandContext(brandResolution), ""] : []),
+    ...(requested && bindingReviewContext(brandResolution) ? [bindingReviewContext(brandResolution), ""] : []),
   ];
 
   if (!requested) {
@@ -189,6 +200,16 @@ function activationContext({ cwd, pluginRoot, runtimeVersion, action, requested,
   const availableLine = available.length > 0 ? available.join(", ") : "none";
   const configuredPath = brandResolution.brandRoot || brandResolution.configuredBrandRoot || "not configured";
 
+  const bindingReview = bindingReviewContext(brandResolution);
+  if (bindingReview) {
+    return [
+      "BRAND RUNTIME ACTIVE (>>brand detected)",
+      `Brand Runtime: v${runtimeVersion}`,
+      "",
+      bindingReview,
+      `Universal skill: ${skillRoot}/SKILL.md`,
+    ].join("\n");
+  }
   if (brandResolution.status === "ambiguous") {
     return [
       "BRAND RUNTIME ACTIVE (>>brand detected)",
@@ -218,6 +239,17 @@ function activationContext({ cwd, pluginRoot, runtimeVersion, action, requested,
     ].join("\n");
   }
 
+  if (!requested && available.length === 1 && Object.hasOwn(brandResolution.brandRootsBySlug || {}, available[0])) {
+    return [
+      "BRAND RUNTIME ACTIVE (>>brand detected)",
+      `Brand Runtime: v${runtimeVersion}`,
+      "",
+      "BRAND PACK SLUG SELECTION REQUIRED",
+      `A global folder binding exists for ${available[0]}; discovery alone does not select identity for this task.`,
+      `Ask the user to select >>brand ${available[0]} before branded work. Do not pin the primary folder implicitly.`,
+      `Universal skill: ${skillRoot}/SKILL.md`,
+    ].join("\n");
+  }
   const slug = requested || (available.length === 1 ? available[0] : "");
   const selectedRoot = slug ? resolve(brandResolution.brandRoot, slug) : "";
   if (!slug || !isDirectory(selectedRoot)) {
@@ -292,6 +324,8 @@ function directPresentationActivation({ cwd, pluginRoot, runtimeVersion, request
     ].join("\n");
   }
 
+  const bindingReview = bindingReviewContext(brandResolution);
+  if (bindingReview) return [...lines, "", bindingReview].join("\n");
   if (brandResolution.status === "ambiguous") {
     return [...lines, "", ambiguousBrandContext(brandResolution)].join("\n");
   }

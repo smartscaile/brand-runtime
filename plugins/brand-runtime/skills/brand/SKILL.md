@@ -75,7 +75,11 @@ node --experimental-strip-types <skill-dir>/scripts/brand.ts validate --brand <s
 
 Confirm that the selected pack represents the brand of the requested deliverable. A technically valid pack is still unusable when the project or user identifies a different client, product, or brand owner. Stop and request the correct authorized pack instead of borrowing identity from another brand.
 
-Stop when the pack is missing, ambiguous, incomplete, invalid, or semantically mismatched. For an authorized new folder, use `config add` to preserve the existing library; `config set` replaces all configured roots and requires that intent. Resolve stale paths or duplicate slugs explicitly instead of silently replacing the library or selecting its first copy. `ready` proves discovery only; validate the selected pack before applying identity. Never ask the user to copy or recreate a pack.
+Pare quando o pack estiver ausente, ambíguo, incompleto, inválido ou não pertencer à marca solicitada. Para acrescentar uma pasta autorizada, use `config add`, preservando a biblioteca e os bindings existentes. `config set` substitui todas as raízes e limpa os bindings; exige intenção explícita de substituição.
+
+Quando o mesmo slug existir em várias raízes, peça ao usuário a decisão de qual pasta é oficial e registre-a com `config bind --brand <slug> --brand-root <absolute-registered-root>`. A raiz deve estar registrada e conter a pasta do slug com `brand.source.json`. O binding só atua na seleção global; não sobrepõe raiz explícita, ambiente ou entrada local, inclusive incompleta. Não escolha pela primeira ocorrência, pela versão ou pela aparente validade. Não mova, apague, recrie ou renomeie pastas históricas: referências podem depender dos caminhos originais.
+
+Confira `config show`: `brandRootsBySlug` registra a escolha, `duplicateBrands` preserva as colisões descobertas e `resolvedDuplicateBrands` identifica as resolvidas. Binding inválido ou stale bloqueia a seleção global, sem fallback nem reparo automático. Repetir o mesmo binding retorna `changed: false` sem regravar a configuração. `ready` comprova apenas descoberta; execute `validate` e `context` antes de aplicar identidade. Nunca peça ao usuário para copiar ou recriar um pack.
 
 In `brand-pending`, skip Brand Pack discovery and validation. Record that no official identity is selected, do not borrow another installed pack, and treat all visual roles as provisional project decisions. Existing foreign identity in a project is migration evidence, not authorization to remove or reuse it silently.
 
@@ -230,6 +234,7 @@ When the user asks to update or upgrade Brand Runtime, read `references/runtime-
 ```bash
 node --experimental-strip-types <skill-dir>/scripts/brand.ts config show
 node --experimental-strip-types <skill-dir>/scripts/brand.ts config add --brand-root <absolute-brand-folder>
+node --experimental-strip-types <skill-dir>/scripts/brand.ts config bind --brand <slug> --brand-root <absolute-registered-root>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts config set --brand-root <absolute-brand-folder>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts status --brand <slug>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts validate --brand <slug>

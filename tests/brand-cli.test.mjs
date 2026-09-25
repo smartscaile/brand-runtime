@@ -819,6 +819,384 @@ test("root config detects global slug collisions even when one copy lacks its ma
   }
 });
 
+test("root config honors an explicit global binding without hiding or changing historical duplicates", async (t) => {
+  const { cwd, env, library, save, configFile } = await rootConfigFixture(t);
+  const historical = await library("historical", ["sibling"]);
+  const official = await library("official", ["shared"]);
+  const historyFile = resolve(historical, "shared/history.md");
+  await mkdir(resolve(historical, "shared"));
+  await writeFile(historyFile, "History depends on this exact path.\n");
+  await save({ brandRoot: historical, additionalBrandRoots: [official], brandRootsBySlug: { shared: official } });
+  const before = await readFile(configFile, "utf8");
+  const sourceBefore = await readFile(resolve(official, "shared/brand.source.json"), "utf8");
+  const shown = rootConfig.readBrandRootConfig({ env });
+  assert.equal(shown.ok, true);
+  assert.equal(shown.status, "ready");
+  assert.equal(shown.brandRoot, historical);
+  assert.deepEqual(shown.brandRootsBySlug, { shared: official });
+  assert.deepEqual(shown.duplicateBrands, [{ slug: "shared", brandRoots: [historical, official] }]);
+  assert.deepEqual(shown.resolvedDuplicateBrands, [{ slug: "shared", brandRoots: [historical, official], brandRoot: official }]);
+  assert.equal(rootConfig.resolveBrandRoot({ cwd, env }).brandRoot, historical, "discovery is not identity selection");
+  for (const [brand, expected] of [["shared", official], ["sibling", historical]]) {
+    const selected = rootConfig.resolveBrandRoot({ cwd, env, brand });
+    assert.equal(selected.ok, true);
+    assert.equal(selected.brandRoot, expected);
+    assert.equal(selected.configuredBrandRoot, historical);
+    assert.equal(selected.source, "user-config");
+    assert.deepEqual(selected.brands, ["shared", "sibling"]);
+  }
+  assert.equal(await readFile(configFile, "utf8"), before);
+  assert.equal(await readFile(historyFile, "utf8"), "History depends on this exact path.\n");
+  await assert.rejects(access(resolve(historical, "shared/brand.source.json")));
+  assert.equal(await readFile(resolve(official, "shared/brand.source.json"), "utf8"), sourceBefore);
+});
+
+test("root config rejects malformed or unregistered bindings without writes or global fallback", async (t) => {
+  const { cwd, env, library, save, configFile } = await rootConfigFixture(t);
+  const first = await library("first", ["shared"]);
+  const second = await library("second", ["shared"]);
+  const other = await library("unregistered", ["shared"]);
+  for (const [label, brandRootsBySlug] of [
+    ["null", null], ["array", []], ["string", second], ["number", 42], ["boolean", true],
+    ["uppercase slug", { SHARED: second }], ["padded slug", { " shared ": second }],
+    ["path slug", { "../shared": second }], ["blank slug", { "": second }],
+    ["null root", { shared: null }], ["number root", { shared: 42 }],
+    ["object root", { shared: {} }], ["array root", { shared: [second] }],
+    ["blank root", { shared: "" }], ["relative root", { shared: "second/brand" }],
+    ["individual pack", { shared: resolve(second, "shared") }],
+    ["unregistered root", { shared: other }], ["missing unregistered root", { shared: resolve(cwd, "missing/brand") }],
+  ]) {
+    await t.test(label, async () => {
+      await save({ brandRoot: first, additionalBrandRoots: [second], brandRootsBySlug });
+      const before = await readFile(configFile, "utf8");
+      for (const result of [rootConfig.readBrandRootConfig({ env }), rootConfig.resolveBrandRoot({ cwd, env, brand: "shared" })]) {
+        assert.equal(result.ok, false);
+        assert.equal(result.status, "invalid-config");
+        assert.match(result.reason, /brandRootsBySlug/);
+      }
+      assert.throws(() => rootConfig.addBrandRootConfig(other, { env }), /brandRootsBySlug/);
+      assert.equal(await readFile(configFile, "utf8"), before);
+    });
+  }
+});
+
+test("root config blocks stale bindings even when another copy remains discoverable", async (t) => {
+  const { cwd, env, library, save, configFile } = await rootConfigFixture(t);
+  const first = await library("first", ["shared"]);
+  const extra = await library("extra", ["extra"]);
+  for (const [label, removePack, replacement] of [
+    ["missing-marker", false, "none"],
+    ["missing-pack", true, "none"],
+    ["file-pack", true, "file"],
+    ["broken-link", true, "link"],
+  ]) {
+    await t.test(label, async () => {
+      const official = await library(label, ["shared", "keeper"]);
+      await save({ brandRoot: first, additionalBrandRoots: [official], brandRootsBySlug: { shared: official } });
+      assert.equal(rootConfig.resolveBrandRoot({ cwd, env, brand: "shared" }).brandRoot, official);
+      const pack = resolve(official, "shared");
+      await rm(removePack ? pack : resolve(pack, "brand.source.json"), { recursive: true });
+      if (replacement === "file") await writeFile(pack, "not a pack directory");
+      if (replacement === "link") await symlink(resolve(cwd, "absent-pack"), pack);
+      const before = await readFile(configFile, "utf8");
+      for (const result of [rootConfig.readBrandRootConfig({ env }), rootConfig.resolveBrandRoot({ cwd, env, brand: "shared" })]) {
+        assert.equal(result.ok, false);
+        assert.equal(result.status, "stale-binding");
+        assert.match(result.reason, /brandRootsBySlug.*shared.*brand.source.json/);
+        assert.ok(result.reason.includes(official), result.reason);
+      }
+      assert.throws(() => rootConfig.addBrandRootConfig(extra, { env }), /brandRootsBySlug/);
+      assert.throws(() => rootConfig.bindBrandRootConfig("shared", official, { env }), /brandRootsBySlug/);
+      assert.throws(() => rootConfig.bindBrandRootConfig("shared", first, { env }), /brandRootsBySlug/);
+      assert.equal(await readFile(configFile, "utf8"), before);
+    });
+  }
+  const removed = await library("removed", ["shared"]);
+  await save({ brandRoot: first, additionalBrandRoots: [removed], brandRootsBySlug: { shared: removed } });
+  await rm(removed, { recursive: true });
+  const before = await readFile(configFile, "utf8");
+  assert.equal(rootConfig.resolveBrandRoot({ cwd, env, brand: "shared" }).status, "stale");
+  assert.throws(() => rootConfig.addBrandRootConfig(extra, { env }), /does not exist/);
+  assert.equal(await readFile(configFile, "utf8"), before);
+});
+
+test("root config bind persists the explicit choice idempotently and preserves other selections", async (t) => {
+  const { stat, utimes } = await import("node:fs/promises");
+  const { cwd, env, library, save, configFile } = await rootConfigFixture(t);
+  const first = await library("first", ["shared", "sibling"]);
+  const second = await library("second", ["shared"]);
+  await save({ brandRoot: first, additionalBrandRoots: [second], brandRootsBySlug: { sibling: first } });
+  assert.equal(typeof rootConfig.bindBrandRootConfig, "function");
+  const bound = rootConfig.bindBrandRootConfig("shared", second, { env });
+  assert.equal(bound.ok, true);
+  assert.equal(bound.status, "ready");
+  assert.equal(bound.changed, true);
+  assert.deepEqual(bound.brandRoots, [first, second]);
+  assert.deepEqual(bound.brandRootsBySlug, { sibling: first, shared: second });
+  assert.equal(rootConfig.resolveBrandRoot({ cwd, env, brand: "shared" }).brandRoot, second);
+  const document = JSON.parse(await readFile(configFile, "utf8"));
+  assert.deepEqual(Object.keys(document).sort(), ["additionalBrandRoots", "brandRoot", "brandRootsBySlug", "schemaVersion", "updatedAt"]);
+  assert.equal(document.schemaVersion, "1.0.0");
+  assert.equal(document.brandRoot, first);
+  assert.deepEqual(document.additionalBrandRoots, [second]);
+  assert.deepEqual(document.brandRootsBySlug, { sibling: first, shared: second });
+
+  await utimes(configFile, new Date("2026-01-01T00:00:00.000Z"), new Date("2026-01-01T00:00:00.000Z"));
+  const before = await stat(configFile);
+  const original = await readFile(configFile, "utf8");
+  await library("second", ["dynamic-sibling"]);
+  for (const path of [second, `${second}/.`]) {
+    const repeated = rootConfig.bindBrandRootConfig("shared", path, { env });
+    assert.equal(repeated.changed, false);
+    assert.equal(repeated.updatedAt, document.updatedAt);
+    assert.deepEqual(repeated.brands, ["dynamic-sibling", "shared", "sibling"]);
+    assert.equal(await readFile(configFile, "utf8"), original);
+    const after = await stat(configFile);
+    assert.equal(after.mtimeMs, before.mtimeMs);
+    assert.equal(after.ino, before.ino);
+  }
+  const rebound = rootConfig.bindBrandRootConfig("shared", first, { env });
+  assert.equal(rebound.changed, true);
+  assert.deepEqual(rebound.brandRootsBySlug, { sibling: first, shared: first });
+  assert.equal(rootConfig.resolveBrandRoot({ cwd, env, brand: "shared" }).brandRoot, first);
+});
+
+test("root config bind validates the literal slug before coercion or writing", async (t) => {
+  const { env, library, save, configFile } = await rootConfigFixture(t);
+  const registered = await library("registered", ["shared", "42", "null", "undefined", "true"]);
+  await save({ brandRoot: registered });
+  const before = await readFile(configFile, "utf8");
+  for (const brand of [42, null, undefined, true, ["shared"], "SHARED", " shared ", "../shared", "shared/child", ""]) {
+    assert.throws(() => rootConfig.bindBrandRootConfig(brand, registered, { env }), /slug/);
+    assert.equal(await readFile(configFile, "utf8"), before);
+  }
+});
+
+test("root config add preserves bindings while set explicitly resets them", async (t) => {
+  const { cwd, env, library, save, configFile } = await rootConfigFixture(t);
+  const first = await library("first", ["shared", "sibling"]);
+  const second = await library("second", ["shared"]);
+  const third = await library("third", ["shared", "new-brand"]);
+  await save({ brandRoot: first, additionalBrandRoots: [second], brandRootsBySlug: { shared: second, sibling: first } });
+  const added = rootConfig.addBrandRootConfig(third, { env });
+  assert.equal(added.ok, true);
+  assert.equal(added.changed, true);
+  assert.deepEqual(added.brandRootsBySlug, { shared: second, sibling: first });
+  assert.deepEqual(added.brandRoots, [first, second, third]);
+  assert.deepEqual(added.duplicateBrands, [{ slug: "shared", brandRoots: [first, second, third] }]);
+  assert.deepEqual(JSON.parse(await readFile(configFile, "utf8")).brandRootsBySlug, { shared: second, sibling: first });
+  assert.equal(rootConfig.resolveBrandRoot({ cwd, env, brand: "shared" }).brandRoot, second);
+  assert.equal(rootConfig.resolveBrandRoot({ cwd, env, brand: "new-brand" }).brandRoot, third);
+  const original = await readFile(configFile, "utf8");
+  assert.equal(rootConfig.addBrandRootConfig(third, { env }).changed, false);
+  assert.equal(await readFile(configFile, "utf8"), original);
+
+  const replaced = rootConfig.writeBrandRootConfig(third, { env });
+  assert.deepEqual(replaced.brandRoots, [third]);
+  assert.deepEqual(replaced.brandRootsBySlug, {});
+  assert.equal(Object.hasOwn(JSON.parse(await readFile(configFile, "utf8")), "brandRootsBySlug"), false);
+  assert.equal(Object.hasOwn(JSON.parse(await readFile(configFile, "utf8")), "additionalBrandRoots"), false);
+  for (const path of [first, second, third]) await access(resolve(path, "shared/brand.source.json"));
+});
+
+test("CLI binds the official pack and validates consumed context without touching historical paths", async (t) => {
+  const historical = await createBrandFixture("sibling");
+  const official = await createBrandFixture("shared");
+  const { cwd, configFile, env } = await rootConfigFixture(t);
+  t.after(() => Promise.all([historical.projectRoot, official.projectRoot].map(path => rm(path, { recursive: true, force: true }))));
+  const first = resolve(historical.projectRoot, "brand");
+  const second = resolve(official.projectRoot, "brand");
+  const historyFile = resolve(first, "shared/history.md");
+  await mkdir(resolve(first, "shared"));
+  await writeFile(historyFile, "References must keep this historical path.\n");
+  const packFiles = ["brand.source.json", "tokens.json", "brand-guidelines.md", "build-manifest.json"];
+  const packBefore = await Promise.all(packFiles.map(file => readFile(resolve(official.brandRoot, file), "utf8")));
+  output(runFrom(cwd, "config", ["set", "--brand-root", first], env));
+  assert.equal(output(runFrom(cwd, "config", ["add", "--brand-root", second], env)).status, "ambiguous");
+  const args = ["bind", "--brand", "shared", "--brand-root", second];
+  const bound = output(runFrom(cwd, "config", args, env));
+  assert.equal(bound.status, "ready");
+  assert.equal(bound.changed, true);
+  assert.deepEqual(bound.brandRootsBySlug, { shared: second });
+  const shown = output(runFrom(cwd, "config", ["show"], env));
+  assert.equal(shown.ok, true);
+  assert.deepEqual(shown.duplicateBrands, [{ slug: "shared", brandRoots: [first, second] }]);
+  assert.deepEqual(shown.resolvedDuplicateBrands, [{ slug: "shared", brandRoots: [first, second], brandRoot: second }]);
+  const saved = await readFile(configFile, "utf8");
+  assert.equal(output(runFrom(cwd, "config", args, env)).changed, false);
+  assert.equal(await readFile(configFile, "utf8"), saved);
+  for (const [slug, expectedRoot] of [["shared", second], ["sibling", first]]) {
+    for (const selector of [["--brand", slug], [slug]]) {
+      const status = output(runFrom(cwd, "status", selector, env));
+      assert.equal(status.slug, slug);
+      assert.equal(status.brandRoot, expectedRoot);
+      assert.equal(status.brandRootSource, "user-config");
+      const validation = output(runFrom(cwd, "validate", selector, env));
+      assert.equal(validation.valid, true);
+      assert.equal(validation.root, resolve(expectedRoot, slug));
+      const context = output(runFrom(cwd, "context", [...selector, "--surface", "site", "--project-root", cwd], env));
+      assert.equal(context.valid, true);
+      assert.equal(context.slug, slug);
+      assert.deepEqual(context.identity, { name: slug });
+      assert.deepEqual(context.rules, ["Use the declared site system."]);
+      assert.equal(context.projectKnowledge.root, cwd);
+    }
+  }
+  assert.equal(output(runFrom(cwd, "status", ["sibling", "--brand", "shared"], env)).brandRoot, second);
+  assert.equal(await readFile(historyFile, "utf8"), "References must keep this historical path.\n");
+  await assert.rejects(access(resolve(first, "shared/brand.source.json")));
+  assert.deepEqual(await Promise.all(packFiles.map(file => readFile(resolve(official.brandRoot, file), "utf8"))), packBefore);
+});
+
+test("CLI resolves the effective single discovered slug through its global binding", async (t) => {
+  const first = await createBrandFixture("shared");
+  const second = await createBrandFixture("shared");
+  const { cwd, env, save } = await rootConfigFixture(t);
+  t.after(() => Promise.all([first.projectRoot, second.projectRoot].map(path => rm(path, { recursive: true, force: true }))));
+  const firstRoot = resolve(first.projectRoot, "brand");
+  const official = resolve(second.projectRoot, "brand");
+  await save({ brandRoot: firstRoot, additionalBrandRoots: [official], brandRootsBySlug: { shared: official } });
+  const status = output(runFrom(cwd, "status", [], env));
+  assert.equal(status.brandRoot, official);
+  assert.equal(status.slug, "shared");
+  const validated = output(runFrom(cwd, "validate", [], env));
+  assert.equal(validated.valid, true);
+  assert.equal(validated.root, second.brandRoot);
+});
+
+test("root config bind refuses unregistered roots, missing markers and broken saved configuration without writing", async (t) => {
+  const { env, library, save, configFile, cwd } = await rootConfigFixture(t);
+  const first = await library("first", ["shared"]);
+  const second = await library("second", ["sibling"]);
+  const other = await library("unregistered", ["shared"]);
+  await mkdir(resolve(second, "shared"));
+  assert.throws(() => rootConfig.bindBrandRootConfig("shared", first, { env }), /no saved/);
+  await assert.rejects(access(configFile));
+  await save({ brandRoot: first, additionalBrandRoots: [second] });
+  const original = await readFile(configFile, "utf8");
+  for (const root of [other, second, "brand", "", null, 42, {}, [], resolve(first, "shared"), resolve(cwd, "missing/brand")]) {
+    assert.throws(() => rootConfig.bindBrandRootConfig("shared", root, { env }), /brandRootsBySlug/);
+    assert.equal(await readFile(configFile, "utf8"), original);
+  }
+  // The source marker is a discovery signal, not full pack validation.
+  await writeFile(resolve(second, "shared/brand.source.json"), "{invalid-json");
+  const discovered = rootConfig.bindBrandRootConfig("shared", second, { env });
+  assert.equal(discovered.status, "ready");
+  const invalidPack = runFrom(cwd, "validate", ["--brand", "shared"], env);
+  assert.equal(invalidPack.status, 1);
+  assert.equal(JSON.parse(invalidPack.stdout).valid, false);
+  assert.equal(JSON.parse(invalidPack.stdout).root, resolve(second, "shared"));
+
+  for (const document of [
+    { brandRoot: first, schemaVersion: "unsupported" },
+    { brandRoot: first, additionalBrandRoots: null },
+    { brandRoot: first, brandRootsBySlug: null },
+    { brandRoot: first, brandRootsBySlug: { shared: other } },
+    { brandRoot: first, brandRootsBySlug: { missing: first } },
+    { brandRoot: first, additionalBrandRoots: [resolve(cwd, "gone/brand")] },
+  ]) {
+    await save(document);
+    const before = await readFile(configFile, "utf8");
+    assert.throws(() => rootConfig.bindBrandRootConfig("shared", first, { env }));
+    assert.equal(await readFile(configFile, "utf8"), before);
+  }
+  await writeFile(configFile, "{broken-json");
+  assert.throws(() => rootConfig.bindBrandRootConfig("shared", first, { env }), /not valid JSON/);
+  assert.equal(await readFile(configFile, "utf8"), "{broken-json");
+});
+
+test("bindings leave other duplicate slugs ambiguous instead of inferring an official copy", async (t) => {
+  const { cwd, env, library, save } = await rootConfigFixture(t);
+  const first = await library("first", ["bound", "unbound"]);
+  const second = await library("second", ["bound", "unbound"]);
+  await save({ brandRoot: first, additionalBrandRoots: [second] });
+  const bound = rootConfig.bindBrandRootConfig("bound", second, { env });
+  assert.equal(bound.changed, true);
+  assert.equal(bound.ok, false);
+  assert.equal(bound.status, "ambiguous");
+  assert.match(bound.reason, /unbound/);
+  assert.equal(bound.duplicateBrands.length, 2);
+  assert.deepEqual(bound.resolvedDuplicateBrands, [{ slug: "bound", brandRoots: [first, second], brandRoot: second }]);
+  assert.equal(rootConfig.resolveBrandRoot({ cwd, env, brand: "unbound" }).status, "ambiguous");
+  const selected = rootConfig.resolveBrandRoot({ cwd, env, brand: "bound" });
+  assert.equal(selected.ok, true);
+  assert.equal(selected.brandRoot, second);
+  assert.equal(rootConfig.readBrandRootConfig({ env }).status, "ambiguous");
+});
+
+test("bindings never override explicit, environment or present local entries, even with invalid global bindings", async (t) => {
+  const { cwd, env, library, save } = await rootConfigFixture(t);
+  const global = await library("global", ["shared"]);
+  const other = await library("other-global", ["shared"]);
+  const local = await library("", ["local-sibling"]);
+  const explicitProject = await library("target", ["target-sibling"]);
+  const explicit = await library("explicit", ["explicit-sibling"]);
+  await mkdir(resolve(local, "shared")); // Incomplete local entry must not be hidden.
+  for (const brandRootsBySlug of [{ shared: global }, { shared: resolve(cwd, "unregistered/brand") }, null]) {
+    await save({ brandRoot: global, additionalBrandRoots: [other], brandRootsBySlug });
+    for (const [options, root, source] of [
+      [{}, local, "project"],
+      [{ explicitBrandRoot: explicit, explicitProjectRoot: resolve(cwd, "target"), env: { ...env, BRAND_RUNTIME_BRAND_ROOT: other } }, explicit, "explicit"],
+      [{ explicitProjectRoot: resolve(cwd, "target"), env: { ...env, BRAND_RUNTIME_BRAND_ROOT: other } }, explicitProject, "project-root"],
+      [{ env: { ...env, BRAND_RUNTIME_BRAND_ROOT: explicit } }, explicit, "environment"],
+    ]) {
+      const result = rootConfig.resolveBrandRoot({ cwd, env, brand: "shared", ...options });
+      assert.equal(result.brandRoot, root);
+      assert.equal(result.source, source);
+      assert.equal(result.brands.includes("shared"), false);
+    }
+    const blocked = runFrom(cwd, "validate", ["--brand", "shared"], env);
+    assert.equal(blocked.status, 1);
+    assert.match(blocked.stderr, /not installed/);
+  }
+  await save({ brandRoot: global, additionalBrandRoots: [other], brandRootsBySlug: { shared: global } });
+  await rm(resolve(local, "shared"), { recursive: true });
+  assert.equal(rootConfig.resolveBrandRoot({ cwd, env, brand: "shared" }).brandRoot, global);
+  await symlink(resolve(cwd, "absent-pack"), resolve(local, "shared"));
+  assert.equal(rootConfig.resolveBrandRoot({ cwd, env, brand: "shared" }).brandRoot, local);
+});
+
+test("CLI bind requires explicit literal options and rejects invalid requests without writing", async (t) => {
+  const { cwd, env, library, save, configFile } = await rootConfigFixture(t);
+  const first = await library("first", ["shared"]);
+  const second = await library("second", ["sibling"]);
+  const other = await library("unregistered", ["shared"]);
+  await save({ brandRoot: first, additionalBrandRoots: [second] });
+  const original = await readFile(configFile, "utf8");
+  for (const args of [
+    ["bind", "shared", "--brand-root", first],
+    ["bind", "--brand-root", first],
+    ["bind", "--brand", "shared"],
+    ["bind", "--brand", " shared ", "--brand-root", first],
+    ["bind", "--brand", "SHARED", "--brand-root", first],
+    ["bind", "--brand", "../shared", "--brand-root", first],
+    ["bind", "--brand", "shared", "--brand-root", "brand"],
+    ["bind", "--brand", "shared", "--brand-root", ` ${first} `],
+    ["bind", "--brand", "shared", "--brand-root", other],
+    ["bind", "--brand", "shared", "--brand-root", second],
+  ]) {
+    const result = runFrom(cwd, "config", args, env);
+    assert.equal(result.status, 1, JSON.stringify(args));
+    assert.match(result.stderr, /brand|slug/);
+    assert.equal(await readFile(configFile, "utf8"), original);
+  }
+});
+
+test("CLI diagnoses a stale binding without suggesting additions or replacement of the library", async (t) => {
+  const { cwd, env, library, save } = await rootConfigFixture(t);
+  const first = await library("first", ["shared"]);
+  const second = await library("second", ["shared", "sibling"]);
+  await save({ brandRoot: first, additionalBrandRoots: [second], brandRootsBySlug: { shared: second } });
+  await rm(resolve(second, "shared/brand.source.json"));
+  for (const command of ["status", "validate", "context"]) {
+    const result = runFrom(cwd, command, ["--brand", "shared", "--surface", "site"], env);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /brandRootsBySlug/);
+    assert.doesNotMatch(result.stderr, /config add|config set/);
+    assert.match(result.stderr, /config show/);
+  }
+});
+
 test("CLI adds a global root and resolves explicit and positional brands without dropping siblings", async () => {
   const first = await createBrandFixture();
   const second = await createBrandFixture("second-brand");

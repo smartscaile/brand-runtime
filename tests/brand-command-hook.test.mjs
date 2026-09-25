@@ -247,6 +247,40 @@ test("hook reports a missing global slug without proposing replacement of the co
   assert.doesNotMatch(presentation, /config set --brand-root|validate --brand/);
 });
 
+test("hook reports invalid global bindings without suggesting library replacement", async (t) => {
+  const { cwd, roots: [first, second], env } = await multiRootFixture(t, ["shared", "shared"]);
+  await mkdir(resolve(second, "keeper"));
+  await writeFile(resolve(second, "keeper/brand.source.json"), "{}");
+  for (const binding of [null, { shared: resolve(cwd, "unregistered/brand") }, { shared: second }]) {
+    await writeFile(env.BRAND_RUNTIME_CONFIG, JSON.stringify({ schemaVersion: "1.0.0", brandRoot: first, additionalBrandRoots: [second], brandRootsBySlug: binding }));
+    if (binding?.shared === second) await rm(resolve(second, "shared/brand.source.json"));
+    const before = await readFile(env.BRAND_RUNTIME_CONFIG, "utf8");
+    for (const prompt of [">>brand shared", ">>brand start --brand shared", ">>presentation --brand shared"]) {
+      const text = context(run({ cwd, prompt }, env));
+      assert.match(text, /BRAND BINDING REQUIRES REVIEW/);
+      assert.match(text, /brandRootsBySlug/);
+      assert.doesNotMatch(text, /Use the Brand Pack at|validate --brand|config set --brand-root/);
+      assert.match(text, /Do not replace the saved library/);
+    }
+    assert.equal(await readFile(env.BRAND_RUNTIME_CONFIG, "utf8"), before);
+  }
+});
+
+test("hook requires a slug before using a bound global duplicate instead of pinning the primary copy", async (t) => {
+  const { cwd, roots: [first, second], env } = await multiRootFixture(t, ["shared", "shared"]);
+  await writeFile(env.BRAND_RUNTIME_CONFIG, JSON.stringify({ schemaVersion: "1.0.0", brandRoot: first, additionalBrandRoots: [second], brandRootsBySlug: { shared: second } }));
+  const unselected = context(run({ cwd, prompt: ">>brand" }, env));
+  assert.match(unselected, /BRAND PACK SLUG SELECTION REQUIRED/);
+  assert.doesNotMatch(unselected, /Use the Brand Pack at|validate --brand/);
+  assert.match(unselected, />>brand shared/);
+  for (const prompt of [">>brand shared", ">>brand --brand shared", ">>brand start --brand shared", ">>presentation --brand shared"]) {
+    const selected = context(run({ cwd, prompt }, env));
+    assert.ok(selected.includes(`${second}/shared`), selected);
+    assert.ok(selected.includes(`validate --brand shared --brand-root "${second}"`), selected);
+    assert.ok(!selected.includes(`--brand-root "${first}"`), selected);
+  }
+});
+
 test("asks for the brand folder when configuration is missing or stale", async () => {
   const consumerRoot = await mkdtemp(resolve(tmpdir(), "brand-runtime-onboarding-"));
   try {

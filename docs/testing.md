@@ -53,3 +53,9 @@ schema legado, união dinâmica, adição idempotente, substituição explícita
 raízes inválidas, colisões e precedência local. CLI e hook precisam selecionar
 o mesmo slug, incluindo a forma posicional do CLI. A instalação deve ser
 conferida por perfil contra o payload publicado e os packs canônicos.
+
+A patch de binding exercita colisão com pasta histórica sem marker, escolha
+explícita da raiz, idempotência, preservação das outras marcas e dos bindings
+durante `config add`, reset por `config set`, erros sem fallback e precedência
+dos caminhos explícitos, ambiente e projeto. Os perfis devem consumir a mesma
+pack pelo slug sem exigir um path repetido em cada chamada.

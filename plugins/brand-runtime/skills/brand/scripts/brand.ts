@@ -4,6 +4,7 @@ import { basename, dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   addBrandRootConfig,
+  bindBrandRootConfig,
   readBrandRootConfig,
   resolveBrandRoot,
   writeBrandRootConfig,
@@ -220,19 +221,21 @@ async function inspectProjectKnowledge(root: string) {
   };
 }
 
-function resolveBrandsRoot() {
+function resolveBrandsRoot(brand = option("brand") ?? positionalBrand()) {
   const resolution = resolveBrandRoot({
     cwd: process.cwd(),
-    brand: option("brand") ?? positionalBrand(),
+    brand,
     explicitBrandRoot: option("brand-root"),
     explicitProjectRoot: option("project-root"),
   });
   if (!resolution.ok) {
     const configuredPath = resolution.brandRoot || resolution.configuredBrandRoot;
     const pathDetail = configuredPath ? ` Path: ${configuredPath}.` : "";
-    const guidance = resolution.status === "ambiguous"
-      ? "Select --brand-root explicitly or resolve the duplicate Pack; do not replace the library."
-      : "Use config add --brand-root <absolute-path-to-brand-folder> to preserve the existing library.";
+    const guidance = resolution.reason?.startsWith("brandRootsBySlug:")
+      ? "Inspect config show and review the binding with the user; do not replace the library or fall back to another copy."
+      : resolution.status === "ambiguous"
+        ? "Select --brand-root explicitly or confirm the official folder before using config bind; do not replace the library."
+        : "Use config add --brand-root <absolute-path-to-brand-folder> to preserve the existing library.";
     throw new Error(`${resolution.reason}${pathDetail} ${guidance}`);
   }
   return resolution;
@@ -264,13 +267,14 @@ async function resolveBrand() {
   const onlyBrand = resolution.brands[0];
   if (!onlyBrand) throw new Error("Brand Pack resolution failed after directory discovery.");
   assertSlug(onlyBrand);
+  const selected = resolveBrandsRoot(onlyBrand);
   return {
     slug: onlyBrand,
-    root: resolve(brandsRoot, onlyBrand),
-    brandRoot: brandsRoot,
-    brandRootSource: resolution.source,
-    availableBrands: resolution.brands,
-    configFile: resolution.configFile,
+    root: resolve(selected.brandRoot, onlyBrand),
+    brandRoot: selected.brandRoot,
+    brandRootSource: selected.source,
+    availableBrands: selected.brands,
+    configFile: selected.configFile,
   };
 }
 
@@ -1017,7 +1021,17 @@ async function configure() {
       ...(action === "add" ? addBrandRootConfig(brandRoot) : writeBrandRootConfig(brandRoot)),
     };
   }
-  throw new Error("Unknown config action. Use config show, config add --brand-root <absolute-path-to-brand-folder>, or config set to replace the library.");
+  if (action === "bind") {
+    const brand = option("brand");
+    const brandRoot = option("brand-root");
+    if (!brand) throw new Error("Use --brand <slug> with config bind.");
+    if (!brandRoot) throw new Error("Use --brand-root <absolute-registered-brand-folder> with config bind.");
+    return {
+      runtimeVersion: await runtimeVersion(),
+      ...bindBrandRootConfig(brand, brandRoot),
+    };
+  }
+  throw new Error("Unknown config action. Use config show, config add --brand-root <absolute-path-to-brand-folder>, config bind --brand <slug> --brand-root <absolute-registered-brand-folder>, or config set to replace the library.");
 }
 
 async function main() {

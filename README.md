@@ -71,6 +71,8 @@ The plugin stores canonical folder paths in the user's standard configuration di
 
 Activation reports three independent compatibility signals: the installed Brand Runtime version, the immutable Brand Pack version, and the client-owned brand-rules revision.
 
+To retain historical directories without ambiguous identity, select the official root explicitly with `config bind --brand <slug> --brand-root <absolute-brand-folder>`. The root must already be registered. This records a global selection only; it neither moves files nor overrides explicit, environment or project-local roots. A stale selection blocks rather than falling back to another copy.
+
 Native fallbacks are `$brand` and `$presentation` in Codex, plus `/brand-runtime:brand` and `/brand-runtime:presentation` in Claude Code.
 
 ## Update in Codex
