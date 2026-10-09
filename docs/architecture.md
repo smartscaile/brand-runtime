@@ -26,7 +26,7 @@ flowchart LR
 O plugin distribuído permanece identidade-neutro. Brand Packs e conhecimento
 mutável pertencem respectivamente ao cliente e ao projeto consumidor.
 
-## Distribuição Hermes na v0.9.1
+## Distribuição Hermes na v0.10.0
 
 O Hermes instala o pacote portátil como diretório regular gerenciado em cada
 perfil. Instalação e atualização usam o instalador nativo contra a fonte
@@ -63,3 +63,20 @@ Brand exige o método antes da composição e na revisão. Presentation referenc
 a base e especializa slides, preservando lote progressivo, contratos e export.
 Entregar instruções é diferente de executá-las: `instructions-only` não é
 aprovação visual nem evidência de uma revisão renderizada.
+
+## Engenharia portátil de interface
+
+`designMethod.interfaceEngineering` entrega o guia integral e hash.
+`patternCatalog` entrega path, versão, hash e índice filtrado por superfície;
+`detailsRequireRead` exige consultar as receitas selecionadas antes de compor.
+`interfaceMechanics` entrega path, hash e API do módulo opcional. Todos os
+arquivos são resolvidos pelo módulo instalado, inclusive em bundle realocado;
+ausência de qualquer dependência declarada bloqueia o contexto. Não há fetch
+online, referência a checkout do doador ou dados de cliente nessa operação.
+
+O módulo original sem dependências possui cinco APIs: `compileSequence`,
+`sampleSequence`, `cubicBezier`, `createCommitGate` e `mountScene`. Ele não
+desenha componentes nem escolhe aparência. O consumidor mantém SSR/fallback,
+render/settle, bindings e coordenação dos seus canais externos. Pausa conserva
+elapsed por padrão; restart é explícito. Preferência reduzida e print resolvem
+static e reiniciam ao voltar. Os contratos de Presentation ficam intactos.

@@ -1,0 +1,1039 @@
+{
+  "version": "1.0.0",
+  "kind": "engineering-recipes-not-visual-templates",
+  "authority": "Identity from the selected Pack; composition and human approval from the consumer project. No visual approval is inherited.",
+  "patterns": [
+    {
+      "id": "navigation-shell",
+      "title": "Shell e orientação",
+      "relation": "hierarquia e destino",
+      "surfaces": [
+        "site",
+        "product",
+        "document"
+      ],
+      "useWhen": "Orientar tarefas, seções e rotas equivalentes.",
+      "avoidWhen": "Não transportar posição, formato flutuante ou geometria de outro projeto.",
+      "anatomy": [
+        "landmarks e skip link",
+        "identidade autorizada",
+        "navegação e ação principal",
+        "menu compacto",
+        "seletor de idioma se necessário"
+      ],
+      "states": [
+        "topo",
+        "rolado",
+        "menu aberto/fechado",
+        "rota interna",
+        "idioma alternativo",
+        "foco"
+      ],
+      "sizing": "Estável no fluxo; menu contido na largura útil e no dono do header.",
+      "motion": "Feedback de estado, sem segundo motor de scroll. Âncoras nativas conservam offset e destino.",
+      "bindings": [
+        "marca e variantes",
+        "superfície e tinta",
+        "ação e foco",
+        "breakpoints locais"
+      ],
+      "staticFallback": "Destinos essenciais continuam como links reais, inclusive fora da home.",
+      "checks": [
+        "âncora única e cross-route",
+        "menu fecha após seleção",
+        "Tab/Escape/retorno",
+        "largura útil e zoom",
+        "idioma manual sem redirect inesperado"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "editorial-disclosure",
+      "title": "Leitura e disclosure",
+      "relation": "hierarquia e aprofundamento",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation",
+        "document"
+      ],
+      "useWhen": "Separar argumento principal de inspeção opcional.",
+      "avoidWhen": "Não esconder conteúdo essencial nem impor cards a cada parágrafo.",
+      "anatomy": [
+        "heading semântico",
+        "texto principal",
+        "details/summary quando houver detalhe",
+        "índice e fontes pertinentes"
+      ],
+      "states": [
+        "fechado",
+        "aberto",
+        "destino de âncora",
+        "print"
+      ],
+      "sizing": "Altura natural; largura de leitura independente de mídia ampla.",
+      "motion": "Abertura nativa por padrão; não depender de reveal para mostrar texto.",
+      "bindings": [
+        "papéis tipográficos",
+        "tinta e links",
+        "margens e ritmo"
+      ],
+      "staticFallback": "Texto completo no HTML; impressão abre os detalhes necessários.",
+      "checks": [
+        "heading correto no embed",
+        "maior resposta sem clipping",
+        "teclado nativo",
+        "sumário não encobre título",
+        "continuidade de leitura"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "action-feedback",
+      "title": "Ação e feedback proporcional",
+      "relation": "ação e consequência",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation",
+        "document"
+      ],
+      "useWhen": "Navegar, confirmar ou submeter com affordance clara.",
+      "avoidWhen": "Não redistribuir efeito de terceiro sem licença nem fazer toda ação parecer o CTA principal.",
+      "anatomy": [
+        "link ou button correto",
+        "rótulo legível",
+        "ícone funcional opcional",
+        "feedback e foco"
+      ],
+      "states": [
+        "repouso",
+        "hover",
+        "focus-visible",
+        "disabled quando legítimo",
+        "loading/erro quando aplicável"
+      ],
+      "sizing": "Texto define largura com inset real; hit target não depende do tamanho do glifo.",
+      "motion": "Feedback curto subordinado à ação. Repouso e ativo preservam contraste; efeitos repetitivos são opt-in.",
+      "bindings": [
+        "ação primária/secundária",
+        "contraste de texto",
+        "foco",
+        "tamanho de alvo"
+      ],
+      "staticFallback": "Link e submit funcionam sem JS; efeito nunca carrega significado exclusivo.",
+      "checks": [
+        "maior label em hover e foco",
+        "medir tinta dentro do inset",
+        "pointer e keyboard",
+        "nome acessível",
+        "destino e aba corretos"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "attention-cue",
+      "title": "Ênfase que orienta a leitura",
+      "relation": "foco e continuidade",
+      "surfaces": [
+        "site",
+        "presentation"
+      ],
+      "useWhen": "Guiar atenção entre poucos fragmentos ou dados sem reescrever a mensagem.",
+      "avoidWhen": "Evitar instruções essenciais desfocadas; uma referência licenciada não é um port autorizado.",
+      "anatomy": [
+        "texto ou evidência permanente",
+        "alvo atual",
+        "indicador não interativo",
+        "alternativa estática"
+      ],
+      "states": [
+        "fontes carregando",
+        "primeira colocação",
+        "transferência",
+        "hold",
+        "retorno",
+        "static"
+      ],
+      "sizing": "Geometria medida após fontes; camada decorativa não desloca leitura.",
+      "motion": "Indicador só aparece na primeira posição válida. Transferência, leitura e volta definidas; preservar motor aprovado em paridade autorizada.",
+      "bindings": [
+        "ênfase e foco",
+        "tipo e peso",
+        "curva/duração locais"
+      ],
+      "staticFallback": "Texto completo e nítido, sem indicador dependente de medida nem anúncios por frame.",
+      "checks": [
+        "primeiro paint sem origem incorreta",
+        "callback obsoleto descartado",
+        "medida igual não reinicia",
+        "ciclo inteiro nos pixels",
+        "licença por consumidor"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "scroll-surface",
+      "title": "Superfície guiada por scroll",
+      "relation": "continuidade de capítulos",
+      "surfaces": [
+        "site"
+      ],
+      "useWhen": "Quando a mudança de ambiente reforça a narrativa em fluxo.",
+      "avoidWhen": "Não impor scroll hijacking, pin, inércia ou paleta do exemplo.",
+      "anatomy": [
+        "um dono do canvas",
+        "marcadores de cena",
+        "camadas semânticas",
+        "fallback local"
+      ],
+      "states": [
+        "entrada",
+        "hold",
+        "saída",
+        "rolagem inversa",
+        "resize",
+        "static"
+      ],
+      "sizing": "Pontos vêm das seções reais; final limitado ao máximo alcançável da página.",
+      "motion": "Scroll nativo é o relógio. Mistura e tinta têm contratos separados; só escrever valores alterados.",
+      "bindings": [
+        "canvas e tinta por cena",
+        "textura autorizada",
+        "limites de transição"
+      ],
+      "staticFallback": "Superfícies locais legíveis sem controlador ou movimento; nenhuma seção desaparece.",
+      "checks": [
+        "wheel e posição determinística separados",
+        "hold pintado constante",
+        "entrada/saída reversíveis",
+        "footer altera limite",
+        "contraste de trechos simultaneamente visíveis"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "scene-lifecycle",
+      "title": "Cena com lifecycle explícito",
+      "relation": "tempo e disponibilidade",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation",
+        "document"
+      ],
+      "useWhen": "Qualquer efeito recorrente ou cena sequencial.",
+      "avoidWhen": "Não trocar motor aprovado apenas para usar um helper nem supor que hidratação é visibilidade.",
+      "anatomy": [
+        "root observável",
+        "render do relógio",
+        "pose estática",
+        "gate por canal",
+        "cleanup"
+      ],
+      "states": [
+        "waiting-fonts",
+        "running",
+        "paused",
+        "static",
+        "disposed"
+      ],
+      "sizing": "O alvo observado corresponde à peça pintada, não a um wrapper alto.",
+      "motion": "Um dono por canal. Política reentry resume/restart explícita; aba, viewport, print e preferência ao vivo coordenam trabalho real.",
+      "bindings": [
+        "cadência local",
+        "política de reentrada",
+        "canais independentes"
+      ],
+      "staticFallback": "settle mostra leitura completa e APIs ausentes não instalam timers.",
+      "checks": [
+        "nenhum RAF oculto",
+        "retomada sem salto temporal",
+        "init repetido",
+        "AbortSignal e dispose",
+        "canais CSS/WAAPI realmente pausados"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "event-stream",
+      "title": "Fila demonstrativa finita",
+      "relation": "sequência e correlação",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation"
+      ],
+      "useWhen": "Explicar eventos ou passagem de informação com estados causais.",
+      "avoidWhen": "Não exibir contadores sintéticos como telemetria real.",
+      "anatomy": [
+        "origem",
+        "lista limitada de registros",
+        "chave de correspondência",
+        "status",
+        "transcrição estável"
+      ],
+      "states": [
+        "entrada",
+        "correlação",
+        "processamento",
+        "conclusão",
+        "retorno"
+      ],
+      "sizing": "Envelope reservado para registros e maior valor; narrativa fica fora de eventual escala.",
+      "motion": "Transições mudam dados somente quando a história pede. Timer e motor compartilham gate, com pausa e limite de fila.",
+      "bindings": [
+        "papéis de dados",
+        "status",
+        "densidade e espaços",
+        "timings locais"
+      ],
+      "staticFallback": "Pose demonstrativa completa ou lista textual com exemplo identificado.",
+      "checks": [
+        "limite da fila",
+        "ordem causal",
+        "chave consistente",
+        "sem anúncios a cada item decorativo",
+        "reduced/sem JS legíveis"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "ambient-rail",
+      "title": "Faixa auxiliar e repertório",
+      "relation": "continuidade e agrupamento",
+      "surfaces": [
+        "site",
+        "presentation"
+      ],
+      "useWhen": "Exibir repertório secundário sem exigir espera para leitura.",
+      "avoidWhen": "Não usar para informação essencial ou importar símbolos e marcas não autorizados.",
+      "anatomy": [
+        "lista canônica",
+        "cópias decorativas",
+        "máscara só nas cópias",
+        "cabeçalho separado"
+      ],
+      "states": [
+        "pausado inicial",
+        "running",
+        "foco",
+        "fora da tela",
+        "static"
+      ],
+      "sizing": "Repetições cobrem toda a largura útil, sem esticar cada item.",
+      "motion": "Duração cresce com percurso para conservar velocidade; pausa muda play-state, não reinicia keyframes.",
+      "bindings": [
+        "assets autorizados",
+        "tinta",
+        "velocidade local",
+        "largura dos itens"
+      ],
+      "staticFallback": "Lista inteira sem duplicatas acessíveis; static e print sem máscara que oculte conteúdo.",
+      "checks": [
+        "ausência de vazio nas extremidades",
+        "clones aria-hidden/inert",
+        "pausa acessível",
+        "limpeza ao resize",
+        "lista completa em print"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "stable-alternatives",
+      "title": "Alternativas com geometria estável",
+      "relation": "seleção e estado",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation"
+      ],
+      "useWhen": "Alternar pequeno conjunto de textos ou diagramas relacionados.",
+      "avoidWhen": "Não montar alternativas pesadas só para medir nem reservar maior altura quando o contrato é altura ativa.",
+      "anatomy": [
+        "seletor real",
+        "painéis correspondentes",
+        "slots semânticos",
+        "estado ativo único"
+      ],
+      "states": [
+        "ativo",
+        "inativo inert",
+        "foco",
+        "erro quando aplicável",
+        "fallback"
+      ],
+      "sizing": "Escolher altura ativa, máximo intrínseco ou frame de referência. Máximo pode compartilhar célula de grid por slot.",
+      "motion": "Inativos não animam. Troca conserva âncora de leitura e não anuncia detalhes decorativos.",
+      "bindings": [
+        "seleção e foco",
+        "spacing entre controle e conteúdo",
+        "papéis de texto"
+      ],
+      "staticFallback": "Conteúdo necessário disponível em fluxo ou disclosure, sem esconder alternativas por JS ausente.",
+      "checks": [
+        "um ativo por vez",
+        "IDs/ARIA únicos",
+        "altura e próxima seção estáveis quando exigido",
+        "foco não fica inert",
+        "complemento oculto não deixa buraco"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "connected-diagram",
+      "title": "Diagrama com portas e sinais",
+      "relation": "causa e direção",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation",
+        "document"
+      ],
+      "useWhen": "Mostrar relação que texto isolado não revela.",
+      "avoidWhen": "Não confundir diagrama conceitual com tela real nem conectar elementos sem vínculo.",
+      "anatomy": [
+        "nós legíveis",
+        "portas reais",
+        "trilha permanente",
+        "sinal transitório",
+        "seta fixa",
+        "legenda"
+      ],
+      "states": [
+        "neutro",
+        "percurso",
+        "chegada",
+        "reação",
+        "hold",
+        "static"
+      ],
+      "sizing": "Medir nos mesmos eixos lógicos; base e pulso usam o mesmo path.",
+      "motion": "Reação deriva da chegada e comprimento real. Tronco comum executa uma vez antes dos ramos.",
+      "bindings": [
+        "linhas e status",
+        "tipografia dos nós",
+        "velocidade e tamanho do sinal"
+      ],
+      "staticFallback": "Diagrama completo com direção e dados, sem depender de pulso; lista equivalente quando necessário.",
+      "checks": [
+        "ponta e último ponto pintados",
+        "seta não encosta em texto",
+        "IDs SVG únicos",
+        "escala não altera duração",
+        "path oculto não bloqueia sequência"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "simulator",
+      "title": "Simulação com premissas",
+      "relation": "entrada e comparação",
+      "surfaces": [
+        "site",
+        "product"
+      ],
+      "useWhen": "Explorar hipóteses com fórmula e qualificadores claros.",
+      "avoidWhen": "Não importar presets, resultados de clientes ou converter seletor de moeda em câmbio implícito.",
+      "anatomy": [
+        "campos compactos",
+        "controle de cenário",
+        "resultado próximo",
+        "comparação",
+        "premissas"
+      ],
+      "states": [
+        "válido",
+        "inválido",
+        "editado",
+        "moeda alterada",
+        "cenário alternativo"
+      ],
+      "sizing": "Altura por conteúdo; erro e maior valor preservam rótulos e insets.",
+      "motion": "Feedback representa recálculo, não sucesso de negócio. Formatação e cálculo separados, sem timer decorativo.",
+      "bindings": [
+        "campos e foco",
+        "papéis numéricos",
+        "unidade e localidade",
+        "limites de input"
+      ],
+      "staticFallback": "Exemplo estático identificado e premissas no HTML.",
+      "checks": [
+        "parser estrito",
+        "SSR/interativo mesmo cálculo",
+        "round-trip sem drift",
+        "valores longos cabem",
+        "dimensões e moedas coerentes"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "external-handoff",
+      "title": "Formulário e passagem entre aplicações",
+      "relation": "ação e continuidade",
+      "surfaces": [
+        "site",
+        "product"
+      ],
+      "useWhen": "Submeter entrada autorizada a serviço existente.",
+      "avoidWhen": "Não iniciar scans ou outros efeitos reais apenas para QA visual.",
+      "anatomy": [
+        "form action/method",
+        "input com label",
+        "validação",
+        "estado por instância",
+        "destino explícito"
+      ],
+      "states": [
+        "inicial",
+        "inválido",
+        "válido",
+        "enviando",
+        "falha local",
+        "sem JS"
+      ],
+      "sizing": "Erro próximo ao campo e resultado relacionado; múltiplas instâncias sem colisão.",
+      "motion": "Sem espera artificial para esconder outra tela. Separar submissão, redirect, preparação e operação remota.",
+      "bindings": [
+        "controle e foco",
+        "erro",
+        "microcopy",
+        "destinos do projeto"
+      ],
+      "staticFallback": "Formulário nativo preserva action/method; estado opcional bloqueado não impede uso seguro.",
+      "checks": [
+        "IDs próprios",
+        "duas instâncias",
+        "reinit sem listener duplo",
+        "parâmetros permitidos",
+        "interceptar efeitos na QA sem fabricar sucesso"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "quantitative-indicator",
+      "title": "Número, arco e barras sincronizados",
+      "relation": "quantidade e estado",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation"
+      ],
+      "useWhen": "Quando a representação gráfica ajuda a entender um valor definido.",
+      "avoidWhen": "Não inventar score, fórmula ou limiar sem fonte.",
+      "anatomy": [
+        "valor canônico",
+        "arco/barra",
+        "unidade",
+        "rótulo e qualificador",
+        "descrição acessível"
+      ],
+      "states": [
+        "SSR final",
+        "entrada",
+        "intermediário",
+        "hold",
+        "retorno opcional",
+        "static"
+      ],
+      "sizing": "Rótulos cabem no interior real da forma; unidade não desloca baseline dos números.",
+      "motion": "Número e arco consomem o mesmo progresso ou a propriedade interpolada do dono existente. Foco pode ser outro canal.",
+      "bindings": [
+        "papel numérico",
+        "status semântico",
+        "peso e escala",
+        "easing local"
+      ],
+      "staticFallback": "Valor final e nome acessível estáveis, sem anúncios por frame.",
+      "checks": [
+        "zero/intermediários/final",
+        "retorno e seam",
+        "labels dentro da forma",
+        "número/offset no mesmo instante",
+        "prefers-reduced-motion"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "diagnostic-scaffold",
+      "title": "Diagnóstico com evidência permanente",
+      "relation": "inspeção de estados independentes",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation"
+      ],
+      "useWhen": "Explicar achados sem apagar a estrutura de leitura.",
+      "avoidWhen": "Não animar ausência como correção realizada nem insinuar causalidade entre achados independentes.",
+      "anatomy": [
+        "objeto principal",
+        "achados agrupados",
+        "status explícitos",
+        "conexões pertinentes",
+        "transcrição"
+      ],
+      "states": [
+        "neutro",
+        "realce de achado",
+        "leitura",
+        "próximo achado",
+        "static"
+      ],
+      "sizing": "Hierarquia separa resumo e detalhe; texto permanente não gira para caber.",
+      "motion": "Mover acentos, não a verdade dos dados. Cada achado preserva seu estado durante todo o ciclo.",
+      "bindings": [
+        "superfície",
+        "alerta e tinta",
+        "níveis de informação",
+        "hold local"
+      ],
+      "staticFallback": "Todos os achados e qualificadores legíveis; nenhuma sequência necessária para descobrir a falha.",
+      "checks": [
+        "status nunca vira sucesso sem causa",
+        "labels com opacidade constante",
+        "nenhuma falsa correlação",
+        "comparar massa com narrativa",
+        "conteúdo extremo"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "dependent-sequence",
+      "title": "Sequência dependente com retorno",
+      "relation": "transformação e persistência",
+      "surfaces": [
+        "site",
+        "presentation"
+      ],
+      "useWhen": "Explicar mudanças em que uma etapa depende da anterior.",
+      "avoidWhen": "Não portar efeitos restritos nem representar animação como criptografia ou execução real.",
+      "anatomy": [
+        "origem",
+        "etapas relacionadas",
+        "foco exclusivo",
+        "resultado persistente",
+        "retorno"
+      ],
+      "states": [
+        "ativação",
+        "chegada",
+        "processamento",
+        "resolução",
+        "hold conjunto",
+        "volta inversa",
+        "emenda"
+      ],
+      "sizing": "Envelope inclui maior detalhe aberto, mantendo objeto principal reconhecível.",
+      "motion": "Derivar início por dependência; foco libera antes do próximo. Resultado permanece até a própria volta; hold começa após último feedback.",
+      "bindings": [
+        "status",
+        "duração por gesto",
+        "curva",
+        "distância de leitura"
+      ],
+      "staticFallback": "Pose final completa identificada como ilustração, com explicação textual do mecanismo.",
+      "checks": [
+        "sem intervalo vazio",
+        "sem verde antecipado",
+        "retorno reconstrói a origem",
+        "último gesto conclui antes do loop",
+        "canais protegidos no mesmo tempo físico"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "logical-fit",
+      "title": "Encaixe lógico proporcional",
+      "relation": "preservação de composição",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation"
+      ],
+      "useWhen": "Ilustração cuja composição integral deve ser preservada por decisão explícita.",
+      "avoidWhen": "Não usar automaticamente para encolher controles e textos operacionais.",
+      "anatomy": [
+        "canvas lógico",
+        "wrapper de escala",
+        "envelope máximo",
+        "reserva proporcional",
+        "narrativa externa"
+      ],
+      "states": [
+        "desktop",
+        "escala estreita",
+        "resize",
+        "sem controlador",
+        "print"
+      ],
+      "sizing": "Uma escala para todo o conjunto e reserva no fluxo. Normalizar medidas para o espaço lógico.",
+      "motion": "O fit só mede layout, não reinicia relógio, altera fase ou acelera percursos.",
+      "bindings": [
+        "largura lógica e mínimo legível",
+        "breakpoint",
+        "limite de escala",
+        "fallback local"
+      ],
+      "staticFallback": "Fluxo natural ou overflow autorizado acessível; nada é cortado para simular encaixe.",
+      "checks": [
+        "um fator em textos/ícones/paths",
+        "largura útil vs innerWidth",
+        "RO sem realimentação",
+        "detalhe máximo",
+        "toque e legibilidade separados da geometria"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "product-inspection",
+      "title": "Inspeção de produto com narrativa externa",
+      "relation": "contexto e aprofundamento",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation"
+      ],
+      "useWhen": "Quando a anatomia real da aplicação é parte da evidência.",
+      "avoidWhen": "Não redesenhar sidebar, campos ou palette nativa só para combinar com a marca anfitriã.",
+      "anatomy": [
+        "shell real autorizado",
+        "view ativa",
+        "contexto editorial externo",
+        "controle de inspeção",
+        "nota de simulação"
+      ],
+      "states": [
+        "recurso selecionado",
+        "painel inicial aberto",
+        "abertura por clique",
+        "fechamento",
+        "troca de app"
+      ],
+      "sizing": "Escolher altura ativa ou frame comum medido com pane de scroll; não misturar as duas expectativas.",
+      "motion": "Trocar superfícies completas, opacas; não expor backing table nem repetir abertura indevida ao retornar.",
+      "bindings": [
+        "identidade do host separada da UI do fornecedor",
+        "altura de frame",
+        "densidade de inspeção"
+      ],
+      "staticFallback": "Configuração completa em disclosures/texto; não fingir aplicação funcional.",
+      "checks": [
+        "últimos campos alcançáveis",
+        "foco inicial e click-open",
+        "produto não deformado",
+        "níveis H1/H2 no embed",
+        "todos os recursos reais"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "compact-record",
+      "title": "Registro compacto com contexto",
+      "relation": "resumo e detalhe",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation",
+        "document"
+      ],
+      "useWhen": "Explicar o que um registro preserva sem virar um ledger denso.",
+      "avoidWhen": "Não substituir o resumo aprovado por todos os campos nem inferir que armazenar equivale a enviar.",
+      "anatomy": [
+        "chave de correspondência",
+        "resumo de categorias",
+        "resultado",
+        "detalhe complementar",
+        "qualificador"
+      ],
+      "states": [
+        "resumo",
+        "detalhe visível",
+        "grupo alternativo",
+        "confirmação",
+        "static"
+      ],
+      "sizing": "Resumo conserva sua hierarquia; largura de detalhe estável pode coexistir com altura ativa.",
+      "motion": "Preenchimento antecede confirmação. Estrutura permanece visível; avanço de grupos não apaga leitura essencial.",
+      "bindings": [
+        "dados e labels",
+        "hierarquia de texto",
+        "superfície",
+        "ordem dos grupos"
+      ],
+      "staticFallback": "Registro e campos necessários completos, com valores sintéticos identificados.",
+      "checks": [
+        "chave literal coerente",
+        "abreviação com original acessível",
+        "detalhe não cobre objeto",
+        "textos longos",
+        "não transferir claim de entrega"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "detail-distribution",
+      "title": "Detalhe e distribuição causal",
+      "relation": "entidade e fan-out",
+      "surfaces": [
+        "site",
+        "presentation"
+      ],
+      "useWhen": "Explicar uma entidade antes de mostrar seus destinos.",
+      "avoidWhen": "Não mostrar todo payload simultaneamente ou apresentar destinos como confirmação real.",
+      "anatomy": [
+        "entidade principal",
+        "detalhe progressivo",
+        "origem comum",
+        "bifurcação",
+        "destinos",
+        "recibo distinto"
+      ],
+      "states": [
+        "abertura",
+        "leitura",
+        "recolhimento",
+        "tronco",
+        "ramos",
+        "feedback",
+        "hold"
+      ],
+      "sizing": "Reservar envelope aberto sem duplicar padding. Conjunto de destinos é recomposto como um todo.",
+      "motion": "Percurso medido determina viagem. Origem/recibo local independem de respostas não observadas. Última chegada governa fim.",
+      "bindings": [
+        "superfície e portas",
+        "assets autorizados",
+        "velocidade e hold",
+        "envelope"
+      ],
+      "staticFallback": "Resumo, detalhe e destinos completos em ordem de leitura.",
+      "checks": [
+        "equilíbrio do conjunto",
+        "tronco não sobreposto por ramo",
+        "retorno sem salto",
+        "viewport estreito sem animationend perdido",
+        "recibo não alega resposta externa"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "async-join",
+      "title": "Espera, consulta e junção",
+      "relation": "dependência assíncrona",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation"
+      ],
+      "useWhen": "Quando o mecanismo inclui esperas, correspondência e múltiplas respostas.",
+      "avoidWhen": "Não converter recuperação de contexto em recuperação garantida de resultado.",
+      "anatomy": [
+        "gatilho",
+        "chave compartilhada",
+        "consulta",
+        "resposta ou ausência",
+        "join",
+        "distribuição"
+      ],
+      "states": [
+        "espera",
+        "busca",
+        "encontrado/não encontrado",
+        "junção",
+        "chegada final",
+        "retorno"
+      ],
+      "sizing": "Relacionar visualmente chaves correspondentes, sem empilhar outra dashboard.",
+      "motion": "DAG explícito. Join aguarda pais necessários; tempo morto não substitui pausa legível; retorno conserva ordem semântica.",
+      "bindings": [
+        "estados e alertas",
+        "portas e paths",
+        "tempos de consulta ilustrativos",
+        "densidade"
+      ],
+      "staticFallback": "Diagrama e alternativa textual mostram condições e limites, inclusive ausência.",
+      "checks": [
+        "dependências sem ciclos",
+        "chaves iguais nas duas pontas",
+        "ramo negativo legível",
+        "última reação termina antes do loop",
+        "sem sucesso fictício"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "numeric-comparison",
+      "title": "Comparação de grandezas",
+      "relation": "diferença quantitativa",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation",
+        "document"
+      ],
+      "useWhen": "Quando unidade, base e direção permitem comparar.",
+      "avoidWhen": "Não misturar períodos, moedas ou intervenções nem representar diferença como causalidade comprovada.",
+      "anatomy": [
+        "valores",
+        "unidades",
+        "base comum",
+        "diferença derivada",
+        "fonte e qualificador"
+      ],
+      "states": [
+        "estático",
+        "entrada opcional",
+        "ênfase alternada",
+        "print"
+      ],
+      "sizing": "Plots compartilham altura e zero; texto de apoio pode crescer sem deslocar baseline do gráfico.",
+      "motion": "Destaque pode repetir; dados permanecem constantes. Números/escala usam mesmo clock quando animados.",
+      "bindings": [
+        "tipografia numérica",
+        "ênfase",
+        "escala local",
+        "unidade e locale"
+      ],
+      "staticFallback": "Tabela/valores completos e fonte visível, sem depender de count-up.",
+      "checks": [
+        "cálculo rastreável",
+        "gap label-top constante",
+        "maior valor com headroom",
+        "datas e unidades coerentes",
+        "barras não mudam por wrapping"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "capability-plan",
+      "title": "Capacidades e plano",
+      "relation": "agrupamento e sequência",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation",
+        "document"
+      ],
+      "useWhen": "Organizar escopo, recursos e entregas com qualificadores.",
+      "avoidWhen": "Não importar credenciais, SLAs, número de fases ou marcas como conteúdo universal.",
+      "anatomy": [
+        "agrupamentos semânticos",
+        "fases",
+        "subetapas",
+        "entregáveis",
+        "qualificadores"
+      ],
+      "states": [
+        "inicial",
+        "fase em destaque opcional",
+        "detalhe",
+        "static"
+      ],
+      "sizing": "Conteúdo governa altura, prazo fica na fase correspondente.",
+      "motion": "Acento opcional não altera ordem ou prazo. Progressão não simula trabalho realmente concluído.",
+      "bindings": [
+        "papéis de heading/label",
+        "ícones autorizados",
+        "gaps de agrupamento"
+      ],
+      "staticFallback": "Plano completo no HTML ou impressão, sem precisar percorrer animação.",
+      "checks": [
+        "pertencimento da entrega à fase",
+        "prazo coerente em todos consumidores",
+        "qualificador visível",
+        "ícones com função",
+        "nenhum selo inventado"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "evidence-viewer",
+      "title": "Gráfico com fonte e ampliação",
+      "relation": "interpretação e comprovação",
+      "surfaces": [
+        "site",
+        "product",
+        "presentation",
+        "document"
+      ],
+      "useWhen": "Explicar números mantendo acesso ao registro original autorizado.",
+      "avoidWhen": "Não substituir imagem por gráfico ou publicar arquivo privado por fallback.",
+      "anatomy": [
+        "gráfico legível",
+        "imagem-fonte",
+        "unidade/período",
+        "qualificador",
+        "seletor manual",
+        "viewer"
+      ],
+      "states": [
+        "registro ativo",
+        "anterior/próximo",
+        "viewer aberto",
+        "retorno",
+        "sem JS"
+      ],
+      "sizing": "Crop inline só quando autorizado; viewer usa dimensão intrínseca; envelope não pode mascarar linhas.",
+      "motion": "Dados estáveis. Realce opcional pausa no viewer; navegação manual não vira autoplay por conveniência.",
+      "bindings": [
+        "tipografia de dados",
+        "escala e baseline",
+        "superfície",
+        "ações secundárias"
+      ],
+      "staticFallback": "Todos os registros necessários em lista; original íntegro acessível; print sem sobreposição.",
+      "checks": [
+        "moedas e datas por registro",
+        "múltiplos registros não equivalem a clientes distintos",
+        "foco de retorno",
+        "crop vs original",
+        "dimensão natural do viewer",
+        "proveniência e autorização"
+      ],
+      "approval": "consumer-review-required"
+    },
+    {
+      "id": "accessible-marquee",
+      "title": "Lista móvel e slider manual",
+      "relation": "repertório e exploração",
+      "surfaces": [
+        "site",
+        "presentation"
+      ],
+      "useWhen": "Exibir prova ou repertório autorizado sem perder leitura integral.",
+      "avoidWhen": "Não duplicar conteúdo acessível nem transformar múltiplos recortes de uma prova em várias provas.",
+      "anatomy": [
+        "lista canônica",
+        "cópias decorativas opcionais",
+        "slider nativo",
+        "controles e contador",
+        "fontes"
+      ],
+      "states": [
+        "running",
+        "pausa por foco",
+        "fora da tela",
+        "navegação manual",
+        "limites",
+        "static"
+      ],
+      "sizing": "Paradas derivadas dos offsets e limite de scroll; itens externos não deixam tinta inclinada no gutter.",
+      "motion": "Loop conserva velocidade ao repetir grupos; interação manual governa índice, não outro relógio.",
+      "bindings": [
+        "largura dos itens",
+        "ritmo",
+        "ações e foco",
+        "texto de fonte"
+      ],
+      "staticFallback": "Lista completa sem duplicatas, máscaras ou altura artificial no print e sem motion.",
+      "checks": [
+        "extremidades após scroll assentar",
+        "swipe/teclado",
+        "foco acessível",
+        "uma fonte por evidência",
+        "reduced/noJS completos",
+        "cleanup restaura lista"
+      ],
+      "approval": "consumer-review-required"
+    }
+  ]
+}

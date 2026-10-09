@@ -104,6 +104,8 @@ Read `references/design-foundation.md`, then run the matching context command:
 
 A base de composição é obrigatória para todas as superfícies, não exclusiva de Presentation. A saída `designMethod` de `context` entrega o conteúdo dessa base e das orientações por superfície com hashes. Leia e aplique esse conteúdo antes de implementar, mesmo quando o pedido não invocar uma skill especializada. O estado `instructions-only` não comprova execução nem aprovação visual.
 
+Para HTML, componentes, UI/UX e motion, aplique também `references/interface-engineering.md`, entregue em `designMethod.interfaceEngineering`. Selecione pelo índice `patternCatalog` e leia as receitas pertinentes em `references/interface-patterns.json` antes de criar. Declare anatomia, estados, modalidade de interação, eixos protegidos, sizing, ciclo e fallbacks. Essa base funciona em sessão nova sem o site de origem. `interfaceMechanics` oferece primitivas originais opcionais, não ports de componentes nem outro framework. Identidade continua no Pack; seleção de um Pack não instala sua biblioteca. Preserve licença, aprovação por escopo e gates da superfície.
+
 ```bash
 node --experimental-strip-types <skill-dir>/scripts/brand.ts context --mode brand-pack --brand <slug> --surface <site|product|presentation|document> --project-root <project>
 node --experimental-strip-types <skill-dir>/scripts/brand.ts context --mode brand-pending --surface <site|product|presentation|document> --project-root <project>
@@ -250,6 +252,8 @@ node --experimental-strip-types <skill-dir>/scripts/brand.ts learn --scope brand
 - Read `references/brand-root-config.json` for configuration, discovery, or onboarding problems.
 - Read `references/client-rules-contract.json` before promoting, updating, deprecating, or reviewing lasting brand rules.
 - Read `references/design-foundation.md` for every branded creation or visual review.
+- Leia `references/interface-engineering.md` e as receitas pertinentes de `references/interface-patterns.json` para criar ou refinar UI, componentes HTML, UX ou motion. `assets/interface/scene-runtime.mjs` é implementação opcional de relógio, lifecycle, sequência causal e commit obsoleto.
+- Consulte `references/interface-provenance.md` para auditar a extração, suas exclusões e os limites dos aceites de origem.
 - Consulte `references/design-method-provenance.md` ao auditar ou alterar a adaptação metodológica compartilhada.
 - Read `references/design-direction-template.md` when creating or updating a project design direction.
 - Read `references/project-learning.md` before recording or reusing project rules, learnings, patterns, or cross-project references.

@@ -9,7 +9,7 @@
   "phase": "validation",
   "version": {
     "local_source": "package.json",
-    "current": "0.9.1"
+    "current": "0.10.0"
   },
   "source_of_truth": {
     "skill": "plugins/brand-runtime/skills/brand/SKILL.md",
@@ -18,7 +18,10 @@
     "codex_manifest": "plugins/brand-runtime/.codex-plugin/plugin.json",
     "claude_manifest": "plugins/brand-runtime/.claude-plugin/plugin.json",
     "hermes_manifest": "plugins/brand-runtime/plugin.json",
-    "repository_validation": "scripts/validate-repository.mjs"
+    "repository_validation": "scripts/validate-repository.mjs",
+    "interface_engineering": "plugins/brand-runtime/skills/brand/references/interface-engineering.md",
+    "interface_patterns": "plugins/brand-runtime/skills/brand/references/interface-patterns.json",
+    "interface_mechanics": "plugins/brand-runtime/skills/brand/assets/interface/scene-runtime.mjs"
   },
   "constraints": [
     "O plugin não pode conter identidade, regras ou assets específicos de clientes.",
@@ -29,9 +32,11 @@
   "validation": {
     "command": "npm run check",
     "status": "passed",
-    "tests": "164 passed",
+    "tests": "189 passed, 0 failed, 0 skipped",
     "skill_validation": "passed",
     "plugin_validation": "passed",
-    "codex_plugin_version": "0.9.1"
+    "codex_plugin_version": "0.10.0",
+    "interface_probe": "Four isolated surface cases preserve identity, recipe scope, lifecycle and approval gates. No tools or artifacts created; verbosity target not met, semantic contract verified.",
+    "interface_browser": "Two synthetic identities, desktop and narrow viewports, cycle/hold/reset, pause/resume, reduced motion, print media and actual no-JavaScript fallback. Pixels inspected separately; no physical-device, FPS or human aesthetic approval claim."
   }
 }

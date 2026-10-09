@@ -80,7 +80,7 @@ expect(claudePlugin.author?.name === "smartscaile.", "Claude author must be smar
 expect(baseVersion(codexPlugin.version) === packageManifest.version, "Codex plugin base version must match package.json.");
 expect(baseVersion(claudePlugin.version) === packageManifest.version, "Claude plugin base version must match package.json.");
 expect(baseVersion(portablePlugin.version) === packageManifest.version, "Portable plugin version must match package.json.");
-expect(packageManifest.version === "0.9.1", "Hermes managed release must use Brand Runtime v0.9.1.");
+expect(packageManifest.version === "0.10.0", "Hermes managed release must use Brand Runtime v0.10.0.");
 
 expect(skill.split("\n").length < 500, "Brand SKILL.md must stay below 500 lines.");
 expect(skill.startsWith("---\nname: brand\ndescription:"), "Brand SKILL.md must declare canonical frontmatter.");
@@ -220,6 +220,10 @@ for (const path of [
   "plugins/brand-runtime/skills/brand/references/client-rules-contract.json",
   "plugins/brand-runtime/skills/brand/references/design-foundation.md",
   "plugins/brand-runtime/skills/brand/references/design-method-provenance.md",
+  "plugins/brand-runtime/skills/brand/references/interface-engineering.md",
+  "plugins/brand-runtime/skills/brand/references/interface-patterns.json",
+  "plugins/brand-runtime/skills/brand/references/interface-provenance.md",
+  "plugins/brand-runtime/skills/brand/assets/interface/scene-runtime.mjs",
   "plugins/brand-runtime/skills/brand/references/design-direction-template.md",
   "plugins/brand-runtime/skills/brand/references/document-export.md",
   "plugins/brand-runtime/skills/brand/references/project-learning.md",

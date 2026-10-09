@@ -50,7 +50,7 @@ ficam em `docs/architecture.md`, `docs/database.md`, `INTERFACE.md` e
 
 ## Estado atual e oportunidade
 
-A fonte está preparada para `0.9.1`, a partir da release publicada `0.9.0`.
+A fonte está preparada para `0.10.0`, a partir da release publicada `0.9.1`.
 O contrato `designAuthority` distingue identidade obrigatória, defaults
 fundacionais e UI do projeto. O contexto descobre entradas locais existentes
 sem inferir aprovação, e a direção compatível do projeto precede heurísticas
@@ -66,6 +66,12 @@ permanecem intactos. `instructions-only` não equivale à execução do método 
 A patch permite selecionar explicitamente a raiz oficial de um slug por
 `config bind`, sem mover pastas históricas, ignorar duplicatas ou alterar os
 defaults de identidade/UI da release anterior.
+
+A evolução acrescenta engenharia portátil de UI/UX: 24 receitas por função,
+contratos de estado, sizing, coreografia e lifecycle, e primitivas originais
+ESM opcionais. Brand e Presentation recebem a base em sessão nova, independente
+do Pack. Licenças restritas, identidade, conteúdo e aprovações do doador não são
+redistribuídos. Não se trata de catálogo visual obrigatório ou score de beleza.
 
 Esta preparação local não publica, instala nem ativa a versão. A distribuição
 gerenciada e sua verificação permanecem etapas separadas; no Hermes, seguem por

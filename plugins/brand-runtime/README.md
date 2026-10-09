@@ -4,6 +4,10 @@ Universal Brand Runtime for Codex, Claude Code, and Hermes. Use validated Brand 
 
 Published by **smartscaile.**
 
+## Engenharia portátil de UI/UX
+
+`skills/brand/references/interface-engineering.md` é a base compartilhada de componentes, interação, geometria, coreografia e lifecycle. O contexto entrega o guia, índice por superfície de 24 receitas e hashes. Leia os detalhes selecionados em `interface-patterns.json`; `assets/interface/scene-runtime.mjs`, na skill Brand, oferece mecanismos originais opcionais sem dependências ou identidade. Não é catálogo de componentes prontos, port licenciado de terceiros ou aprovação automática. Brand e Presentation aplicam a mesma base sem depender de histórico de conversa, preservando identidade externa e gates próprios.
+
 ## Hermes managed installation
 
 ```bash

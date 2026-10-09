@@ -4,6 +4,12 @@ A universal brand and interface director for validated private Brand Packs and e
 
 Published by **smartscaile.**
 
+## Portable interface engineering
+
+Brand and Presentation share an identity-neutral UI/UX engineering base: 24 optional recipes for components and relationships, explicit motion/lifecycle contracts, and original dependency-free scene mechanics. `brand.ts context` delivers the guide, a surface-filtered recipe index and content hashes in both identity modes. Load the selected recipe details before implementation. A fresh session does not need the donor site's code or conversation history.
+
+Choose identity from the selected Brand Pack, not from these examples. Recipes are not approved visual templates and do not install a UI library. Existing components, licensing, local direction and human approval still govern reuse. See `plugins/brand-runtime/skills/brand/references/interface-engineering.md` and `interface-provenance.md` in the same folder. Presentation keeps its three-slide approval gate and print-safe static reading path.
+
 ## Install in Codex
 
 ```bash

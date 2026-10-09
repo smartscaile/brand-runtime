@@ -132,6 +132,8 @@ Reuse a role consistently. Change it deliberately by breakpoint or composition, 
 
 ## Interaction and motion
 
+Para implementar UI, componentes HTML ou motion, use `interface-engineering.md` e as receitas pertinentes de `interface-patterns.json`. A base detalha anatomia, estado, sizing, causalidade, lifecycle e QA sem herdar identidade ou aprovação visual. O índice distribuído por `context` seleciona a superfície; primitivas executáveis são opcionais e não substituem motores aprovados.
+
 - Make primary actions identifiable and keep state changes stable across pointer, keyboard, touch, loading, success, and error states.
 - Use motion to explain continuity, hierarchy, progress, or causality.
 - Avoid motion that competes with reading or exists only to imply polish.
@@ -140,6 +142,7 @@ Reuse a role consistently. Change it deliberately by breakpoint or composition, 
 ## Responsive behavior
 
 - Recompose by priority instead of shrinking a desktop arrangement mechanically.
+- An explicitly authorized whole-scene fit is a local exception, not a universal mobile strategy. Preserve logical geometry and assess final text and touch legibility separately from proportional fidelity.
 - Preserve readable measure, touch targets, content order, and mapped insets.
 - Verify long content, localization, keyboard navigation, zoom, and reduced motion when relevant.
 - On mobile, remove nonessential chrome before reducing content or interaction clarity.

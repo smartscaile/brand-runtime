@@ -513,20 +513,38 @@ async function validatePack() {
   };
 }
 
-async function designMethodContext() {
-  const reference = async (name: string) => {
-    const content = await readFile(new URL(`../references/${name}`, import.meta.url), "utf8");
+async function designMethodContext(surface: Surface) {
+  const reference = async (path: string) => {
+    const content = await readFile(new URL(`../${path}`, import.meta.url), "utf8");
     return {
-      path: `skills/brand/references/${name}`,
+      path: `skills/brand/${path}`,
       sha256: createHash("sha256").update(content).digest("hex"),
       content,
     };
   };
-  const [foundation, surfaceGuidelines] = await Promise.all([
-    reference("design-foundation.md"),
-    reference("surface-guidelines.md"),
+  const [foundation, surfaceGuidelines, interfaceEngineering, catalog, mechanics] = await Promise.all([
+    reference("references/design-foundation.md"),
+    reference("references/surface-guidelines.md"),
+    reference("references/interface-engineering.md"),
+    reference("references/interface-patterns.json"),
+    reference("assets/interface/scene-runtime.mjs"),
   ]);
-  return { status: "instructions-only", requiredBeforeImplementation: true, foundation, surfaceGuidelines };
+  const parsed = JSON.parse(catalog.content) as { version: string; patterns: Array<{ id: string; title: string; relation: string; surfaces: Surface[] }> };
+  return {
+    status: "instructions-only", requiredBeforeImplementation: true,
+    foundation, surfaceGuidelines, interfaceEngineering,
+    patternCatalog: {
+      path: catalog.path, sha256: catalog.sha256, version: parsed.version,
+      detailsRequireRead: true,
+      patterns: parsed.patterns.filter(pattern => pattern.surfaces.includes(surface))
+        .map(({ id, title, relation }) => ({ id, title, relation })),
+    },
+    interfaceMechanics: {
+      path: mechanics.path, sha256: mechanics.sha256, optional: true,
+      reuseAuthorization: "owner-or-separate-permission", publicLicenseGranted: false,
+      api: ["compileSequence", "sampleSequence", "cubicBezier", "createCommitGate", "mountScene"],
+    },
+  };
 }
 
 function designAuthorityContext(mode: DirectionMode) {
@@ -570,7 +588,7 @@ async function context() {
       ],
       projectDesignDirection: "docs/design/design-direction.md",
       projectKnowledge: await inspectProjectKnowledge(projectRoot),
-      designMethod: await designMethodContext(),
+      designMethod: await designMethodContext(surface),
       designAuthority: designAuthorityContext(mode),
       rules: [],
       brandRules: [],
@@ -618,7 +636,7 @@ async function context() {
     ],
     projectDesignDirection: "docs/design/design-direction.md",
     projectKnowledge: await inspectProjectKnowledge(projectRoot),
-    designMethod: await designMethodContext(),
+    designMethod: await designMethodContext(surface),
     designAuthority: designAuthorityContext("brand-pack"),
     rules: surfaces?.[surface] ?? [],
     brandRules: clientRules,

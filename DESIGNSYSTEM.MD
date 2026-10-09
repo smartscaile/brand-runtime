@@ -120,6 +120,14 @@ conteúdo, paths relativos ao plugin e hashes dos documentos consumidos.
 `status: instructions-only` comprova apenas quais instruções foram entregues.
 Não comprova que o agente as executou nem que o artefato foi aprovado.
 
+`interface-engineering.md` detalha os contratos portáteis de UI/UX e motion.
+O catálogo `interface-patterns.json` descreve função, anatomia, estados, sizing,
+bindings, ciclo, fallback e verificações de 24 receitas opcionais. Aprovação é
+sempre do novo consumidor. As primitivas originais `scene-runtime.mjs` fornecem
+relógio pausável, dependências causais, Bézier e commits atuais, sem motor de
+componente, CSS de marca ou biblioteca imposta. O método tem a mesma autoridade
+nas quatro superfícies, mas os gates de lote e exportação continuam próprios.
+
 ## Exceções da entrega
 
 | Data | Entrega | Regra substituída | Nova direção | Alcance | Evidência e aprovação |

@@ -89,6 +89,32 @@ o schema `1.0.0` e só governa a resolução global. Bindings inválidos ou obso
 falham sem fallback; `config add` os preserva e `config set` substitui toda a
 seleção. O binding não movimenta dados nem concede aprovação da marca.
 
+## Engenharia reutilizável sem identidade herdada
+
+Extrair relações, contratos e lições de um produto real não autoriza empacotar
+sua aparência, dados ou componentes de terceiros. A base de UI/UX é compartilhada
+por Brand e Presentation em `interface-engineering.md`; 24 receitas opcionais
+possuem uso, exclusões, anatomia, estado, sizing, motion, bindings e QA.
+Proveniência e limites de licença ficam em `interface-provenance.md`.
+
+O contexto entrega guia e índice/hash para funcionar em nova sessão, com leitura
+progressiva dos detalhes e sem depender do projeto doador. Primitivas ESM
+originais são opcionais, sem dependências, paleta ou prescrição de framework.
+Um Pack define identidade, não instala uma biblioteca. Aprovação do doador é
+evidência contextual, nunca aprovação da aplicação futura.
+
+Publicação e instalação continuam gates próprios. Esta evolução parte da
+release 0.9.1 isolada e não incorpora a projeção de Brand Packs nem outras
+alterações não publicadas do checkout de desenvolvimento.
+
+O titular escolheu preservar o licenciamento existente e concluir para seu uso,
+sem conceder MIT ou outra licença pública nova. As primitivas originais podem
+ser integradas sob autorização do titular ou permissão separada. O contexto
+declara `reuseAuthorization: owner-or-separate-permission` e
+`publicLicenseGranted: false`; disponibilidade pública não é concessão de
+direitos de cópia/redistribuição a terceiros. Licenças do site, Packs e
+referências de terceiros permanecem intactas.
+
 ## Política
 
 `PROJECT.md`, `project.json`, `AGENTS.md`, contratos, código e testes são as

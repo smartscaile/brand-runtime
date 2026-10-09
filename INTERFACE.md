@@ -44,6 +44,16 @@ assets, evidência, acessibilidade ou uma regra de marca ainda ativa.
 
 ## Inventário de apresentação
 
+O catálogo de engenharia comum está em
+`plugins/brand-runtime/skills/brand/references/interface-patterns.json`, com
+24 receitas opcionais por relação, não famílias visuais aprovadas. O guia
+`interface-engineering.md` resolve modalidade, eixos protegidos, sizing,
+coreografia, lifecycle e QA. `context.designMethod.patternCatalog` entrega
+um índice por superfície e hash; detalhes permanecem no arquivo distribuído.
+`interfaceMechanics` identifica o módulo ESM opcional e seu hash, sem copiar
+identidade ou instalar outro framework. Nenhuma receita altera o Viewer ou
+dispensa o contrato e os gates de Presentation.
+
 Cada família de slide deve ser registrada com intenção narrativa, composição,
 limites de reuso e evidência renderizada. Uma classe CSS ou um template não é,
 por si só, uma família visual aprovada.

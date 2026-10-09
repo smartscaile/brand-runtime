@@ -2,6 +2,8 @@
 
 Leia a seção da superfície após aplicar o método comum de `design-foundation.md` e resolver `brand-pack` ou `brand-pending`. Estas orientações especializam o método, não o substituem. Não carregue regras de exportação ou gates de outra superfície apenas para obter orientação de composição.
 
+Para UI/UX, componentes e HTML, `interface-engineering.md` especializa contratos de estado, geometria, coreografia e lifecycle. `interface-patterns.json` fornece receitas por relação e superfície, sem identidade ou aprovação herdada. Em slides e documentos, preserve leitura estática completa, distância de uso e exportação; não transportar automaticamente mecanismos de página ou densidade de produto.
+
 ## Site
 
 - Antes de criar uma seção, compare componentes ativos do próprio site e suas aprovações por escopo. Herde tipografia, controles, tratamento de superfícies e linguagem dos diagramas onde a função coincidir; não importe toda a anatomia de um diagrama só porque ele existe.
